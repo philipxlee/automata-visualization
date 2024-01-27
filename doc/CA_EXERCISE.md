@@ -149,7 +149,7 @@ public class control {
     // save the grid state in an XML file
     public void save()
     // edit the information of the saved file
-    public void edit
+    public void edit()
  }
  ```
 
