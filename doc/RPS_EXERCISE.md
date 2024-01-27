@@ -1,5 +1,5 @@
 # Rock Paper Scissors Lab Discussion
-#### Abhishek Chataut (ac802),
+#### Abhishek Chataut (ac802), Philip Lee (kl445), Saad Hakim (sh604)
 
 
 ### High Level Design Goals
@@ -82,22 +82,23 @@ public class Game {
 
 * A new game is started with five players, their scores are reset to 0.
  ```java
- Player player1 = new Player();
+Player player1 = new Player();
 Player player2 = new Player();
 Player player3 = new Player();
 Player player4 = new Player();
 Player player5 = new Player();
-
-
  ```
 
 * A player chooses his RPS "weapon" with which he wants to play for this round.
  ```java
-player1.promptWeapon()
+player1.promptWeapon();
  ```
 
 * Given three players' choices, one player wins the round, and their scores are updated.
  ```java
+player1.promptWeapon();
+player2.promptWeapon();
+player3.promptWeapon();
 winner = calculateWin();
 players.updateScore();
  ```
@@ -112,5 +113,4 @@ addWeapon(newWeapon);
  ```java
 Game game = new Game();
 game.addWeapon(newWeapon);
-
  ```
