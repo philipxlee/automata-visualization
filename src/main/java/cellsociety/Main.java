@@ -27,7 +27,8 @@ public class Main extends Application {
   public static final String DATA_FILE_FOLDER = System.getProperty("user.dir") + "/data";
   // internal configuration file
   public static final String INTERNAL_CONFIGURATION = "cellsociety.Version";
-  // NOTE: make ONE chooser since generally accepted behavior is that it remembers where user left it last
+  // NOTE: make ONE chooser since generally accepted behavior
+  // is that it remembers where user left it last
   private static final FileChooser FILE_CHOOSER = makeChooser(DATA_FILE_EXTENSION);
 
   // set some sensible defaults when the FileChooser is created
