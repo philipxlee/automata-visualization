@@ -1,5 +1,6 @@
 package cellsociety.view;
 
+import java.util.Map;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -22,6 +23,18 @@ public class View {
   private static final String simType = "Game of Life";
   private static final String author = "John Conway";
   private static final String description = "The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.";
+
+  private static final Map<String, Color> stateColors = Map.of(
+    "Live", Color.WHITE,
+    "Dead", Color.BLACK
+  );
+
+  private static final Map<String, Double> parameterValues = Map.of(
+      "probCatch",0.5,
+      "randomParam", 0.99,
+      "randomParam2", 0.21
+  );
+
   //endregion
 
   private Stage primaryStage;
@@ -70,23 +83,31 @@ public class View {
   }
 
   private void createDisplayUI(VBox infoPane) {
-    Label simLabel = createLabel(simType);
-    simLabel.getStyleClass().add("label-title");
+    Label simLabel = new Label(simType);
+    simLabel.getStyleClass().add("title");
     infoPane.getChildren().add(simLabel);
 
-    Label authorLabel = createLabel("Author: " + author);
+    Label authorLabel = new Label("Author: " + author);
     infoPane.getChildren().add(authorLabel);
 
-    Label descriptionLabel = createLabel(description);
-    descriptionLabel.getStyleClass().add("label-description");
+    Label descriptionLabel = new Label(description);
+    descriptionLabel.getStyleClass().add("description");
     infoPane.getChildren().add(descriptionLabel);
 
-    infoPane.setAlignment(Pos.BASELINE_CENTER);
-  }
+    for (Map.Entry<String, Color> entry : stateColors.entrySet()) {
+      Label stateColorLabel = new Label("State: " + entry.getKey());
+      stateColorLabel.getStyleClass().add("states");
+      stateColorLabel.setTextFill(entry.getValue());
+      infoPane.getChildren().add(stateColorLabel);
+    }
 
-  private Label createLabel(String text) {
-    Label label = new Label(text);
-    return label;
+    for (Map.Entry<String, Double> entry : parameterValues.entrySet()) {
+      Label parameterValueLabel = new Label("• " + entry.getKey() + ": " + entry.getValue());
+      parameterValueLabel.getStyleClass().add("params");
+      infoPane.getChildren().add(parameterValueLabel);
+    }
+
+    infoPane.setAlignment(Pos.BASELINE_CENTER);
   }
 
 }
