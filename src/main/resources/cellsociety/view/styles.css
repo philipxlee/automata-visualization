@@ -1,0 +1,30 @@
+.label {
+  -fx-font-family: "Segoe UI";
+  -fx-font-size: 16px;
+}
+
+.label.title {
+  -fx-font-family: "Segoe UI Semibold";
+  -fx-font-size: 22px;
+}
+
+.label.description {
+  -fx-font-size: 12px;
+  -fx-wrap-text: true;
+  -fx-min-height: 150px;
+  -fx-translate-y: -130px;
+  -fx-text-alignment: center;
+}
+
+.label.states {
+  -fx-min-width: 200px;
+  -fx-text-alignment: left;
+  -fx-underline: true;
+}
+
+.label.params {
+  -fx-font-size: 14px;
+  -fx-translate-y: 10px;
+  -fx-min-width: 200px;
+  -fx-text-alignment: left;
+}
