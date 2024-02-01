@@ -12,6 +12,7 @@ public class Grid {
 
     private final Cell[][] cellGrid;
     private Map<Cell, List<Cell>> cellNeighbors;
+    private final Simulation simulation;
 
     /**
      * Constructs a Grid object representing the game board.
@@ -20,9 +21,10 @@ public class Grid {
      * @param row The number of rows in the grid.
      * @param col The number of columns in the grid.
      */
-    public Grid(int row, int col) {
+    public Grid(int row, int col, Simulation simulation) {
         this.ROW = row;
         this.COL = col;
+        this.simulation = simulation;
         this.cellNeighbors = new HashMap<>();
         this.cellGrid = new Cell[ROW][COL];
         initializeGridCells();
@@ -49,18 +51,19 @@ public class Grid {
         char[][] gridState = getGridConfiguration();
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                String state = getStateFromChar(gridState[i][j]); // placeholder
-                Cell currentCell = new Cell(i, j, state);
-                cellGrid[i][j] = currentCell;
-                cellNeighbors.put(currentCell, findCellNeighbors(i, j));
+                if (gridState[i][j] != '0') {
+                    String state = getStateFromChar(gridState[i][j]); // placeholder
+                    Cell currentCell = new Cell(i, j, state);
+                    cellGrid[i][j] = currentCell;
+                    cellNeighbors.put(currentCell, findCellNeighbors(i, j));
+                }
             }
         }
     }
 
     private String determineNewState(Cell cell, List<Cell> neighbors) {
-        // implement rules here?
-        // maybe use a separate state class
-        return "Placeholder";
+        String currentState = cell.getState();
+        return simulation.determineState(cell, currentState, neighbors);
     }
 
     private void updateGridWithNewStates(Cell[][] tempGrid) {
@@ -95,6 +98,8 @@ public class Grid {
         switch(cell) {
             case '1' -> state = "ALIVE";
             case '2' -> state = "DEAD";
+            case 'T' -> state = "TREE";
+            case 'B' -> state = "BURNING";
             default -> state = "Placeholder";
         }
         return state;
