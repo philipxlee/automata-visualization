@@ -8,7 +8,7 @@ import java.util.Map;
 public class Grid {
 
   private final int row;
-  private final int col;
+  private final int COL;
 
   private final Cell[][] cellGrid;
   private Map<Cell, List<Cell>> cellNeighbors;
@@ -22,9 +22,9 @@ public class Grid {
    */
   public Grid(int row, int col) {
     this.row = row;
-    this.col = col;
+    this.COL = col;
     this.cellNeighbors = new HashMap<>();
-    this.cellGrid = new Cell[row][col];
+    this.cellGrid = new Cell[row][COL];
     initializeGridCells();
   }
 
@@ -35,9 +35,9 @@ public class Grid {
    * updated with these new states.
    */
   public void computeNextGenerationGrid() {
-    Cell[][] tempGrid = new Cell[row][col];
+    Cell[][] tempGrid = new Cell[row][COL];
     for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
+      for (int j = 0; j < COL; j++) {
         List<Cell> neighbors = cellNeighbors.get(cellGrid[i][j]);
         String newState = determineNewState(cellGrid[i][j], neighbors);
         tempGrid[i][j] = new Cell(i, j, newState);
@@ -49,7 +49,7 @@ public class Grid {
   private void initializeGridCells() {
     char[][] gridState = getGridConfiguration();
     for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
+      for (int j = 0; j < COL; j++) {
         String state = getStateFromChar(gridState[i][j]); // placeholder
         Cell currentCell = new Cell(i, j, state);
         cellGrid[i][j] = currentCell;
@@ -66,7 +66,7 @@ public class Grid {
 
   private void updateGridWithNewStates(Cell[][] tempGrid) {
     for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
+      for (int j = 0; j < COL; j++) {
         String newState = tempGrid[i][j].getState();
         cellGrid[i][j].setState(newState);
       }
@@ -85,7 +85,7 @@ public class Grid {
   }
 
   private void addNeighborsWithinBounds(int newRow, int newCol, List<Cell> neighbors) {
-    if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
+    if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < COL) {
       Cell neighbor = cellGrid[newRow][newCol];
       neighbors.add(neighbor);
     }

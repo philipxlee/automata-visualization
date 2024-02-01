@@ -1,0 +1,21 @@
+.label {
+  -fx-font-family: "Segoe UI";
+  -fx-font-size: 16px;
+  -fx-text-fill: #333;
+}
+
+.label-title {
+  -fx-font-family: "Segoe UI Semibold";
+  -fx-font-size: 22px;
+  -fx-text-fill: #333;
+}
+
+.label-description {
+  -fx-font-family: "Segoe UI";
+  -fx-font-size: 12px;
+  -fx-text-fill: #333;
+  -fx-wrap-text: true;
+  -fx-min-height: 150px;
+  -fx-translate-y: -130px;
+  -fx-text-alignment: center;
+}
