@@ -14,8 +14,8 @@ public class Grid {
   private Map<Cell, List<Cell>> cellNeighbors;
 
   /**
-   * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
-   * storing neighbors of each cell.
+   * Constructs a Grid object representing the game board.
+   * Initializes a grid of cells and a map for storing neighbors of each cell.
    *
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.

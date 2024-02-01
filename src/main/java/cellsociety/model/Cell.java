@@ -2,13 +2,13 @@ package cellsociety.model;
 
 public class Cell {
 
-  private final int ROW;
-  private final int COL;
+  private final int row;
+  private final int col;
   private String state;
 
   public Cell(int row, int col, String state) {
-    this.ROW = row;
-    this.COL = col;
+    this.row = row;
+    this.col = col;
     this.state = state;
   }
 
