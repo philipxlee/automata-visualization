@@ -11,11 +11,28 @@ public class Grid {
   private final int col;
 
   private final Cell[][] cellGrid;
-  private Map<Cell, List<Cell>> cellNeighbors;
+  private final Map<Cell, List<Cell>> cellNeighbors;
+  private Simulation simulation;
 
   /**
-   * Constructs a Grid object representing the game board.
-   * Initializes a grid of cells and a map for storing neighbors of each cell.
+   * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
+   * storing neighbors of each cell.
+   *
+   * @param row The number of rows in the grid.
+   * @param col The number of columns in the grid.
+   */
+  public Grid(int row, int col, Simulation simulation) {
+    this.row = row;
+    this.col = col;
+    this.simulation = simulation;
+    this.cellNeighbors = new HashMap<>();
+    this.cellGrid = new Cell[row][col];
+    initializeGridCells();
+  }
+
+  /**
+   * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
+   * storing neighbors of each cell.
    *
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
@@ -50,18 +67,14 @@ public class Grid {
     char[][] gridState = getGridConfiguration();
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        String state = getStateFromChar(gridState[i][j]); // placeholder
-        Cell currentCell = new Cell(i, j, state);
-        cellGrid[i][j] = currentCell;
-        cellNeighbors.put(currentCell, findCellNeighbors(i, j));
+        if (gridState[i][j] != '0') {
+          String state = getStateFromChar(gridState[i][j]); // placeholder
+          Cell currentCell = new Cell(i, j, state);
+          cellGrid[i][j] = currentCell;
+          cellNeighbors.put(currentCell, findCellNeighbors(i, j));
+        }
       }
     }
-  }
-
-  private String determineNewState(Cell cell, List<Cell> neighbors) {
-    // implement rules here?
-    // maybe use a separate state class
-    return "Placeholder";
   }
 
   private void updateGridWithNewStates(Cell[][] tempGrid) {
@@ -70,6 +83,19 @@ public class Grid {
         String newState = tempGrid[i][j].getState();
         cellGrid[i][j].setState(newState);
       }
+    }
+  }
+
+  private String determineNewState(Cell cell, List<Cell> neighbors) {
+    String currentState = cell.getState();
+    return simulation.determineState(cell, currentState, neighbors);
+  }
+
+
+  private void addNeighborsWithinBounds(int newRow, int newCol, List<Cell> neighbors) {
+    if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
+      Cell neighbor = cellGrid[newRow][newCol];
+      neighbors.add(neighbor);
     }
   }
 
@@ -84,23 +110,18 @@ public class Grid {
     return neighbors;
   }
 
-  private void addNeighborsWithinBounds(int newRow, int newCol, List<Cell> neighbors) {
-    if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
-      Cell neighbor = cellGrid[newRow][newCol];
-      neighbors.add(neighbor);
-    }
-  }
 
   private String getStateFromChar(char cell) {
     String state = "";
     switch (cell) {
       case '1' -> state = "ALIVE";
       case '2' -> state = "DEAD";
+      case 'T' -> state = "TREE";
+      case 'B' -> state = "BURNING";
       default -> state = "Placeholder";
     }
     return state;
   }
-
 
   /**
    * PLACEHOLDERS
