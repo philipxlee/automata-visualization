@@ -1,5 +1,6 @@
 package cellsociety;
 
+import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -57,14 +58,18 @@ public class Main extends Application {
    */
   @Override
   public void start(Stage primaryStage) {
-    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
-    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
-    if (dataFile != null) {
-      int numBlocks = calculateNumBlocks(dataFile);
-      if (numBlocks != 0) {
-        showMessage(AlertType.INFORMATION, String.format("Number of Blocks = %d", numBlocks));
-      }
-    }
+    View mainView = new View(primaryStage);
+    mainView.start();
+//    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
+//    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
+//    if (dataFile != null) {
+//      int numBlocks = calculateNumBlocks(dataFile);
+//      if (numBlocks != 0) {
+//        showMessage(AlertType.INFORMATION, String.format("Number of Blocks = %d", numBlocks));
+//        View mainView = new View(primaryStage);
+//        mainView.start();
+//      }
+//    }
   }
 
   /**
