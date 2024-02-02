@@ -2,10 +2,16 @@ package cellsociety.model.Variations;
 
 import cellsociety.model.Cell;
 import cellsociety.model.Simulation;
-
+import cellsociety.model.VariationCells.GameOfLifeCell;
 import java.util.List;
 
 class GameOfLife implements Simulation {
+
+
+  @Override
+  public Cell createVariationCell(int row, int col, String state) {
+    return new GameOfLifeCell(row, col, state);
+  }
 
   /**
    * Determines the next state of a cell based on its current state and the states of its neighbors.

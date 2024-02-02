@@ -2,6 +2,7 @@ package cellsociety.model.Variations;
 
 import cellsociety.model.Cell;
 import cellsociety.model.Simulation;
+import cellsociety.model.VariationCells.SpreadingOfFireCell;
 import java.util.List;
 import java.util.Random;
 
@@ -9,6 +10,11 @@ class SpreadingOfFire implements Simulation {
 
   private final double CATCH_FIRE_PROBABILITY = 0.15;
   Random rand = new Random();
+
+  @Override
+  public Cell createVariationCell(int row, int col, String state) {
+    return new SpreadingOfFireCell(row, col, state);
+  }
 
   /**
    * Calculates the next state of a cell in based on its current state and neighboring cells.

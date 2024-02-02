@@ -57,7 +57,7 @@ public class Grid {
       for (int j = 0; j < col; j++) {
         List<Cell> neighbors = cellNeighbors.get(cellGrid[i][j]);
         String newState = determineNewState(cellGrid[i][j], neighbors);
-        tempGrid[i][j] = new Cell(i, j, newState);
+        tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
       }
     }
     updateGridWithNewStates(tempGrid);
@@ -69,7 +69,7 @@ public class Grid {
       for (int j = 0; j < col; j++) {
         if (gridState[i][j] != '0') {
           String state = getStateFromChar(gridState[i][j]); // placeholder
-          Cell currentCell = new Cell(i, j, state);
+          Cell currentCell = simulation.createVariationCell(i, j, state);
           cellGrid[i][j] = currentCell;
           cellNeighbors.put(currentCell, findCellNeighbors(i, j));
         }

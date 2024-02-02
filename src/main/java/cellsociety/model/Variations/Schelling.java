@@ -2,6 +2,8 @@ package cellsociety.model.Variations;
 
 import cellsociety.model.Simulation;
 import cellsociety.model.Cell;
+import cellsociety.model.VariationCells.GameOfLifeCell;
+import cellsociety.model.VariationCells.SchellingCell;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -10,6 +12,12 @@ public class Schelling implements Simulation {
 
   private final double THRESHOLD = 0.30;
   private final Queue<Cell> emptyCells = new LinkedList<>();
+
+  @Override
+  public Cell createVariationCell(int row, int col, String state) {
+    return new SchellingCell(row, col, state);
+  }
+
 
   /**
    * Determines the next state of a cell based on its current state and satisfaction level.
