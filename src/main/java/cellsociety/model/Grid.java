@@ -114,6 +114,7 @@ public class Grid {
   private String getStateFromChar(char cell) {
     String state = "";
     switch (cell) {
+      case '0' -> state = "EMPTY";
       case '1' -> state = "ALIVE";
       case '2' -> state = "DEAD";
       case 'T' -> state = "TREE";
