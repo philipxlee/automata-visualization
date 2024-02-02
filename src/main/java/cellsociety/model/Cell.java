@@ -15,6 +15,6 @@ public class Cell {
   public int getRow() { return this.row; }
   public int getCol() { return this.col; }
   public String getState() { return this.state; }
-  public void setState(String state) { this.state = state;}
+  public void setState(String state) { this.state = state; }
 
 }

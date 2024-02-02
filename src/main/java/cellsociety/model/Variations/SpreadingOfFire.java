@@ -12,7 +12,6 @@ class SpreadingOfFire implements Simulation {
 
   /**
    * Calculates the next state of a cell in based on its current state and neighboring cells.
-   *
    * @param cell The cell whose next state is being determined.
    * @param currentState The current state of the cell, one of "BURNING", "EMPTY", or "TREE".
    * @param neighbors A list of neighboring cells to the current cell.

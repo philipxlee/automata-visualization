@@ -119,7 +119,9 @@ public class Grid {
       case '2' -> state = "DEAD";
       case 'T' -> state = "TREE";
       case 'B' -> state = "BURNING";
-      default -> state = "Placeholder";
+      case 'X' -> state = "X";
+      case 'O' -> state = "O";
+      default -> state = "Error";
     }
     return state;
   }
