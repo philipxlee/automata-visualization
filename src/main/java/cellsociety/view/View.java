@@ -17,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import java.util.ResourceBundle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
@@ -74,12 +75,44 @@ public class View {
 
     Pane gridSection = new Pane();
     gridSection.getStyleClass().add("grid");
+    createGridUI(gridSection);
     root.setCenter(gridSection);
 
     VBox mainUI = createMainUI();
     root.setRight(mainUI);
 
     return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+  }
+
+  private void createGridUI(Pane gridSection) {
+    String[][] grid = new String[10][10];
+
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[i].length; j++) {
+        grid[i][j] = (i+j) % 2 == 0 ? "Dead" : "Live";
+      }
+    }
+
+    double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
+    double cellHeight = (double) WINDOW_HEIGHT / grid.length;
+
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[i].length; j++) {
+        Rectangle cell = new Rectangle(cellWidth, cellHeight);
+        cell.setX(j * cellWidth);
+        cell.setY(i * cellHeight);
+
+        String state = grid[i][j];
+        Color color = stateColors.get(state);
+        if (color != null) {
+          cell.setFill(color);
+        } else {
+          cell.setFill(Color.TRANSPARENT);
+        }
+
+        gridSection.getChildren().add(cell);
+      }
+    }
   }
 
   private VBox createMainUI() {
