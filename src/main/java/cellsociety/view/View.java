@@ -88,7 +88,7 @@ public class View {
   }
 
   private void createGridUI(Pane gridSection) {
-    String[][] grid = new String[10][10];
+    String[][] grid = new String[50][50];
 
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
