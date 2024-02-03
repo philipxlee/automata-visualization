@@ -1,3 +1,15 @@
+.grid {
+  -fx-background-color: #d7d051;
+}
+
+.ui {
+  -fx-background-color: rgba(185, 183, 183, 0.66);
+}
+
+.separator {
+  -fx-background-color: #000000;
+}
+
 .label {
   -fx-font-family: "Segoe UI";
   -fx-font-size: 16px;
@@ -27,4 +39,16 @@
   -fx-translate-y: 10px;
   -fx-min-width: 200px;
   -fx-text-alignment: left;
+}
+
+.button {
+  -fx-text-fill: #006464;
+  -fx-background-color: #DFB951;
+  -fx-border-radius: 20;
+  -fx-background-radius: 20;
+  -fx-padding: 8;
+}
+
+.button:hover {
+  -fx-background-color: #3a3a3a;
 }
