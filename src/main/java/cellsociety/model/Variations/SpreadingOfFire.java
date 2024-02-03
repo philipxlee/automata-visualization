@@ -6,7 +6,7 @@ import cellsociety.model.VariationCells.SpreadingOfFireCell;
 import java.util.List;
 import java.util.Random;
 
-class SpreadingOfFire implements Simulation {
+public class SpreadingOfFire implements Simulation {
 
   private final double CATCH_FIRE_PROBABILITY = 0.15;
   Random rand = new Random();

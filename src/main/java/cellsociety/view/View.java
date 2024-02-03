@@ -110,9 +110,7 @@ public class View {
         cell.setY(i * cellHeight);
 
         String state = grid[i][j].getState();
-        System.out.println(state);
         Color color = stateColors.get(state);
-        System.out.println(color);
         if (color != null) {
           cell.setFill(color);
         } else {
