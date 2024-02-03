@@ -1,5 +1,7 @@
 package cellsociety.view;
 
+import cellsociety.model.Cell;
+import cellsociety.model.Grid;
 import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -37,8 +39,8 @@ public class View {
   private static final String author = "John Conway";
   private static final String description = "The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.";
   private static final Map<String, Color> stateColors = Map.of(
-    "Live", Color.WHITE,
-    "Dead", Color.BLACK
+    "ALIVE", Color.WHITE,
+    "DEAD", Color.BLACK
   );
   private static final Map<String, Double> parameterValues = Map.of(
       "probCatch",0.5,
@@ -49,6 +51,7 @@ public class View {
   //endregion
 
   private Stage primaryStage;
+  private Grid simulationGrid;
   private ResourceBundle resources;
   private Button playButton;
   private Button pauseButton;
@@ -56,12 +59,14 @@ public class View {
   private Button backButton;
 
 
-  public View(Stage primaryStage) {
+  public View(Stage primaryStage, Grid grid) {
     this.primaryStage = primaryStage;
+    this.simulationGrid = grid;
   }
 
   public void start() {
     resources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + language);
+    //make simulation class with the info passed from config
     showScene();
     primaryStage.setTitle(resources.getString("title"));
   }
@@ -88,13 +93,7 @@ public class View {
   }
 
   private void createGridUI(Pane gridSection) {
-    String[][] grid = new String[50][50];
-
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid[i].length; j++) {
-        grid[i][j] = (i+j) % 2 == 0 ? "Dead" : "Live";
-      }
-    }
+    Cell[][] grid = simulationGrid.getCellGrid();
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
     double cellHeight = (double) WINDOW_HEIGHT / grid.length;
@@ -105,8 +104,10 @@ public class View {
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
 
-        String state = grid[i][j];
+        String state = grid[i][j].getState();
+        System.out.println(state);
         Color color = stateColors.get(state);
+        System.out.println(color);
         if (color != null) {
           cell.setFill(color);
         } else {
