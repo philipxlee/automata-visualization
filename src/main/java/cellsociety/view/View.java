@@ -57,6 +57,7 @@ public class View {
   private Button pauseButton;
   private Button nextButton;
   private Button backButton;
+  private BorderPane root;
 
 
   public View(Stage primaryStage, Grid grid) {
@@ -79,17 +80,21 @@ public class View {
   }
 
   private Scene createScene() {
-    BorderPane root = new BorderPane();
+    root = new BorderPane();
 
-    Pane gridSection = new Pane();
-    gridSection.getStyleClass().add("grid");
-    createGridUI(gridSection);
-    root.setCenter(gridSection);
+    updateGrid();
 
     VBox mainUI = createMainUI();
     root.setRight(mainUI);
 
     return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+  }
+
+  private void updateGrid() {
+    Pane gridSection = new Pane();
+    gridSection.getStyleClass().add("grid");
+    createGridUI(gridSection);
+    root.setCenter(gridSection);
   }
 
   private void createGridUI(Pane gridSection) {
@@ -181,7 +186,10 @@ public class View {
     controlPane.getChildren().add(row1);
 
     HBox row2 = new HBox();
-    nextButton = makeButton("NextCommand", null);
+    nextButton = makeButton("NextCommand", event -> {
+      simulationGrid.computeNextGenerationGrid();
+      updateGrid();
+    });
     backButton = makeButton("BackCommand", null);
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);
