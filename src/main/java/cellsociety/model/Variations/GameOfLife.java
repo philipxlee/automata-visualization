@@ -5,7 +5,7 @@ import cellsociety.model.Simulation;
 import cellsociety.model.VariationCells.GameOfLifeCell;
 import java.util.List;
 
-class GameOfLife implements Simulation {
+public class GameOfLife implements Simulation {
 
   /**
    * Creates a new GameOfLifeCell with specified row, column, and state.
