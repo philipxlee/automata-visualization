@@ -11,6 +11,13 @@ class SpreadingOfFire implements Simulation {
   private final double CATCH_FIRE_PROBABILITY = 0.15;
   Random rand = new Random();
 
+  /**
+   * Creates a new SpreadingOfFireCell with specified row, column, and state.
+   * @param row The row position of the cell in the grid.
+   * @param col The column position of the cell in the grid.
+   * @param state The initial state of the cell, such as "TREE", "FIRE", or "EMPTY".
+   * @return A new instance of SpreadingOfFireCell with the given parameters.
+   */
   @Override
   public Cell createVariationCell(int row, int col, String state) {
     return new SpreadingOfFireCell(row, col, state);
@@ -22,9 +29,9 @@ class SpreadingOfFire implements Simulation {
    * @param currentState The current state of the cell, one of "BURNING", "EMPTY", or "TREE".
    * @param neighbors A list of neighboring cells to the current cell.
    * @return The next state of the cell as a String: "BURNING", "EMPTY", or "TREE".
-   *         "BURNING" if cell is a tree with burning neighbors and catches fire based on a probability.
-   *         "EMPTY" if cell is currently "BURNING" or "EMPTY".
-   *         The state remains "TREE" if conditions to catch fire are not met.
+   *    "BURNING" if cell is a tree with burning neighbors and catches fire based on a probability.
+   *    "EMPTY" if cell is currently "BURNING" or "EMPTY".
+   *    The state remains "TREE" if conditions to catch fire are not met.
    * @throws IllegalStateException If the current state is not one of the expected values.
    */
   @Override

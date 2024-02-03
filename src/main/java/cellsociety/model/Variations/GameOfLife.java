@@ -7,7 +7,13 @@ import java.util.List;
 
 class GameOfLife implements Simulation {
 
-
+  /**
+   * Creates a new GameOfLifeCell with specified row, column, and state.
+   * @param row The row position of the cell in the grid.
+   * @param col The column position of the cell in the grid.
+   * @param state The initial state of the cell, usually "ALIVE" or "DEAD".
+   * @return A new instance of GameOfLifeCell with the given parameters.
+   */
   @Override
   public Cell createVariationCell(int row, int col, String state) {
     return new GameOfLifeCell(row, col, state);

@@ -13,11 +13,17 @@ public class Schelling implements Simulation {
   private final double THRESHOLD = 0.30;
   private final Queue<Cell> emptyCells = new LinkedList<>();
 
+  /**
+   * Creates a new SchellingCell with specified row, column, and state.
+   * @param row The row position of the cell in the grid.
+   * @param col The column position of the cell in the grid.
+   * @param state The initial state of the cell, indicating the type of agent.
+   * @return A new instance of SchellingCell with the given parameters.
+   */
   @Override
   public Cell createVariationCell(int row, int col, String state) {
     return new SchellingCell(row, col, state);
   }
-
 
   /**
    * Determines the next state of a cell based on its current state and satisfaction level.
@@ -32,28 +38,21 @@ public class Schelling implements Simulation {
    */
   @Override
   public String determineState(Cell cell, String currentState, List<Cell> neighbors) {
-    int[] countOfXandONeighbors = countNeighborsStates(cell, neighbors);
-    boolean satisfied = calculateSatisfaction(currentState, countOfXandONeighbors);
-    if ("X".equals(currentState) || "O".equals(currentState)) {
-      if (satisfied) {
-        return currentState;
-      } else {
-        return moveToEmptySpaceIfAvaliable(currentState) ? "EMPTY" : currentState;
-      }
+    if (!"X".equals(currentState) && !"O".equals(currentState)) {
+      throw new IllegalStateException("Unexpected cell state: " + currentState);
     }
-    throw new IllegalStateException("Unexpected cell state: " + currentState);
+    int[] counts = countNeighborsStates(neighbors);
+    boolean satisfied = calculateSatisfaction(currentState, counts);
+    return satisfied ? currentState : moveToEmptySpaceIfAvailable(currentState);
   }
 
-  private boolean calculateSatisfaction(String currentState, int[] countOfXandONeighbors) {
-    if (currentState.equals("X")) {
-      return (double) countOfXandONeighbors[0] / countOfXandONeighbors[1] >= THRESHOLD;
-    } else if (currentState.equals("O")) {
-      return (double) countOfXandONeighbors[1] / countOfXandONeighbors[0] >= THRESHOLD;
-    }
-    return true;
+  private boolean calculateSatisfaction(String currentState, int[] counts) {
+    int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
+    int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
+    return (otherStateCount == 0 || (double) sameStateCount / (otherStateCount) >= THRESHOLD); // Avoid division by zero
   }
 
-  private int[] countNeighborsStates(Cell cell, List<Cell> neighbors) {
+  private int[] countNeighborsStates(List<Cell> neighbors) {
     int x = 0;
     int o = 0;
     for (Cell neighbor : neighbors) {
@@ -68,12 +67,12 @@ public class Schelling implements Simulation {
     return new int[]{x, o};
   }
 
-  private boolean moveToEmptySpaceIfAvaliable(String cellState) {
+  private String moveToEmptySpaceIfAvailable(String cellState) {
     if (!emptyCells.isEmpty()) {
       Cell emptyCell = emptyCells.poll();
       emptyCell.setState(cellState);
-      return true;
+      return "EMPTY";
     }
-    return false;
+    return cellState;
   }
 }
