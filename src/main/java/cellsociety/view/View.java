@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -51,6 +52,8 @@ public class View {
   private ResourceBundle resources;
   private Button playButton;
   private Button pauseButton;
+  private Button nextButton;
+  private Button backButton;
 
 
   public View(Stage primaryStage) {
@@ -167,11 +170,22 @@ public class View {
   }
 
   private void createControlUI(VBox controlPane) {
+    HBox row1 = new HBox();
     playButton = makeButton("PlayCommand", null);
-    controlPane.getChildren().add(playButton);
-
     pauseButton = makeButton("PauseCommand", null);
-    controlPane.getChildren().add(pauseButton);
+
+    row1.getChildren().add(playButton);
+    row1.getChildren().add(pauseButton);
+    row1.setAlignment(Pos.BASELINE_CENTER);
+    controlPane.getChildren().add(row1);
+
+    HBox row2 = new HBox();
+    nextButton = makeButton("NextCommand", null);
+    backButton = makeButton("BackCommand", null);
+    row2.getChildren().add(nextButton);
+    row2.getChildren().add(backButton);
+    row2.setAlignment(Pos.BASELINE_CENTER);
+    controlPane.getChildren().add(row2);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
