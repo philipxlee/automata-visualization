@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import java.util.ResourceBundle;
 import javafx.stage.Stage;
 
 
@@ -18,39 +18,44 @@ public class View {
 
   private static final int WINDOW_WIDTH = 1024;
   private static final int WINDOW_HEIGHT = 768;
+  public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
+  public static final String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
+  public static final String STYLESHEET = "styles.css";
+
 
   //region Temporary hard-coded values
   private static final String simType = "Game of Life";
   private static final String author = "John Conway";
   private static final String description = "The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.";
-
   private static final Map<String, Color> stateColors = Map.of(
     "Live", Color.WHITE,
     "Dead", Color.BLACK
   );
-
   private static final Map<String, Double> parameterValues = Map.of(
       "probCatch",0.5,
       "randomParam", 0.99,
       "randomParam2", 0.21
   );
-
+  private static final String language = "Spanish";
   //endregion
 
   private Stage primaryStage;
+  private ResourceBundle myResources;
+
 
   public View(Stage primaryStage) {
     this.primaryStage = primaryStage;
   }
 
   public void start() {
-    primaryStage.setTitle("Cell Society");
+    myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + language);
     showScene();
+    primaryStage.setTitle(myResources.getString("title"));
   }
 
   private void showScene() {
     Scene scene = createScene();
-    scene.getStylesheets().add(getClass().getResource("/cellsociety/view/styles.css").toExternalForm());
+    scene.getStylesheets().add(getClass().getResource(DEFAULT_RESOURCE_FOLDER + STYLESHEET).toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.show();
   }
@@ -87,7 +92,7 @@ public class View {
     simLabel.getStyleClass().add("title");
     infoPane.getChildren().add(simLabel);
 
-    Label authorLabel = new Label("Author: " + author);
+    Label authorLabel = new Label(myResources.getString("author") + ": " + author);
     infoPane.getChildren().add(authorLabel);
 
     Label descriptionLabel = new Label(description);
@@ -95,7 +100,7 @@ public class View {
     infoPane.getChildren().add(descriptionLabel);
 
     for (Map.Entry<String, Color> entry : stateColors.entrySet()) {
-      Label stateColorLabel = new Label("State: " + entry.getKey());
+      Label stateColorLabel = new Label(myResources.getString("state") + ": " + entry.getKey());
       stateColorLabel.getStyleClass().add("states");
       stateColorLabel.setTextFill(entry.getValue());
       infoPane.getChildren().add(stateColorLabel);
