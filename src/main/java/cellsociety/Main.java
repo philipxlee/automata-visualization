@@ -1,5 +1,8 @@
 package cellsociety;
 
+import cellsociety.model.Grid;
+import cellsociety.model.Simulation;
+import cellsociety.model.Variations.GameOfLife;
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +61,14 @@ public class Main extends Application {
    */
   @Override
   public void start(Stage primaryStage) {
-    View mainView = new View(primaryStage);
+    // init config, read using config and get the info organized
+    // then pass the info to the view
+    //hard code game of life simulation
+    int rows = 4;
+    int cols = 4;
+    Simulation gameOfLifeSimulation = new GameOfLife();
+    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
+    View mainView = new View(primaryStage, grid);
     mainView.start();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
 //    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);

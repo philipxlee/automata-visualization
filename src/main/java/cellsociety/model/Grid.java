@@ -67,8 +67,10 @@ public class Grid {
     char[][] gridState = getGridConfiguration();
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
+        System.out.println("first" + gridState[i][j]);
         if (gridState[i][j] != '0') {
           String state = getStateFromChar(gridState[i][j]); // placeholder
+          System.out.println("second" + state);
           Cell currentCell = simulation.createVariationCell(i, j, state);
           cellGrid[i][j] = currentCell;
           cellNeighbors.put(currentCell, findCellNeighbors(i, j));
@@ -131,6 +133,9 @@ public class Grid {
    */
 
   private char[][] getGridConfiguration() {
-    return new char[][]{{1, 2}};
+    return new char[][]{{'1', '2', '1', '2'}, {'2', '1', '2', '1'}, {'1', '2', '1', '2'}, {'1', '2', '1', '2'}};
+  }
+  public Cell[][] getCellGrid() {
+    return cellGrid;
   }
 }

@@ -46,6 +46,7 @@ public class GameOfLife implements Simulation {
   private int countAliveNeighbors(List<Cell> neighbors) {
     int aliveNeighbors = 0;
     for (Cell neighbor : neighbors) {
+      if(neighbor == null) continue; //maybe change
       int alive = neighbor.getState().equals("ALIVE") ? 1 : 0;
       aliveNeighbors += alive;
     }

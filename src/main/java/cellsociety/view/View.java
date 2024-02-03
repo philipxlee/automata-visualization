@@ -1,5 +1,7 @@
 package cellsociety.view;
 
+import cellsociety.model.Cell;
+import cellsociety.model.Grid;
 import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -37,8 +39,8 @@ public class View {
   private static final String author = "John Conway";
   private static final String description = "The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.";
   private static final Map<String, Color> stateColors = Map.of(
-    "Live", Color.WHITE,
-    "Dead", Color.BLACK
+    "ALIVE", Color.WHITE,
+    "DEAD", Color.BLACK
   );
   private static final Map<String, Double> parameterValues = Map.of(
       "probCatch",0.5,
@@ -49,19 +51,23 @@ public class View {
   //endregion
 
   private Stage primaryStage;
+  private Grid simulationGrid;
   private ResourceBundle resources;
   private Button playButton;
   private Button pauseButton;
   private Button nextButton;
   private Button backButton;
+  private BorderPane root;
 
 
-  public View(Stage primaryStage) {
+  public View(Stage primaryStage, Grid grid) {
     this.primaryStage = primaryStage;
+    this.simulationGrid = grid;
   }
 
   public void start() {
     resources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + language);
+    //make simulation class with the info passed from config
     showScene();
     primaryStage.setTitle(resources.getString("title"));
   }
@@ -74,12 +80,9 @@ public class View {
   }
 
   private Scene createScene() {
-    BorderPane root = new BorderPane();
+    root = new BorderPane();
 
-    Pane gridSection = new Pane();
-    gridSection.getStyleClass().add("grid");
-    createGridUI(gridSection);
-    root.setCenter(gridSection);
+    updateGrid();
 
     VBox mainUI = createMainUI();
     root.setRight(mainUI);
@@ -87,14 +90,15 @@ public class View {
     return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
   }
 
-  private void createGridUI(Pane gridSection) {
-    String[][] grid = new String[50][50];
+  private void updateGrid() {
+    Pane gridSection = new Pane();
+    gridSection.getStyleClass().add("grid");
+    createGridUI(gridSection);
+    root.setCenter(gridSection);
+  }
 
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid[i].length; j++) {
-        grid[i][j] = (i+j) % 2 == 0 ? "Dead" : "Live";
-      }
-    }
+  private void createGridUI(Pane gridSection) {
+    Cell[][] grid = simulationGrid.getCellGrid();
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
     double cellHeight = (double) WINDOW_HEIGHT / grid.length;
@@ -105,8 +109,10 @@ public class View {
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
 
-        String state = grid[i][j];
+        String state = grid[i][j].getState();
+        System.out.println(state);
         Color color = stateColors.get(state);
+        System.out.println(color);
         if (color != null) {
           cell.setFill(color);
         } else {
@@ -180,7 +186,10 @@ public class View {
     controlPane.getChildren().add(row1);
 
     HBox row2 = new HBox();
-    nextButton = makeButton("NextCommand", null);
+    nextButton = makeButton("NextCommand", event -> {
+      simulationGrid.computeNextGenerationGrid();
+      updateGrid();
+    });
     backButton = makeButton("BackCommand", null);
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);
