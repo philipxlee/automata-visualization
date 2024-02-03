@@ -17,7 +17,6 @@ public class Grid {
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
    * storing neighbors of each cell.
-   *
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
@@ -25,21 +24,6 @@ public class Grid {
     this.row = row;
     this.col = col;
     this.simulation = simulation;
-    this.cellNeighbors = new HashMap<>();
-    this.cellGrid = new Cell[row][col];
-    initializeGridCells();
-  }
-
-  /**
-   * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
-   * storing neighbors of each cell.
-   *
-   * @param row The number of rows in the grid.
-   * @param col The number of columns in the grid.
-   */
-  public Grid(int row, int col) {
-    this.row = row;
-    this.col = col;
     this.cellNeighbors = new HashMap<>();
     this.cellGrid = new Cell[row][col];
     initializeGridCells();
@@ -60,23 +44,32 @@ public class Grid {
         tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
       }
     }
+
     updateGridWithNewStates(tempGrid);
   }
+
+  /**
+   * Retrieves the current state of the cell grid.
+   * @return A 2D array (Cell[][]) representing the current grid of cells of type Cell.
+   */
+  public Cell[][] getCellGrid() { return cellGrid; }
 
   private void initializeGridCells() {
     char[][] gridState = getGridConfiguration();
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        System.out.println("first" + gridState[i][j]);
-        if (gridState[i][j] != '0') {
-          String state = getStateFromChar(gridState[i][j]); // placeholder
-          System.out.println("second" + state);
-          Cell currentCell = simulation.createVariationCell(i, j, state);
-          cellGrid[i][j] = currentCell;
-          cellNeighbors.put(currentCell, findCellNeighbors(i, j));
-        }
+        String state = getStateFromChar(gridState[i][j]);
+        Cell currentCell = simulation.createVariationCell(i, j, state);
+        cellGrid[i][j] = currentCell;
       }
     }
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        cellNeighbors.put(cellGrid[i][j], findCellNeighbors(i, j));
+      }
+    }
+
+
   }
 
   private void updateGridWithNewStates(Cell[][] tempGrid) {
@@ -101,12 +94,12 @@ public class Grid {
     }
   }
 
-  private List<Cell> findCellNeighbors(int row, int col) {
+  private List<Cell> findCellNeighbors(int i, int j) {
     List<Cell> neighbors = new ArrayList<>();
-    int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
+    int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
     for (int[] direction : directions) {
-      int newRow = row + direction[0];
-      int newCol = col + direction[1];
+      int newRow = i + direction[0];
+      int newCol = j + direction[1];
       addNeighborsWithinBounds(newRow, newCol, neighbors);
     }
     return neighbors;
@@ -123,7 +116,7 @@ public class Grid {
       case 'B' -> state = "BURNING";
       case 'X' -> state = "X";
       case 'O' -> state = "O";
-      default -> state = "Error";
+      default -> state = "ERROR_DETECTED_IN_GRID";
     }
     return state;
   }
@@ -134,8 +127,5 @@ public class Grid {
 
   private char[][] getGridConfiguration() {
     return new char[][]{{'1', '2', '1', '2'}, {'2', '1', '2', '1'}, {'1', '2', '1', '2'}, {'1', '2', '1', '2'}};
-  }
-  public Cell[][] getCellGrid() {
-    return cellGrid;
   }
 }
