@@ -13,7 +13,7 @@ public class SpreadingOfFire implements Simulation {
   private final String BURNING = CellStates.BURNING.name();
   private final String EMPTY = CellStates.EMPTY.name();
   private final String TREE = CellStates.TREE.name();
-  Random rand = new Random();
+  private final Random rand = new Random();
 
   /**
    * Creates a new SpreadingOfFireCell with specified row, column, and state.
@@ -74,7 +74,9 @@ public class SpreadingOfFire implements Simulation {
     boolean adjacentCol = Math.abs(centralCell.getCol() - neighbor.getCol()) == 1;
     return (sameRow && adjacentCol) || (sameCol && adjacentRow);
   }
+
 }
+
 
 
 

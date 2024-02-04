@@ -8,5 +8,7 @@ public enum CellStates {
   BURNING,
   X,
   O,
+  FISH,
+  SHARK,
   ERROR_DETECTED_STATE_NAME
 }

@@ -118,6 +118,8 @@ public class Grid {
       case 'B' -> state = CellStates.BURNING.name();
       case 'X' -> state = CellStates.X.name();
       case 'O' -> state = CellStates.O.name();
+      case 'F' -> state = CellStates.FISH.name();
+      case 'S' -> state = CellStates.SHARK.name();
       default -> state = CellStates.ERROR_DETECTED_STATE_NAME.name();
     }
     return state;
