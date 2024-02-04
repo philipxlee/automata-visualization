@@ -1,14 +1,18 @@
-package cellsociety.model.Variations;
+package cellsociety.model.variations;
 
 import cellsociety.model.Cell;
+import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
-import cellsociety.model.VariationCells.SpreadingOfFireCell;
+import cellsociety.model.celltypes.SpreadingOfFireCell;
 import java.util.List;
 import java.util.Random;
 
 public class SpreadingOfFire implements Simulation {
 
   private final double CATCH_FIRE_PROBABILITY = 0.15;
+  private final String BURNING = CellStates.BURNING.name();
+  private final String EMPTY = CellStates.EMPTY.name();
+  private final String TREE = CellStates.TREE.name();
   Random rand = new Random();
 
   /**
@@ -36,13 +40,13 @@ public class SpreadingOfFire implements Simulation {
    */
   @Override
   public String determineState(Cell cell, String currentState, List<Cell> neighbors) {
-    if (currentState.equals("BURNING") || currentState.equals("EMPTY")) {
-      return "EMPTY";
+    if (currentState.equals(BURNING) || currentState.equals(EMPTY)) {
+      return EMPTY;
     }
-    if (currentState.equals("TREE")) {
+    if (currentState.equals(TREE)) {
       int[] treesAndBurnCount = countTreeAndBurningNeighbors(cell, neighbors);
       boolean hasBurningNeighbor = treesAndBurnCount[1] > 0;
-      return hasBurningNeighbor && (rand.nextDouble() < CATCH_FIRE_PROBABILITY) ? "BURNING" : "TREE";
+      return hasBurningNeighbor && (rand.nextDouble() < CATCH_FIRE_PROBABILITY) ? BURNING : TREE;
     }
     throw new IllegalStateException("Unexpected cell state: " + currentState);
   }
@@ -53,8 +57,8 @@ public class SpreadingOfFire implements Simulation {
     int burning = 0;
     for (Cell neighbor : neighbors) {
       if (isCardinalNeighbor(cell, neighbor)) {
-        int tree = neighbor.getState().equals("TREE") ? 1 : 0;
-        int burn = neighbor.getState().equals("BURNING") ? 1 : 0;
+        int tree = neighbor.getState().equals(TREE) ? 1 : 0;
+        int burn = neighbor.getState().equals(BURNING) ? 1 : 0;
         trees += tree;
         burning += burn;
       }

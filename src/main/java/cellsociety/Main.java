@@ -2,7 +2,8 @@ package cellsociety;
 
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
-import cellsociety.model.Variations.GameOfLife;
+import cellsociety.model.variations.GameOfLife;
+import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;

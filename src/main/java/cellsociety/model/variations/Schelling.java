@@ -1,9 +1,9 @@
-package cellsociety.model.Variations;
+package cellsociety.model.variations;
 
-import cellsociety.model.Simulation;
 import cellsociety.model.Cell;
-import cellsociety.model.VariationCells.GameOfLifeCell;
-import cellsociety.model.VariationCells.SchellingCell;
+import cellsociety.model.CellStates;
+import cellsociety.model.Simulation;
+import cellsociety.model.celltypes.SchellingCell;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -11,6 +11,7 @@ import java.util.Queue;
 public class Schelling implements Simulation {
 
   private final double THRESHOLD = 0.30;
+  private final String EMPTY = CellStates.EMPTY.name();
   private final Queue<Cell> emptyCells = new LinkedList<>();
 
   /**
@@ -60,7 +61,7 @@ public class Schelling implements Simulation {
       int oNeighbor = neighbor.getState().equals("O") ? 1 : 0;
       x += xNeighbor;
       o += oNeighbor;
-      if (neighbor.getState().equals("EMPTY")) {
+      if (neighbor.getState().equals(EMPTY)) {
         emptyCells.add(neighbor);
       }
     }
@@ -71,7 +72,7 @@ public class Schelling implements Simulation {
     if (!emptyCells.isEmpty()) {
       Cell emptyCell = emptyCells.poll();
       emptyCell.setState(cellState);
-      return "EMPTY";
+      return EMPTY;
     }
     return cellState;
   }

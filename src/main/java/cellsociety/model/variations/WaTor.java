@@ -1,8 +1,8 @@
-package cellsociety.model.Variations;
+package cellsociety.model.variations;
 
 import cellsociety.model.Cell;
 import cellsociety.model.Simulation;
-import cellsociety.model.VariationCells.WaTorCells;
+import cellsociety.model.celltypes.WaTorCells;
 import java.util.List;
 
 public class WaTor implements Simulation {

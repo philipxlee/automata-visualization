@@ -1,4 +1,4 @@
-package cellsociety.model.VariationCells;
+package cellsociety.model.celltypes;
 
 import cellsociety.model.Cell;
 

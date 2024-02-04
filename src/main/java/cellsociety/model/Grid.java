@@ -44,7 +44,6 @@ public class Grid {
         tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
       }
     }
-
     updateGridWithNewStates(tempGrid);
   }
 
@@ -63,13 +62,15 @@ public class Grid {
         cellGrid[i][j] = currentCell;
       }
     }
+    buildCellNeighborMap();
+  }
+
+  private void buildCellNeighborMap() {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         cellNeighbors.put(cellGrid[i][j], findCellNeighbors(i, j));
       }
     }
-
-
   }
 
   private void updateGridWithNewStates(Cell[][] tempGrid) {
@@ -105,18 +106,19 @@ public class Grid {
     return neighbors;
   }
 
-
+  // Generates the state as a string from the read-in characters
+  // .name() returns the string form of the enum constants
   private String getStateFromChar(char cell) {
     String state = "";
     switch (cell) {
-      case '0' -> state = "EMPTY";
-      case '1' -> state = "ALIVE";
-      case '2' -> state = "DEAD";
-      case 'T' -> state = "TREE";
-      case 'B' -> state = "BURNING";
-      case 'X' -> state = "X";
-      case 'O' -> state = "O";
-      default -> state = "ERROR_DETECTED_IN_GRID";
+      case '0' -> state = CellStates.EMPTY.name();
+      case '1' -> state = CellStates.ALIVE.name();
+      case '2' -> state = CellStates.DEAD.name();
+      case 'T' -> state = CellStates.TREE.name();
+      case 'B' -> state = CellStates.BURNING.name();
+      case 'X' -> state = CellStates.X.name();
+      case 'O' -> state = CellStates.O.name();
+      default -> state = CellStates.ERROR_DETECTED_STATE_NAME.name();
     }
     return state;
   }
@@ -126,6 +128,6 @@ public class Grid {
    */
 
   private char[][] getGridConfiguration() {
-    return new char[][]{{'1', '2', '1', '2'}, {'2', '1', '2', '1'}, {'1', '2', '1', '2'}, {'1', '2', '1', '2'}};
+    return new char[][]{{'1', '2', '2', '2'}, {'1', '2', '2', '1'}, {'2', '1', '2', '1'}, {'1', '1', '1', '2'}};
   }
 }
