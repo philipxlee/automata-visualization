@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Grid {
+public class Grid<CellType extends Cell> {
 
   private final int row;
   private final int col;
 
-  private final Cell[][] cellGrid;
-  private final Map<Cell, List<Cell>> cellNeighbors;
-  private Simulation simulation;
+  private final CellType[][] cellGrid;
+  private final Map<CellType, List<CellType>> cellNeighbors;
+  private Simulation<CellType> simulation;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -20,12 +20,12 @@ public class Grid {
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
-  public Grid(int row, int col, Simulation simulation) {
+  public Grid(int row, int col, Simulation<CellType> simulation) {
     this.row = row;
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
-    this.cellGrid = new Cell[row][col];
+    this.cellGrid = (CellType[][]) new Cell[row][col]; // cast is necessary
     initializeGridCells();
   }
 
@@ -36,10 +36,10 @@ public class Grid {
    * updated with these new states.
    */
   public void computeNextGenerationGrid() {
-    Cell[][] tempGrid = new Cell[row][col];
+    CellType[][] tempGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        List<Cell> neighbors = cellNeighbors.get(cellGrid[i][j]);
+        List<CellType> neighbors = cellNeighbors.get(cellGrid[i][j]);
         String newState = determineNewState(cellGrid[i][j], neighbors);
         tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
       }
@@ -51,14 +51,14 @@ public class Grid {
    * Retrieves the current state of the cell grid.
    * @return A 2D array (Cell[][]) representing the current grid of cells of type Cell.
    */
-  public Cell[][] getCellGrid() { return cellGrid; }
+  public CellType[][] getCellGrid() { return cellGrid; }
 
   private void initializeGridCells() {
     char[][] gridState = getGridConfiguration();
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridState[i][j]);
-        Cell currentCell = simulation.createVariationCell(i, j, state);
+        CellType currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
       }
     }
@@ -73,7 +73,7 @@ public class Grid {
     }
   }
 
-  private void updateGridWithNewStates(Cell[][] tempGrid) {
+  private void updateGridWithNewStates(CellType[][] tempGrid) {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String newState = tempGrid[i][j].getState();
@@ -82,21 +82,21 @@ public class Grid {
     }
   }
 
-  private String determineNewState(Cell cell, List<Cell> neighbors) {
+  private String determineNewState(CellType cell, List<CellType> neighbors) {
     String currentState = cell.getState();
     return simulation.determineState(cell, currentState, neighbors);
   }
 
 
-  private void addNeighborsWithinBounds(int newRow, int newCol, List<Cell> neighbors) {
+  private void addNeighborsWithinBounds(int newRow, int newCol, List<CellType> neighbors) {
     if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
-      Cell neighbor = cellGrid[newRow][newCol];
+      CellType neighbor = cellGrid[newRow][newCol];
       neighbors.add(neighbor);
     }
   }
 
-  private List<Cell> findCellNeighbors(int i, int j) {
-    List<Cell> neighbors = new ArrayList<>();
+  private List<CellType> findCellNeighbors(int i, int j) {
+    List<CellType> neighbors = new ArrayList<>();
     int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
     for (int[] direction : directions) {
       int newRow = i + direction[0];

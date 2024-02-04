@@ -2,7 +2,7 @@ package cellsociety.model.celltypes;
 
 import cellsociety.model.Cell;
 
-public class WaTorCells extends Cell {
+public class WaTorCell extends Cell {
 
   private final int STARTING_REPRODUCTION_TIME = 0;
   private final int STARTING_ENERGY = 5;
@@ -10,7 +10,7 @@ public class WaTorCells extends Cell {
   private int reproductionTime = STARTING_REPRODUCTION_TIME;
   private int energy = STARTING_ENERGY;
 
-  public WaTorCells (int row, int col, String state) {
+  public WaTorCell(int row, int col, String state) {
     super(row, col, state);
   }
 

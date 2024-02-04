@@ -7,7 +7,7 @@ import cellsociety.model.celltypes.SpreadingOfFireCell;
 import java.util.List;
 import java.util.Random;
 
-public class SpreadingOfFire implements Simulation {
+public class SpreadingOfFire implements Simulation<SpreadingOfFireCell> {
 
   private final double CATCH_FIRE_PROBABILITY = 0.15;
   private final String BURNING = CellStates.BURNING.name();
@@ -23,7 +23,7 @@ public class SpreadingOfFire implements Simulation {
    * @return A new instance of SpreadingOfFireCell with the given parameters.
    */
   @Override
-  public Cell createVariationCell(int row, int col, String state) {
+  public SpreadingOfFireCell createVariationCell(int row, int col, String state) {
     return new SpreadingOfFireCell(row, col, state);
   }
 
@@ -39,7 +39,7 @@ public class SpreadingOfFire implements Simulation {
    * @throws IllegalStateException If the current state is not one of the expected values.
    */
   @Override
-  public String determineState(Cell cell, String currentState, List<Cell> neighbors) {
+  public String determineState(SpreadingOfFireCell cell, String currentState, List<SpreadingOfFireCell> neighbors) {
     if (currentState.equals(BURNING) || currentState.equals(EMPTY)) {
       return EMPTY;
     }
@@ -52,10 +52,10 @@ public class SpreadingOfFire implements Simulation {
   }
 
 
-  private int[] countTreeAndBurningNeighbors(Cell cell, List<Cell> neighbors) {
+  private int[] countTreeAndBurningNeighbors(SpreadingOfFireCell cell, List<SpreadingOfFireCell> neighbors) {
     int trees = 0;
     int burning = 0;
-    for (Cell neighbor : neighbors) {
+    for (SpreadingOfFireCell neighbor : neighbors) {
       if (isCardinalNeighbor(cell, neighbor)) {
         int tree = neighbor.getState().equals(TREE) ? 1 : 0;
         int burn = neighbor.getState().equals(BURNING) ? 1 : 0;
@@ -66,7 +66,7 @@ public class SpreadingOfFire implements Simulation {
     return new int[]{trees, burning};
   }
 
-  private boolean isCardinalNeighbor(Cell centralCell, Cell neighbor) {
+  private boolean isCardinalNeighbor(SpreadingOfFireCell centralCell, SpreadingOfFireCell neighbor) {
     // Check if the neighbor is directly north, south, east, or west of the central cell
     boolean sameRow = centralCell.getRow() == neighbor.getRow();
     boolean sameCol = centralCell.getCol() == neighbor.getCol();

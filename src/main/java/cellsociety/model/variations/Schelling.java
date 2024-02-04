@@ -8,11 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class Schelling implements Simulation {
+public class Schelling implements Simulation<SchellingCell> {
 
   private final double THRESHOLD = 0.30;
   private final String EMPTY = CellStates.EMPTY.name();
-  private final Queue<Cell> emptyCells = new LinkedList<>();
+  private final Queue<SchellingCell> emptyCells = new LinkedList<>();
 
   /**
    * Creates a new SchellingCell with specified row, column, and state.
@@ -22,7 +22,7 @@ public class Schelling implements Simulation {
    * @return A new instance of SchellingCell with the given parameters.
    */
   @Override
-  public Cell createVariationCell(int row, int col, String state) {
+  public SchellingCell createVariationCell(int row, int col, String state) {
     return new SchellingCell(row, col, state);
   }
 
@@ -38,7 +38,7 @@ public class Schelling implements Simulation {
    * @throws IllegalStateException If the current state is not recognized.
    */
   @Override
-  public String determineState(Cell cell, String currentState, List<Cell> neighbors) {
+  public String determineState(SchellingCell cell, String currentState, List<SchellingCell> neighbors) {
     if (!"X".equals(currentState) && !"O".equals(currentState)) {
       throw new IllegalStateException("Unexpected cell state: " + currentState);
     }
@@ -53,10 +53,10 @@ public class Schelling implements Simulation {
     return (otherStateCount == 0 || (double) sameStateCount / (otherStateCount) >= THRESHOLD); // Avoid division by zero
   }
 
-  private int[] countNeighborsStates(List<Cell> neighbors) {
+  private int[] countNeighborsStates(List<SchellingCell> neighbors) {
     int x = 0;
     int o = 0;
-    for (Cell neighbor : neighbors) {
+    for (SchellingCell neighbor : neighbors) {
       int xNeighbor = neighbor.getState().equals("X") ? 1 : 0;
       int oNeighbor = neighbor.getState().equals("O") ? 1 : 0;
       x += xNeighbor;
@@ -70,7 +70,7 @@ public class Schelling implements Simulation {
 
   private String moveToEmptySpaceIfAvailable(String cellState) {
     if (!emptyCells.isEmpty()) {
-      Cell emptyCell = emptyCells.poll();
+      SchellingCell emptyCell = emptyCells.poll();
       emptyCell.setState(cellState);
       return EMPTY;
     }

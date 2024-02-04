@@ -6,7 +6,7 @@ import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.GameOfLifeCell;
 import java.util.List;
 
-public class GameOfLife implements Simulation {
+public class GameOfLife implements Simulation<GameOfLifeCell> {
 
   private final String ALIVE = CellStates.ALIVE.name();
   private final String DEAD = CellStates.DEAD.name();
@@ -20,7 +20,7 @@ public class GameOfLife implements Simulation {
    * @return A new instance of GameOfLifeCell with the given parameters.
    */
   @Override
-  public Cell createVariationCell(int row, int col, String state) {
+  public GameOfLifeCell createVariationCell(int row, int col, String state) {
     return new GameOfLifeCell(row, col, state);
   }
 
@@ -40,7 +40,7 @@ public class GameOfLife implements Simulation {
    * @throws IllegalStateException if the cell's current state is neither "ALIVE" nor "DEAD".
    */
   @Override
-  public String determineState(Cell cell, String currentState, List<Cell> neighbors) {
+  public String determineState(GameOfLifeCell cell, String currentState, List<GameOfLifeCell> neighbors) {
     int aliveNeighbors = countAliveNeighbors(neighbors);
     switch (currentState) {
       case "ALIVE" -> currentState = (aliveNeighbors < 2 || aliveNeighbors > 3) ? DEAD : ALIVE;
@@ -50,9 +50,9 @@ public class GameOfLife implements Simulation {
     return currentState;
   }
 
-  private int countAliveNeighbors(List<Cell> neighbors) {
+  private int countAliveNeighbors(List<GameOfLifeCell> neighbors) {
     int aliveNeighbors = 0;
-    for (Cell neighbor : neighbors) {
+    for (GameOfLifeCell neighbor : neighbors) {
       int alive = neighbor.getState().equals(ALIVE) ? 1 : 0;
       aliveNeighbors += alive;
     }

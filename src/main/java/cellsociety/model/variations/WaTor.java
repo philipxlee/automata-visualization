@@ -1,14 +1,13 @@
 package cellsociety.model.variations;
 
-import cellsociety.model.Cell;
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
-import cellsociety.model.celltypes.WaTorCells;
+import cellsociety.model.celltypes.WaTorCell;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class WaTor implements Simulation {
+public class WaTor implements Simulation<WaTorCell> {
 
   private final String EMPTY = CellStates.EMPTY.name();
   private final int CHRONONS_NEEDED_TO_REPRODUCE = 5;
@@ -24,13 +23,12 @@ public class WaTor implements Simulation {
    * @return A new instance of WaTorCell with the given parameters.
    */
   @Override
-  public Cell createVariationCell(int row, int col, String state) {
-    return new WaTorCells(row, col, state);
+  public WaTorCell createVariationCell(int row, int col, String state) {
+    return new WaTorCell(row, col, state);
   }
 
-
   @Override
-  public String determineState(Cell cell, String currentState, List<Cell> neighbors) {
+  public String determineState(WaTorCell cell, String currentState, List<WaTorCell> neighbors) {
     switch(currentState) {
       case "FISH":
         boolean fishMoved = handleFishMovement(cell, neighbors);
@@ -42,16 +40,16 @@ public class WaTor implements Simulation {
   }
 
   // Return true if fish moved and false otherwise
-  private boolean handleFishMovement(Cell cell, List<Cell> neighbors) {
-    List<Cell> emptySpaces = new ArrayList<>();
+  private boolean handleFishMovement(WaTorCell cell, List<WaTorCell> neighbors) {
+    List<WaTorCell> emptySpaces = new ArrayList<>();
     calculateFishEmptyNeighbors(cell, neighbors, emptySpaces);
     if (!emptySpaces.isEmpty()) {
       int randomIndex = rand.nextInt(emptySpaces.size());
-      Cell fishNextCell = emptySpaces.get(randomIndex);
+      WaTorCell fishNextCell = emptySpaces.get(randomIndex);
       fishNextCell.setState(cell.getState());
 
-      // cant access watorcell getters?
-//      int nextCellReproductiveTime = cell.getReproductionTime() + 1;
+      // Access cell reproductive time
+      int nextCellReproductiveTime = cell.getReproductionTime() + 1;
 
       cell.setState(EMPTY);
       return true;
@@ -59,8 +57,8 @@ public class WaTor implements Simulation {
     return false;
   }
 
-  private void calculateFishEmptyNeighbors(Cell cell, List<Cell> neighbors, List<Cell> emptySpaces) {
-    for (Cell neighbor : neighbors) {
+  private void calculateFishEmptyNeighbors(WaTorCell cell, List<WaTorCell> neighbors, List<WaTorCell> emptySpaces) {
+    for (WaTorCell neighbor : neighbors) {
       if (isCardinalNeighbor(cell, neighbor)) {
         emptySpaces.add(neighbor);
       }
@@ -68,7 +66,7 @@ public class WaTor implements Simulation {
   }
 
   // NOTE: This is REPEATED in SpreadingOfFire! Make it DRY.
-  private boolean isCardinalNeighbor(Cell centralCell, Cell neighbor) {
+  private boolean isCardinalNeighbor(WaTorCell centralCell, WaTorCell neighbor) {
     // Check if the neighbor is directly north, south, east, or west of the central cell
     boolean sameRow = centralCell.getRow() == neighbor.getRow();
     boolean sameCol = centralCell.getCol() == neighbor.getCol();

@@ -3,9 +3,9 @@ package cellsociety.model;
 import java.util.List;
 
 
-public interface Simulation {
+public interface Simulation<CellType extends Cell> {
 
-  Cell createVariationCell(int row, int col, String state);
-  String determineState(Cell cell, String currentState, List<Cell> neighbors);
+  CellType createVariationCell(int row, int col, String state);
+  String determineState(CellType cell, String currentState, List<CellType> neighbors);
 
 }

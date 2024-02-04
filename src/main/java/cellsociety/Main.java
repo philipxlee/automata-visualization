@@ -2,6 +2,7 @@ package cellsociety;
 
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
+import cellsociety.model.celltypes.GameOfLifeCell;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.view.View;
@@ -67,8 +68,10 @@ public class Main extends Application {
     //hard code game of life simulation
     int rows = 4;
     int cols = 4;
-    Simulation gameOfLifeSimulation = new GameOfLife();
-    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
+//    Simulation gameOfLifeSimulation = new GameOfLife();
+//    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
+    Simulation<GameOfLifeCell> gameOfLifeSimulation = new GameOfLife();
+    Grid<GameOfLifeCell> grid = new Grid<>(rows, cols, gameOfLifeSimulation); // Use <> for type inference
     View mainView = new View(primaryStage, grid);
     mainView.start();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
