@@ -1,5 +1,6 @@
 package cellsociety;
 
+import cellsociety.Config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
@@ -61,17 +62,19 @@ public class Main extends Application {
    * @see Application#start(Stage)
    */
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage primaryStage) throws Exception {
     // init config, read using config and get the info organized
+    Config config = new Config();
+    config.loadXMLFile("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\test.xml");
     // then pass the info to the view
     //hard code game of life simulation
-    int rows = 4;
-    int cols = 4;
+
 //    Simulation gameOfLifeSimulation = new GameOfLife();
 //    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
     Simulation<BasicCell> gameOfLifeSimulation = new GameOfLife();
-    Grid<BasicCell> grid = new Grid<>(rows, cols, gameOfLifeSimulation); // Use <> for type inference
-    View mainView = new View(primaryStage, grid);
+    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), gameOfLifeSimulation); // Use <> for type inference
+    View mainView = new View(primaryStage, grid, config.getParameters(), config.getSimulationTextInfo());
+
     mainView.start();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
 //    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);

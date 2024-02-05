@@ -20,13 +20,13 @@ public class Grid<CellType extends Cell> {
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
-  public Grid(int row, int col, Simulation<CellType> simulation) {
+  public Grid(int row, int col, char[][] gridState, Simulation<CellType> simulation) {
     this.row = row;
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // cast is necessary
-    initializeGridCells();
+    initializeGridCells(gridState);
   }
 
   /**
@@ -53,8 +53,7 @@ public class Grid<CellType extends Cell> {
    */
   public CellType[][] getCellGrid() { return cellGrid; }
 
-  private void initializeGridCells() {
-    char[][] gridState = getGridConfiguration();
+  private void initializeGridCells(char[][] gridState) {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridState[i][j]);
