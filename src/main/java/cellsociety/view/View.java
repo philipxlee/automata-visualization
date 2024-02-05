@@ -39,11 +39,9 @@ public class View {
   private String simType;
   private String author;
   private String description;
-  private static final Map<String, Color> stateColors = Map.of(
+  private Map<String, Color> stateColors = Map.of(
     "ALIVE", Color.WHITE,
-    "DEAD", Color.BLACK,
-      "TREE", Color.GREEN,
-      "BURNING", Color.RED
+    "EMPTY", Color.BLACK
   );
   private Map<String, Double> parameterValues;
   private static final String language = "English";
@@ -112,6 +110,7 @@ public class View {
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
         String state = grid[i][j].getState();
+        System.out.println(state);
         Color color = stateColors.get(state);
         if (color != null) {
           cell.setFill(color);
