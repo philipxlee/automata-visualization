@@ -1,13 +1,16 @@
-package cellsociety.model.VariationCells;
+package cellsociety.model.celltypes;
 
 import cellsociety.model.Cell;
 
-public class WaTorCells extends Cell {
+public class WaTorCell extends Cell {
 
-  private int reproductionTime = 0;
-  private int energy = 5;
+  private final int STARTING_REPRODUCTION_TIME = 0;
+  private final int STARTING_ENERGY = 5;
 
-  public WaTorCells (int row, int col, String state) {
+  private int reproductionTime = STARTING_REPRODUCTION_TIME;
+  private int energy = STARTING_ENERGY;
+
+  public WaTorCell(int row, int col, String state) {
     super(row, col, state);
   }
 

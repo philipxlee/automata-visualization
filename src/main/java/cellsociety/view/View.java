@@ -40,7 +40,9 @@ public class View {
   private static final String description = "The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.";
   private static final Map<String, Color> stateColors = Map.of(
     "ALIVE", Color.WHITE,
-    "DEAD", Color.BLACK
+    "DEAD", Color.BLACK,
+      "TREE", Color.GREEN,
+      "BURNING", Color.RED
   );
   private static final Map<String, Double> parameterValues = Map.of(
       "probCatch",0.5,
@@ -108,7 +110,6 @@ public class View {
         Rectangle cell = new Rectangle(cellWidth, cellHeight);
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
-
         String state = grid[i][j].getState();
         Color color = stateColors.get(state);
         if (color != null) {
@@ -116,7 +117,6 @@ public class View {
         } else {
           cell.setFill(Color.TRANSPARENT);
         }
-
         gridSection.getChildren().add(cell);
       }
     }
