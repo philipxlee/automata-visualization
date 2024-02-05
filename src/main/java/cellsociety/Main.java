@@ -2,9 +2,8 @@ package cellsociety;
 
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
-import cellsociety.model.celltypes.GameOfLifeCell;
+import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
-import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +69,8 @@ public class Main extends Application {
     int cols = 4;
 //    Simulation gameOfLifeSimulation = new GameOfLife();
 //    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
-    Simulation<GameOfLifeCell> gameOfLifeSimulation = new GameOfLife();
-    Grid<GameOfLifeCell> grid = new Grid<>(rows, cols, gameOfLifeSimulation); // Use <> for type inference
+    Simulation<BasicCell> gameOfLifeSimulation = new GameOfLife();
+    Grid<BasicCell> grid = new Grid<>(rows, cols, gameOfLifeSimulation); // Use <> for type inference
     View mainView = new View(primaryStage, grid);
     mainView.start();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
