@@ -1,6 +1,8 @@
 package cellsociety.Config;
 
 
+import cellsociety.Main;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -100,8 +102,9 @@ public class Config {
 
     private char[][] fileToGrid(String path) {
         char[][] fileGrid = new char[10][10];
+        String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
 
-        try (FileReader reader = new FileReader(path)) {
+        try (FileReader reader = new FileReader(fullPath)) {
             int character;
 
             for (int i = 0; i < 10; i++) {
@@ -146,10 +149,10 @@ public class Config {
         return height;
     }
 
-    public static void main(String args[]) throws Exception {
-        Config myConfig = new Config();
-        myConfig.loadXMLFile("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\test.xml");
-
-    }
+//    public static void main(String args[]) throws Exception {
+//        Config myConfig = new Config();
+//        myConfig.loadXMLFile("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\test.xml");
+//
+//    }
 
 }

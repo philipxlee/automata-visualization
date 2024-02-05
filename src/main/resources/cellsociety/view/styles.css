@@ -1,5 +1,15 @@
 .grid {
-  -fx-background-color: #d7d051;
+  -fx-border-color: #4b4b4b;
+}
+
+.cell {
+  -fx-border-color: gray;
+  -fx-stroke: gray;
+  -fx-stroke-width: 5;
+}
+
+.cell:hover {
+  -fx-fill: #b2a446;
 }
 
 .ui {
@@ -21,7 +31,7 @@
 }
 
 .label.description {
-  -fx-font-size: 12px;
+  -fx-font-size: 11px;
   -fx-wrap-text: true;
   -fx-min-height: 150px;
   -fx-translate-y: -130px;
