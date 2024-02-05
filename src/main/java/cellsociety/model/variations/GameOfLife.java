@@ -1,6 +1,5 @@
 package cellsociety.model.variations;
 
-import cellsociety.model.Cell;
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.GameOfLifeCell;
@@ -31,11 +30,9 @@ public class GameOfLife implements Simulation<GameOfLifeCell> {
    * three alive neighbors stays "ALIVE". - A "DEAD" cell with exactly three alive neighbors becomes
    * "ALIVE". If the cell's current state does not match "ALIVE" or "DEAD", an IllegalStateException
    * is thrown.
-   *
    * @param cell         The cell whose next state is to be determined.
    * @param currentState The current state of the cell, typically "ALIVE" or "DEAD".
-   * @param neighbors    A list of the cell's neighbors, used to count how many are in the "ALIVE"
-   *                     state.
+   * @param neighbors    A list of the cell's neighbors, used to count how many are "ALIVE"
    * @return The next state of the cell ("ALIVE" or "DEAD") based on the rules of the simulation.
    * @throws IllegalStateException if the cell's current state is neither "ALIVE" nor "DEAD".
    */
