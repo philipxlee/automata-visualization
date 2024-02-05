@@ -14,8 +14,19 @@ public class WaTorCell extends Cell {
     super(row, col, state);
   }
 
-  public int getEnergy() { return this.energy; }
-  public int getReproductionTime() { return this.reproductionTime; }
-  public void setEnergy(int energy) { this.energy = energy; }
-  public void setReproductionTime(int reproductionTime) { this.reproductionTime = reproductionTime; }
+  public int getEnergy() {
+    return this.energy;
+  }
+
+  public void setEnergy(int energy) {
+    this.energy = energy;
+  }
+
+  public int getReproductionTime() {
+    return this.reproductionTime;
+  }
+
+  public void setReproductionTime(int reproductionTime) {
+    this.reproductionTime = reproductionTime;
+  }
 }

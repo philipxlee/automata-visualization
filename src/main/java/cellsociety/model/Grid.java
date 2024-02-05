@@ -17,6 +17,7 @@ public class Grid<CellType extends Cell> {
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
    * storing neighbors of each cell.
+   *
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
@@ -49,9 +50,12 @@ public class Grid<CellType extends Cell> {
 
   /**
    * Retrieves the current state of the cell grid.
+   *
    * @return A 2D array (Cell[][]) representing the current grid of cells of type Cell.
    */
-  public CellType[][] getCellGrid() { return cellGrid; }
+  public CellType[][] getCellGrid() {
+    return cellGrid;
+  }
 
   private void initializeGridCells(char[][] gridState) {
     for (int i = 0; i < row; i++) {
@@ -129,6 +133,7 @@ public class Grid<CellType extends Cell> {
    */
 
   private char[][] getGridConfiguration() {
-    return new char[][]{{'1', '2', '2', '2'}, {'1', '2', '2', '1'}, {'2', '1', '2', '1'}, {'1', '1', '1', '2'}};
+    return new char[][]{{'1', '2', '2', '2'}, {'1', '2', '2', '1'}, {'2', '1', '2', '1'},
+        {'1', '1', '1', '2'}};
   }
 }

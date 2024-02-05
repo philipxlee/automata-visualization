@@ -2,6 +2,7 @@ package cellsociety.Config;
 
 
 import cellsociety.Main;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -164,30 +165,6 @@ public class Config {
     return node.getChildNodes();
   }
 
-  private char[][] fileToGrid(String path) {
-    char[][] fileGrid = new char[10][10];
-    String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
-
-    try (FileReader reader = new FileReader(fullPath)) {
-      int character;
-
-      for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-          character = reader.read();
-          if (character != -1) {
-            fileGrid[i][j] = (char) character;
-          }
-        }
-        reader.read();
-        reader.read();
-      }
-    } catch (IOException e) {
-      // Handle exceptions, such as file not found or unable to read
-      e.printStackTrace();
-    }
-
-    return fileGrid;
-  }
 
   public char[][] getGrid() {
     return grid;
@@ -221,17 +198,32 @@ public class Config {
     return child;
   }
 
+
+  private char[][] fileToGrid(String path) {
+    char[][] fileGrid = new char[10][10];
+    String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
+      int character;
+
+      for (int i = 0; i < 10; i++) {
+        String line = reader.readLine();
+        for (int j = 0; j < 10; j++) {
+          fileGrid[i][j] = line.charAt(j);
+        }
+      }
+    } catch (IOException e) {
+      // Handle exceptions, such as file not found or unable to read
+      e.printStackTrace();
+    }
+
+    return fileGrid;
+  }
+
   private Element bearChild(Document document, Element parent, String childName) {
     Element child = createElement(document, childName);
     parent.appendChild(child);
     return child;
   }
-
-//    public static void main(String args[]) throws Exception {
-//        Config myConfig = new Config();
-//        myConfig.saveXMLFile("newtest.xml", myConfig.getSimulationTextInfo(),
-//            myConfig.getParameters(), myConfig.getGrid(), myConfig.getWidth(), myConfig.getHeight(), "newtext.txt");
-//
-//    }
 
 }

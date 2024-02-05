@@ -15,8 +15,9 @@ public class Schelling implements Simulation<BasicCell> {
 
   /**
    * Creates a new SchellingCell with specified row, column, and state.
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
+   *
+   * @param row   The row position of the cell in the grid.
+   * @param col   The column position of the cell in the grid.
    * @param state The initial state of the cell, indicating the type of agent.
    * @return A new instance of SchellingCell with the given parameters.
    */
@@ -26,13 +27,14 @@ public class Schelling implements Simulation<BasicCell> {
   }
 
   /**
-   * Determines the next state of a cell based on its current state and satisfaction level.
-   * If a cell ('X' or 'O') is unsatisfied, it attempts to move to an empty space. If no
-   * movement occurs (due to lack of empty spaces), the cell's state remains the same. If the
-   * movement is possible, the cell becomes "EMPTY" and the empty cell becomes the current state.
-   * @param cell The cell whose next state is being determined.
+   * Determines the next state of a cell based on its current state and satisfaction level. If a
+   * cell ('X' or 'O') is unsatisfied, it attempts to move to an empty space. If no movement occurs
+   * (due to lack of empty spaces), the cell's state remains the same. If the movement is possible,
+   * the cell becomes "EMPTY" and the empty cell becomes the current state.
+   *
+   * @param cell         The cell whose next state is being determined.
    * @param currentState The current state ('X', 'O', or 'EMPTY') of the cell.
-   * @param neighbors A list of the cell's neighboring cells.
+   * @param neighbors    A list of the cell's neighboring cells.
    * @return The new state of the cell ('X', 'O', or 'EMPTY') after applying movement rules.
    * @throws IllegalStateException If the current state is not recognized.
    */
@@ -49,7 +51,8 @@ public class Schelling implements Simulation<BasicCell> {
   private boolean calculateSatisfaction(String currentState, int[] counts) {
     int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
     int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
-    return (otherStateCount == 0 || (double) sameStateCount / (otherStateCount) >= THRESHOLD); // Avoid division by zero
+    return (otherStateCount == 0
+        || (double) sameStateCount / (otherStateCount) >= THRESHOLD); // Avoid division by zero
   }
 
   private int[] countNeighborsStates(List<BasicCell> neighbors) {

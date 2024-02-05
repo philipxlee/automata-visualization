@@ -30,6 +30,7 @@ public class GameOfLife implements Simulation<BasicCell> {
    * three alive neighbors stays "ALIVE". - A "DEAD" cell with exactly three alive neighbors becomes
    * "ALIVE". If the cell's current state does not match "ALIVE" or "DEAD", an IllegalStateException
    * is thrown.
+   *
    * @param cell         The cell whose next state is to be determined.
    * @param currentState The current state of the cell, typically "ALIVE" or "DEAD".
    * @param neighbors    A list of the cell's neighbors, used to count how many are "ALIVE"
