@@ -12,8 +12,6 @@
             <width>10</width>
             <height>10</height>
         </gridDimensions>
-        <fileName>
-            gridFile.txt
-        </fileName>
+        <fileName>gridFile.txt</fileName>
     </type>
 </simulation>

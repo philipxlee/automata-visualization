@@ -1,11 +1,29 @@
 package cellsociety.Config;
 
 
+import static java.lang.constant.ConstantDescs.NULL;
+
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,17 +84,73 @@ public class Config {
 
     }
 
-    public void saveXMLFile(String path) {
+    public void saveXMLFile(String path, String[] simulationTextInfo, Map<String, Double> parameters,
+        char[][] grid, int width, int height, String textPath)
+        throws ParserConfigurationException, TransformerException, IOException {
 
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+        // Create a new Document
+        Document document = documentBuilder.newDocument();
+
+        // Create the root element
+        Element simulationElement = document.createElement("simulation");
+        document.appendChild(simulationElement);
+
+        Element typeElement = bearChild(document, simulationElement, "type");
+
+        Element parametersElement = bearChild(document, typeElement, "parameters");
+
+        for (String key: parameters.keySet()) {
+            bearTextChild(document, parametersElement, key, Double.toString(parameters.get(key)));
+        }
+
+        Element titleElement = bearTextChild(document, typeElement, "title", simulationTextInfo[1]);
+
+        Element authorElement = bearTextChild(document, typeElement, "author", simulationTextInfo[2]);
+
+        Element descriptionElement = bearTextChild(document, typeElement, "description", simulationTextInfo[3]);
+
+
+        Element gridDimensionsElement = bearChild(document, typeElement, "gridDimensions");
+
+        Element widthElement = bearTextChild(document, gridDimensionsElement, "width", Integer.toString(width));
+
+        Element heightElement = bearTextChild(document, gridDimensionsElement, "height", Integer.toString(height));
+
+        Element fileElement = bearTextChild(document, typeElement, "fileName", textPath);
+
+
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+
+        DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(new java.io.File(path)); // Specify the output file
+
+        transformer.transform(source, result);
+
+        File file = new File(textPath);
+        file.createNewFile();
+        Files.writeString(Path.of(textPath), "");
+
+        for (int row = 0; row < height; row++) {
+            String rowString = String.valueOf(grid[row]);
+            System.out.println(rowString);
+            Files.writeString(Path.of(textPath), rowString, StandardOpenOption.APPEND);
+            Files.writeString(Path.of(textPath), "\n", StandardOpenOption.APPEND);
+        }
     }
 
     public void editParameter() {
 
     }
 
-    public void start() {
-
-    }
 
     private Node tagToNode (Document document, String tag) {
         NodeList nodeList = document.getElementsByTagName(tag);
@@ -146,9 +220,26 @@ public class Config {
         return height;
     }
 
+    private Element createElement (Document document, String childName) {
+        return document.createElement(childName);
+    }
+    private Element bearTextChild(Document document, Element parent, String childName, String textContent) {
+        Element child = bearChild(document, parent, childName);
+        child.appendChild(document.createTextNode(textContent));
+        return child;
+    }
+
+    private Element bearChild(Document document, Element parent, String childName) {
+        Element child = createElement(document, childName);
+        parent.appendChild(child);
+        return child;
+    }
+
     public static void main(String args[]) throws Exception {
         Config myConfig = new Config();
         myConfig.loadXMLFile("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\test.xml");
+        myConfig.saveXMLFile("newtest.xml", myConfig.getSimulationTextInfo(),
+            myConfig.getParameters(), myConfig.getGrid(), myConfig.getWidth(), myConfig.getHeight(), "newtext.txt");
 
     }
 
