@@ -1,5 +1,6 @@
 package cellsociety.view;
 
+import cellsociety.Main;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import java.util.Map;
@@ -27,26 +28,22 @@ import javax.imageio.ImageIO;
 
 public class View {
 
-  private static final int WINDOW_WIDTH = 1024;
-  private static final int WINDOW_HEIGHT = 768;
-  public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
-  public static final String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
-  public static final String STYLESHEET = "styles.css";
+  private int WINDOW_WIDTH = 1024;
+  private int WINDOW_HEIGHT = 768;
+  public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
+  public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
+  public String STYLESHEET = "styles.css";
 
 
   //region Temporary hard-coded values
-  private static final String simType = "Game of Life";
-  private static final String author = "John Conway";
-  private static final String description = "The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.";
+  private String simType;
+  private String author;
+  private String description;
   private static final Map<String, Color> stateColors = Map.of(
     "ALIVE", Color.WHITE,
     "DEAD", Color.BLACK
   );
-  private static final Map<String, Double> parameterValues = Map.of(
-      "probCatch",0.5,
-      "randomParam", 0.99,
-      "randomParam2", 0.21
-  );
+  private Map<String, Double> parameterValues;
   private static final String language = "English";
   //endregion
 
@@ -60,9 +57,13 @@ public class View {
   private BorderPane root;
 
 
-  public View(Stage primaryStage, Grid grid) {
+  public View(Stage primaryStage, Grid grid, Map<String, Double> parameters, String[] simulationTexts) {
     this.primaryStage = primaryStage;
     this.simulationGrid = grid;
+    this.parameterValues = parameters;
+    this.simType = simulationTexts[0];
+    this.author = simulationTexts[2];
+    this.description = simulationTexts [3];
   }
 
   public void start() {

@@ -20,13 +20,13 @@ public class Grid {
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
-  public Grid(int row, int col, Simulation simulation) {
+  public Grid(int row, int col, char[][] gridState, Simulation simulation) {
     this.row = row;
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.cellGrid = new Cell[row][col];
-    initializeGridCells();
+    initializeGridCells(gridState);
   }
 
   /**
@@ -54,8 +54,7 @@ public class Grid {
    */
   public Cell[][] getCellGrid() { return cellGrid; }
 
-  private void initializeGridCells() {
-    char[][] gridState = getGridConfiguration();
+  private void initializeGridCells(char[][] gridState) {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridState[i][j]);
