@@ -20,10 +20,11 @@ public class WaTor implements Simulation<WaTorCell> {
   private Random rand = new Random();
 
   /**
-   * Creates a new WaTorCell with specified row, column, and state.
-   * This method is specific to the WaTor simulation, where cells can represent fish, sharks, or water.
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
+   * Creates a new WaTorCell with specified row, column, and state. This method is specific to the
+   * WaTor simulation, where cells can represent fish, sharks, or water.
+   *
+   * @param row   The row position of the cell in the grid.
+   * @param col   The column position of the cell in the grid.
    * @param state The initial state of the cell, representing fish, sharks, or water.
    * @return A new instance of WaTorCell with the given parameters.
    */
@@ -34,7 +35,7 @@ public class WaTor implements Simulation<WaTorCell> {
 
   @Override
   public String determineState(WaTorCell cell, String currentState, List<WaTorCell> neighbors) {
-    switch(currentState) {
+    switch (currentState) {
       case "FISH":
         boolean fishMoved = handleFishMovement(cell, neighbors);
         return (fishMoved) ? EMPTY : currentState;
@@ -112,7 +113,8 @@ public class WaTor implements Simulation<WaTorCell> {
     return false;
   }
 
-  private void calculateSharkNeighbors(WaTorCell cell, List<WaTorCell> neighbors, List<WaTorCell> fishes, List<WaTorCell> emptySpaces) {
+  private void calculateSharkNeighbors(WaTorCell cell, List<WaTorCell> neighbors,
+      List<WaTorCell> fishes, List<WaTorCell> emptySpaces) {
     for (WaTorCell neighbor : neighbors) {
       if (isCardinalNeighbor(cell, neighbor)) {
         if (neighbor.getState().equals(FISH)) {
@@ -156,7 +158,8 @@ public class WaTor implements Simulation<WaTorCell> {
     cell.setReproductionTime(0);
   }
 
-  private void calculateFishEmptyNeighbors(WaTorCell cell, List<WaTorCell> neighbors, List<WaTorCell> emptySpaces) {
+  private void calculateFishEmptyNeighbors(WaTorCell cell, List<WaTorCell> neighbors,
+      List<WaTorCell> emptySpaces) {
     for (WaTorCell neighbor : neighbors) {
       if (isCardinalNeighbor(cell, neighbor) && neighbor.getState().equals(EMPTY)) {
         emptySpaces.add(neighbor);

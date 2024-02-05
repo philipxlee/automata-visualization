@@ -1,9 +1,9 @@
 package cellsociety.view;
 
-import cellsociety.Main;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -13,14 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import java.util.ResourceBundle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
@@ -28,25 +25,22 @@ import javax.imageio.ImageIO;
 
 public class View {
 
-  private int WINDOW_WIDTH = 1024;
-  private int WINDOW_HEIGHT = 768;
+  private static final String language = "English";
   public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
   public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
   public String STYLESHEET = "styles.css";
-
-
+  private int WINDOW_WIDTH = 1024;
+  private int WINDOW_HEIGHT = 768;
   //region Temporary hard-coded values
   private String simType;
   private String author;
   private String description;
   private Map<String, Color> stateColors = Map.of(
-    "ALIVE", Color.BLACK,
-    "EMPTY", Color.WHITE
+      "ALIVE", Color.BLACK,
+      "EMPTY", Color.WHITE
   );
   private Map<String, Double> parameterValues;
-  private static final String language = "English";
   //endregion
-
   private Stage primaryStage;
   private Grid simulationGrid;
   private ResourceBundle resources;
@@ -57,13 +51,14 @@ public class View {
   private BorderPane root;
 
 
-  public View(Stage primaryStage, Grid grid, Map<String, Double> parameters, String[] simulationTexts) {
+  public View(Stage primaryStage, Grid grid, Map<String, Double> parameters,
+      String[] simulationTexts) {
     this.primaryStage = primaryStage;
     this.simulationGrid = grid;
     this.parameterValues = parameters;
     this.simType = simulationTexts[0];
     this.author = simulationTexts[2];
-    this.description = simulationTexts [3];
+    this.description = simulationTexts[3];
   }
 
   public void start() {
@@ -75,7 +70,8 @@ public class View {
 
   private void showScene() {
     Scene scene = createScene();
-    scene.getStylesheets().add(getClass().getResource(DEFAULT_RESOURCE_FOLDER + STYLESHEET).toExternalForm());
+    scene.getStylesheets()
+        .add(getClass().getResource(DEFAULT_RESOURCE_FOLDER + STYLESHEET).toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.show();
   }
@@ -197,14 +193,15 @@ public class View {
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
 
-  private Button makeButton (String property, EventHandler<ActionEvent> handler) {
-    final String IMAGE_FILE_SUFFIXES = String.format(".*\\.(%s)", String.join("|", ImageIO.getReaderFileSuffixes()));
+  private Button makeButton(String property, EventHandler<ActionEvent> handler) {
+    final String IMAGE_FILE_SUFFIXES = String.format(".*\\.(%s)",
+        String.join("|", ImageIO.getReaderFileSuffixes()));
     Button result = new Button();
     String label = resources.getString(property);
     if (label.matches(IMAGE_FILE_SUFFIXES)) {
-      result.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(DEFAULT_RESOURCE_FOLDER + label))));
-    }
-    else {
+      result.setGraphic(new ImageView(
+          new Image(getClass().getResourceAsStream(DEFAULT_RESOURCE_FOLDER + label))));
+    } else {
       result.setText(label);
     }
     result.setOnAction(handler);

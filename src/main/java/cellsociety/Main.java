@@ -30,7 +30,8 @@ public class Main extends Application {
   // kind of data files to look for
   public static final String DATA_FILE_EXTENSION = "*.xml";
   // default to start in the data folder to make it easy on the user to find
-  public static final String DATA_FILE_FOLDER = System.getProperty("user.dir") + File.separator + "data";
+  public static final String DATA_FILE_FOLDER =
+      System.getProperty("user.dir") + File.separator + "data";
   // internal configuration file
   public static final String INTERNAL_CONFIGURATION = "cellsociety.Version";
   // NOTE: make ONE chooser since generally accepted behavior
@@ -73,8 +74,10 @@ public class Main extends Application {
 //    Simulation gameOfLifeSimulation = new GameOfLife();
 //    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
     Simulation<BasicCell> gameOfLifeSimulation = new GameOfLife();
-    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), gameOfLifeSimulation); // Use <> for type inference
-    View mainView = new View(primaryStage, grid, config.getParameters(), config.getSimulationTextInfo());
+    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+        gameOfLifeSimulation); // Use <> for type inference
+    View mainView = new View(primaryStage, grid, config.getParameters(),
+        config.getSimulationTextInfo());
 
     mainView.start();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
