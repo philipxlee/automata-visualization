@@ -2,6 +2,7 @@ package cellsociety.Config;
 
 
 import cellsociety.Main;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -104,18 +105,14 @@ public class Config {
         char[][] fileGrid = new char[10][10];
         String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
 
-        try (FileReader reader = new FileReader(fullPath)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
             int character;
 
             for (int i = 0; i < 10; i++) {
+                String line = reader.readLine();
                 for (int j = 0; j < 10; j++) {
-                    character = reader.read();
-                    if (character != -1) {
-                        fileGrid[i][j] = (char) character;
-                    }
+                    fileGrid[i][j] = line.charAt(j);
                 }
-                reader.read();
-                reader.read();
             }
         } catch (IOException e) {
             // Handle exceptions, such as file not found or unable to read
