@@ -1,9 +1,7 @@
 package cellsociety.Config;
 
 
-import static java.lang.constant.ConstantDescs.NULL;
-
-import java.io.BufferedWriter;
+import cellsociety.Main;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -99,6 +97,7 @@ public class Config {
         document.appendChild(simulationElement);
 
         Element typeElement = bearChild(document, simulationElement, "type");
+        typeElement.setAttribute("id", simulationTextInfo[0]);
 
         Element parametersElement = bearChild(document, typeElement, "parameters");
 
@@ -174,8 +173,9 @@ public class Config {
 
     private char[][] fileToGrid(String path) {
         char[][] fileGrid = new char[10][10];
+        String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
 
-        try (FileReader reader = new FileReader(path)) {
+        try (FileReader reader = new FileReader(fullPath)) {
             int character;
 
             for (int i = 0; i < 10; i++) {
@@ -235,12 +235,11 @@ public class Config {
         return child;
     }
 
-    public static void main(String args[]) throws Exception {
-        Config myConfig = new Config();
-        myConfig.loadXMLFile("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\test.xml");
-        myConfig.saveXMLFile("newtest.xml", myConfig.getSimulationTextInfo(),
-            myConfig.getParameters(), myConfig.getGrid(), myConfig.getWidth(), myConfig.getHeight(), "newtext.txt");
-
-    }
+//    public static void main(String args[]) throws Exception {
+//        Config myConfig = new Config();
+//        myConfig.saveXMLFile("newtest.xml", myConfig.getSimulationTextInfo(),
+//            myConfig.getParameters(), myConfig.getGrid(), myConfig.getWidth(), myConfig.getHeight(), "newtext.txt");
+//
+//    }
 
 }
