@@ -3,7 +3,8 @@ package cellsociety;
 import cellsociety.Config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
-import cellsociety.model.Variations.GameOfLife;
+import cellsociety.model.celltypes.BasicCell;
+import cellsociety.model.variations.GameOfLife;
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -67,9 +68,13 @@ public class Main extends Application {
     config.loadXMLFile("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\test.xml");
     // then pass the info to the view
     //hard code game of life simulation
-    Simulation gameOfLifeSimulation = new GameOfLife();
-    Grid grid = new Grid(config.getWidth(), config.getHeight(), config.getGrid(), gameOfLifeSimulation);
+
+//    Simulation gameOfLifeSimulation = new GameOfLife();
+//    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
+    Simulation<BasicCell> gameOfLifeSimulation = new GameOfLife();
+    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), gameOfLifeSimulation); // Use <> for type inference
     View mainView = new View(primaryStage, grid, config.getParameters(), config.getSimulationTextInfo());
+
     mainView.start();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
 //    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);

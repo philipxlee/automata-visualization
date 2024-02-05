@@ -41,7 +41,9 @@ public class View {
   private String description;
   private static final Map<String, Color> stateColors = Map.of(
     "ALIVE", Color.WHITE,
-    "DEAD", Color.BLACK
+    "DEAD", Color.BLACK,
+      "TREE", Color.GREEN,
+      "BURNING", Color.RED
   );
   private Map<String, Double> parameterValues;
   private static final String language = "English";
@@ -109,7 +111,6 @@ public class View {
         Rectangle cell = new Rectangle(cellWidth, cellHeight);
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
-
         String state = grid[i][j].getState();
         Color color = stateColors.get(state);
         if (color != null) {
@@ -117,7 +118,6 @@ public class View {
         } else {
           cell.setFill(Color.TRANSPARENT);
         }
-
         gridSection.getChildren().add(cell);
       }
     }
