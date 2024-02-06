@@ -32,20 +32,20 @@ public class GameOfLife implements Simulation<BasicCell> {
    * is thrown.
    *
    * @param cell         The cell whose next state is to be determined.
-   * @param currentState The current state of the cell, typically "ALIVE" or "DEAD".
    * @param neighbors    A list of the cell's neighbors, used to count how many are "ALIVE"
    * @return The next state of the cell ("ALIVE" or "DEAD") based on the rules of the simulation.
    * @throws IllegalStateException if the cell's current state is neither "ALIVE" nor "DEAD".
    */
   @Override
-  public String determineState(BasicCell cell, String currentState, List<BasicCell> neighbors) {
+  public void prepareCellNextState(BasicCell cell, List<BasicCell> neighbors) {
     int aliveNeighbors = countAliveNeighbors(neighbors);
-    switch (currentState) {
-      case "ALIVE" -> currentState = (aliveNeighbors < 2 || aliveNeighbors > 3) ? DEAD : ALIVE;
-      case "DEAD" -> currentState = (aliveNeighbors == 3) ? ALIVE : DEAD;
-      default -> throw new IllegalStateException("Unexpected cell state: " + currentState);
+    String nextState;
+    switch (cell.getState()) {
+      case "ALIVE" -> nextState = (aliveNeighbors < 2 || aliveNeighbors > 3) ? DEAD : ALIVE;
+      case "DEAD" -> nextState = (aliveNeighbors == 3) ? ALIVE : DEAD;
+      default -> throw new IllegalStateException("Unexpected cell state: " + cell.getState());
     }
-    return currentState;
+    cell.setNextState(nextState); // Assuming BasicCell has a method setNextState
   }
 
   private int countAliveNeighbors(List<BasicCell> neighbors) {
