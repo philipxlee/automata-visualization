@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class Grid<CellType extends Cell> {
 
@@ -13,6 +14,7 @@ public class Grid<CellType extends Cell> {
   private final CellType[][] cellGrid;
   private final Map<CellType, List<CellType>> cellNeighbors;
   private Simulation<CellType> simulation;
+  private Stack<CellType[][]> history;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -26,6 +28,7 @@ public class Grid<CellType extends Cell> {
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
+    this.history = new Stack<>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // cast is necessary
     initializeGridCells(gridState);
   }
@@ -37,6 +40,7 @@ public class Grid<CellType extends Cell> {
    * updated with these new states.
    */
   public void computeNextGenerationGrid() {
+    recordCurrentGenerationForHistory(cellGrid);
     CellType[][] tempGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
@@ -45,7 +49,27 @@ public class Grid<CellType extends Cell> {
         tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
       }
     }
+    // copy current grid and push it to the stack
     updateGridWithNewStates(tempGrid);
+  }
+
+  public void computePreviousGenerationGrid() {
+    if (!history.isEmpty()) {
+      System.out.println("UpdateGrid");
+      CellType[][] previousGrid = history.pop();
+      updateGridWithNewStates(previousGrid);
+    }
+  }
+
+  private void recordCurrentGenerationForHistory(CellType[][] currentCellGrid) {
+    CellType[][] tempGrid = (CellType[][]) new Cell[row][col];
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        String currentCellState = currentCellGrid[i][j].getState();
+        tempGrid[i][j] = simulation.createVariationCell(i, j, currentCellState);
+      }
+    }
+    history.add(tempGrid);
   }
 
   /**

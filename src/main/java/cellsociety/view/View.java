@@ -184,7 +184,11 @@ public class View {
       simulationGrid.computeNextGenerationGrid();
       updateGrid();
     });
-    backButton = makeButton("BackCommand", null);
+    backButton = makeButton("BackCommand", event -> {
+      System.out.println("HIT");
+      simulationGrid.computePreviousGenerationGrid();
+      updateGrid();
+    });
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);
     row2.setAlignment(Pos.BASELINE_CENTER);
