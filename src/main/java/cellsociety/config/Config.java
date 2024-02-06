@@ -1,4 +1,4 @@
-package cellsociety.Config;
+package cellsociety.config;
 
 
 import cellsociety.Main;
