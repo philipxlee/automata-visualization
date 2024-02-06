@@ -10,5 +10,7 @@ public enum CellStates {
   O,
   FISH,
   SHARK,
-  ERROR_DETECTED_STATE_NAME
+  PERCOLATED,
+  WALL,
+  ERROR_DETECTED_IN_STATE_NAME
 }

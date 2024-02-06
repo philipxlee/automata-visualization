@@ -29,7 +29,7 @@ public class View {
   public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
   public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
   public String STYLESHEET = "styles.css";
-  private int WINDOW_WIDTH = 1024;
+  private int WINDOW_WIDTH =  24;
   private int WINDOW_HEIGHT = 768;
   //region Temporary hard-coded values
   private String simType;
@@ -185,7 +185,6 @@ public class View {
       updateGrid();
     });
     backButton = makeButton("BackCommand", event -> {
-      System.out.println("HIT");
       simulationGrid.computePreviousGenerationGrid();
       updateGrid();
     });

@@ -29,7 +29,7 @@ public class Grid<CellType extends Cell> {
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<>();
-    this.cellGrid = (CellType[][]) new Cell[row][col]; // cast is necessary
+    this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     initializeGridCells(gridState);
   }
 
@@ -40,7 +40,7 @@ public class Grid<CellType extends Cell> {
    * updated with these new states.
    */
   public void computeNextGenerationGrid() {
-    recordCurrentGenerationForHistory(cellGrid);
+    recordCurrentGenerationForHistory(cellGrid); // to build stack for back button in view
     CellType[][] tempGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
@@ -49,27 +49,19 @@ public class Grid<CellType extends Cell> {
         tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
       }
     }
-    // copy current grid and push it to the stack
     updateGridWithNewStates(tempGrid);
   }
 
+  /**
+   * Computes the previous generation of the grid. Before computing the next generation, a copy of
+   * the cell grid is stored in a stack, called history, and it is popped upon each call to this
+   * method, updating the grid in View with this version of the grid.
+   */
   public void computePreviousGenerationGrid() {
     if (!history.isEmpty()) {
-      System.out.println("UpdateGrid");
       CellType[][] previousGrid = history.pop();
       updateGridWithNewStates(previousGrid);
     }
-  }
-
-  private void recordCurrentGenerationForHistory(CellType[][] currentCellGrid) {
-    CellType[][] tempGrid = (CellType[][]) new Cell[row][col];
-    for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
-        String currentCellState = currentCellGrid[i][j].getState();
-        tempGrid[i][j] = simulation.createVariationCell(i, j, currentCellState);
-      }
-    }
-    history.add(tempGrid);
   }
 
   /**
@@ -107,6 +99,17 @@ public class Grid<CellType extends Cell> {
         cellGrid[i][j].setState(newState);
       }
     }
+  }
+
+  private void recordCurrentGenerationForHistory(CellType[][] currentCellGrid) {
+    CellType[][] tempGrid = (CellType[][]) new Cell[row][col];
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        String currentCellState = currentCellGrid[i][j].getState();
+        tempGrid[i][j] = simulation.createVariationCell(i, j, currentCellState);
+      }
+    }
+    history.add(tempGrid);
   }
 
   private String determineNewState(CellType cell, List<CellType> neighbors) {
@@ -147,7 +150,9 @@ public class Grid<CellType extends Cell> {
       case 'O' -> state = CellStates.O.name();
       case 'F' -> state = CellStates.FISH.name();
       case 'S' -> state = CellStates.SHARK.name();
-      default -> state = CellStates.ERROR_DETECTED_STATE_NAME.name();
+      case 'P' -> state = CellStates.PERCOLATED.name();
+      case 'W' -> state = CellStates.WALL.name();
+      default -> state = CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
     }
     return state;
   }
