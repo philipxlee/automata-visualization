@@ -70,7 +70,7 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     // init config, read using config and get the info organized
-    String testFile = "GameOfLife1.xml";
+    String testFile = "test.xml";
     Config config = new Config();
     config.loadXMLFile(DATA_FILE_FOLDER + File.separator + testFile);
     // then pass the info to the view
@@ -80,17 +80,17 @@ public class Main extends Application {
 //    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //        gameOfLife);
 
-//    Simulation<BasicCell> percolation = new Percolation();
-//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-//        percolation);
+    Simulation<BasicCell> percolation = new Percolation();
+    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+        percolation);
 
 //      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
 //      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //        spreadingOfFire);
 
-      Simulation<WaTorCell> wator = new WaTor();
-      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-          wator);
+//      Simulation<WaTorCell> wator = new WaTor();
+//      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//          wator);
 
     View mainView = new View(primaryStage, grid, config.getParameters(),
         config.getSimulationTextInfo());
