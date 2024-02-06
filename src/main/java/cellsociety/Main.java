@@ -32,7 +32,7 @@ public class Main extends Application {
   public static final String DATA_FILE_EXTENSION = "*.xml";
   // default to start in the data folder to make it easy on the user to find
   public static final String DATA_FILE_FOLDER =
-      System.getProperty("user.dir") + File.separator + "data";
+      System.getProperty("user.dir") + File.separator + "data" + File.separator + "GameOfLife";
   // internal configuration file
   public static final String INTERNAL_CONFIGURATION = "cellsociety.Version";
   // NOTE: make ONE chooser since generally accepted behavior
@@ -66,7 +66,7 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     // init config, read using config and get the info organized
-    String testFile = "GameOfLife1.xml";
+    String testFile = "GameOfLife2.xml";
     Config config = new Config();
     config.loadXMLFile(DATA_FILE_FOLDER + File.separator + testFile);
     // then pass the info to the view
