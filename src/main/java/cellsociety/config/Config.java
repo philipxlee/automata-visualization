@@ -43,6 +43,10 @@ public class Config {
     parameters = new HashMap<>();
   }
 
+  /**
+   * @param path The String path of the xml file to be loaded and read
+   * @throws Exception
+   */
   // make sure to take care of the Exception
   public void loadXMLFile(String path) throws Exception {
 
@@ -81,6 +85,19 @@ public class Config {
 
   }
 
+
+  /**
+   * @param path The String path of the xml file to be created and written to
+   * @param simulationTextInfo The array containing simulation type, title, authors, description
+   * @param parameters The map which contains key-value pairs for each parameter's value
+   * @param grid The grid state to be stored in the saved file
+   * @param width The width of the grid
+   * @param height The height of the grid
+   * @param textPath The String path of the txt file where the state of the grid will be stored
+   * @throws ParserConfigurationException
+   * @throws TransformerException
+   * @throws IOException
+   */
   public void saveXMLFile(String path, String[] simulationTextInfo, Map<String, Double> parameters,
       char[][] grid, int width, int height, String textPath)
       throws ParserConfigurationException, TransformerException, IOException {
@@ -166,23 +183,40 @@ public class Config {
   }
 
 
+  /**
+   * @return a grid of characters which represents the initial state
+   * of the cells at the start of the simulation
+   */
   public char[][] getGrid() {
     return grid;
   }
 
+  /**
+   * @return a map of parameters and their values from the XML file
+   */
   public Map<String, Double> getParameters() {
     return parameters;
   }
 
+  /**
+   * @return an array of Strings which contain information about the
+   * simulation type, title, authors, and description
+   */
   public String[] getSimulationTextInfo() {
     return new String[]{simulationType, simulationTitle, authors, description};
   }
 
 
+  /**
+   * @return an int which is the width of given in the XML file
+   */
   public int getWidth() {
     return width;
   }
 
+  /**
+   * @return an int which is the height given in the XML file
+   */
   public int getHeight() {
     return height;
   }
@@ -219,6 +253,7 @@ public class Config {
 
     return fileGrid;
   }
+
 
   private Element bearChild(Document document, Element parent, String childName) {
     Element child = createElement(document, childName);
