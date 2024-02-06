@@ -5,6 +5,7 @@ import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
+import cellsociety.model.variations.Schelling;
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     // init config, read using config and get the info organized
-    String testFile = "test.xml";
+    String testFile = "GameOfLife1.xml";
     Config config = new Config();
     config.loadXMLFile(DATA_FILE_FOLDER + File.separator + testFile);
     // then pass the info to the view
