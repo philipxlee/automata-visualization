@@ -200,15 +200,15 @@ public class Config {
 
 
   private char[][] fileToGrid(String path) {
-    char[][] fileGrid = new char[10][10];
+    char[][] fileGrid = new char[height][width];
     String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
       int character;
 
-      for (int i = 0; i < 10; i++) {
+      for (int i = 0; i < height; i++) {
         String line = reader.readLine();
-        for (int j = 0; j < 10; j++) {
+        for (int j = 0; j < width; j++) {
           fileGrid[i][j] = line.charAt(j);
         }
       }

@@ -60,6 +60,7 @@ public class Grid<CellType extends Cell> {
   private void initializeGridCells(char[][] gridState) {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
+        System.out.println(j);
         String state = getStateFromChar(gridState[i][j]);
         CellType currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
