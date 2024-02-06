@@ -29,7 +29,7 @@ public class View {
   public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
   public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
   public String STYLESHEET = "styles.css";
-  private int WINDOW_WIDTH =  24;
+  private int WINDOW_WIDTH =  1024;
   private int WINDOW_HEIGHT = 768;
   //region Temporary hard-coded values
   private String simType;
@@ -37,7 +37,13 @@ public class View {
   private String description;
   private Map<String, Color> stateColors = Map.of(
       "ALIVE", Color.BLACK,
-      "EMPTY", Color.WHITE
+      "EMPTY", Color.WHITE,
+      "PERCOLATED", Color.BLUE,
+      "WALL", Color.BLACK,
+      "BURNING", Color.RED,
+      "TREE", Color.GREEN,
+      "FISH", Color.ORANGE,
+      "SHARK", Color.DARKGRAY
   );
   private Map<String, Double> parameterValues;
   //endregion

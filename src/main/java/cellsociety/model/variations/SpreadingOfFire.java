@@ -27,44 +27,34 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
     return new BasicCell(row, col, state);
   }
 
-  /**
-   * Calculates the next state of a cell in based on its current state and neighboring cells.
-   *
-   * @param cell         The cell whose next state is being determined.
-   * @param currentState The current state of the cell, one of "BURNING", "EMPTY", or "TREE".
-   * @param neighbors    A list of neighboring cells to the current cell.
-   * @return The next state of the cell as a String: "BURNING", "EMPTY", or "TREE". "BURNING" if
-   * cell is a tree with burning neighbors and catches fire based on a probability. "EMPTY" if cell
-   * is currently "BURNING" or "EMPTY". The state remains "TREE" if conditions to catch fire are not
-   * met.
-   * @throws IllegalStateException If the current state is not one of the expected values.
-   */
+
   @Override
-  public String determineState(BasicCell cell, String currentState, List<BasicCell> neighbors) {
+  public void prepareCellNextState(BasicCell cell, List<BasicCell> neighbors) {
+    String currentState = cell.getState();
+    String nextState = currentState; // Default to current state
+
     if (currentState.equals(BURNING) || currentState.equals(EMPTY)) {
-      return EMPTY;
-    }
-    if (currentState.equals(TREE)) {
-      int[] treesAndBurnCount = countTreeAndBurningNeighbors(cell, neighbors);
-      boolean hasBurningNeighbor = treesAndBurnCount[1] > 0;
-      return hasBurningNeighbor && (rand.nextDouble() < CATCH_FIRE_PROBABILITY) ? BURNING : TREE;
-    }
-    throw new IllegalStateException("Unexpected cell state: " + currentState);
-  }
-
-
-  private int[] countTreeAndBurningNeighbors(BasicCell cell, List<BasicCell> neighbors) {
-    int trees = 0;
-    int burning = 0;
-    for (BasicCell neighbor : neighbors) {
-      if (isCardinalNeighbor(cell, neighbor)) {
-        int tree = neighbor.getState().equals(TREE) ? 1 : 0;
-        int burn = neighbor.getState().equals(BURNING) ? 1 : 0;
-        trees += tree;
-        burning += burn;
+      nextState = EMPTY;
+    } else if (currentState.equals(TREE)) {
+      boolean hasBurningNeighbor = checkForBurningNeighbor(cell, neighbors);
+      if (hasBurningNeighbor && rand.nextDouble() < CATCH_FIRE_PROBABILITY) { // randomless error
+        nextState = BURNING;
       }
     }
-    return new int[]{trees, burning};
+    cell.setNextState(nextState);
+  }
+
+  private boolean checkForBurningNeighbor(BasicCell cell, List<BasicCell> neighbors) {
+    boolean hasBurningNeighbor = false;
+    for (BasicCell neighbor : neighbors) {
+      if (isCardinalNeighbor(cell, neighbor)) {
+        if (neighbor.getState().equals(BURNING)) {
+          hasBurningNeighbor = true;
+          break; // Exit the loop as soon as a burning neighbor is found
+        }
+      }
+    }
+    return hasBurningNeighbor;
   }
 
   private boolean isCardinalNeighbor(BasicCell centralCell, BasicCell neighbor) {

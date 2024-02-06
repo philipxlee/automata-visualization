@@ -4,7 +4,11 @@ import cellsociety.config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
+import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.GameOfLife;
+import cellsociety.model.variations.Percolation;
+import cellsociety.model.variations.SpreadingOfFire;
+import cellsociety.model.variations.WaTor;
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -71,11 +75,22 @@ public class Main extends Application {
     // then pass the info to the view
     //hard code game of life simulation
 
-//    Simulation gameOfLifeSimulation = new GameOfLife();
-//    Grid grid = new Grid(rows, cols, gameOfLifeSimulation);
-    Simulation<BasicCell> gameOfLifeSimulation = new GameOfLife();
-    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-        gameOfLifeSimulation); // Use <> for type inference
+//    Simulation<BasicCell> gameOfLife = new GameOfLife();
+//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//        gameOfLife);
+
+//    Simulation<BasicCell> percolation = new Percolation();
+//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//        percolation);
+
+//      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
+//      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//        spreadingOfFire);
+
+      Simulation<WaTorCell> wator = new WaTor();
+      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+          wator);
+
     View mainView = new View(primaryStage, grid, config.getParameters(),
         config.getSimulationTextInfo());
 

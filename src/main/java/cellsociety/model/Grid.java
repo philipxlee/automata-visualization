@@ -14,7 +14,7 @@ public class Grid<CellType extends Cell> {
   private final CellType[][] cellGrid;
   private final Map<CellType, List<CellType>> cellNeighbors;
   private Simulation<CellType> simulation;
-  private Stack<CellType[][]> history;
+  private Stack<String[][]> history;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -28,7 +28,7 @@ public class Grid<CellType extends Cell> {
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
-    this.history = new Stack<>();
+    this.history = new Stack<String[][]>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     initializeGridCells(gridState);
   }
@@ -40,16 +40,30 @@ public class Grid<CellType extends Cell> {
    * updated with these new states.
    */
   public void computeNextGenerationGrid() {
-    recordCurrentGenerationForHistory(cellGrid); // to build stack for back button in view
-    CellType[][] tempGrid = (CellType[][]) new Cell[row][col]; // necessary cast
+    // Record history for back button
+    recordCurrentGenerationForHistory(cellGrid);
+
+    // First, prepare the next state for each cell
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        List<CellType> neighbors = cellNeighbors.get(cellGrid[i][j]);
-        String newState = determineNewState(cellGrid[i][j], neighbors);
-        tempGrid[i][j] = simulation.createVariationCell(i, j, newState);
+        CellType cell = cellGrid[i][j];
+        List<CellType> neighbors = cellNeighbors.get(cell);
+        simulation.prepareCellNextState(cell, neighbors); // Use the simulation logic
+        cell.setReadyForNextState(true); // Indicate the cell is ready for its next state
       }
     }
-    updateGridWithNewStates(tempGrid);
+
+    // Then, apply the next state for all cells that are ready
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        CellType cell = cellGrid[i][j];
+        if (cell.isReadyForNextState()) {
+          // Apply the prepared state. This might involve checking the cell's delayed state or similar.
+          cell.applyNextState();
+          cell.setReadyForNextState(false); // Reset the flag
+        }
+      }
+    }
   }
 
   /**
@@ -59,8 +73,12 @@ public class Grid<CellType extends Cell> {
    */
   public void computePreviousGenerationGrid() {
     if (!history.isEmpty()) {
-      CellType[][] previousGrid = history.pop();
-      updateGridWithNewStates(previousGrid);
+      String[][] previousStateSnapshot = history.pop();
+      for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+          cellGrid[i][j].setState(previousStateSnapshot[i][j]);
+        }
+      }
     }
   }
 
@@ -92,29 +110,19 @@ public class Grid<CellType extends Cell> {
     }
   }
 
-  private void updateGridWithNewStates(CellType[][] tempGrid) {
-    for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
-        String newState = tempGrid[i][j].getState();
-        cellGrid[i][j].setState(newState);
-      }
-    }
-  }
+//  private void updateGridWithNewStates(CellType[][] tempGrid) {
+//
+//  }
 
   private void recordCurrentGenerationForHistory(CellType[][] currentCellGrid) {
-    CellType[][] tempGrid = (CellType[][]) new Cell[row][col];
+    String[][] stateSnapshot = new String[row][col];
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        String currentCellState = currentCellGrid[i][j].getState();
-        tempGrid[i][j] = simulation.createVariationCell(i, j, currentCellState);
+        stateSnapshot[i][j] = cellGrid[i][j].getState();
       }
     }
-    history.add(tempGrid);
-  }
-
-  private String determineNewState(CellType cell, List<CellType> neighbors) {
-    String currentState = cell.getState();
-    return simulation.determineState(cell, currentState, neighbors);
+    // Assuming you have a way to store these snapshots, perhaps as Object if types vary
+    history.push(stateSnapshot);
   }
 
 
@@ -155,14 +163,5 @@ public class Grid<CellType extends Cell> {
       default -> state = CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
     }
     return state;
-  }
-
-  /**
-   * PLACEHOLDERS
-   */
-
-  private char[][] getGridConfiguration() {
-    return new char[][]{{'1', '2', '2', '2'}, {'1', '2', '2', '1'}, {'2', '1', '2', '1'},
-        {'1', '1', '1', '2'}};
   }
 }

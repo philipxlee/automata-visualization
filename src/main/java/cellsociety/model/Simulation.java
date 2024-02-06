@@ -7,6 +7,6 @@ public interface Simulation<CellType extends Cell> {
 
   CellType createVariationCell(int row, int col, String state);
 
-  String determineState(CellType cell, String currentState, List<CellType> neighbors);
+  void prepareCellNextState(CellType cell, List<CellType> neighbors);
 
 }
