@@ -7,20 +7,12 @@ import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.view.Display;
 import java.io.File;
-import java.io.IOException;
-import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -113,10 +105,8 @@ public class Main extends Application {
         Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
             gameOfLife);
 
-        Display mainDisplay = new Display(primaryStage, grid, config.getParameters(),
-            config.getSimulationTextInfo());
-
-        mainDisplay.start();
+        Display newDisplay = new Display(primaryStage, grid, config);
+        newDisplay.start();
       }
     } catch (Exception e) {
       showMessage(AlertType.ERROR, e.getMessage());
