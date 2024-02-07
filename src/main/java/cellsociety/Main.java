@@ -4,13 +4,15 @@ import cellsociety.config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
-import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.GameOfLife;
+<<<<<<< HEAD
 import cellsociety.model.variations.Percolation;
 import cellsociety.model.variations.Schelling;
 import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.model.variations.WaTor;
 
+=======
+>>>>>>> main
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -71,9 +73,6 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     // init config, read using config and get the info organized
-    String testFile = "test.xml";
-    Config config = new Config();
-    config.loadXMLFile(DATA_FILE_FOLDER + File.separator + testFile);
     // then pass the info to the view
     //hard code game of life simulation
 
@@ -93,23 +92,28 @@ public class Main extends Application {
 //      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //          wator);
 
-        Simulation<BasicCell> schelling = new Schelling();
-        Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), schelling);
+//        Simulation<BasicCell> schelling = new Schelling();
+//        Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), schelling);
+//
+//    View mainView = new View(primaryStage, grid, config.getParameters(),
+//        config.getSimulationTextInfo());
 
-    View mainView = new View(primaryStage, grid, config.getParameters(),
-        config.getSimulationTextInfo());
-
-    mainView.start();
+//    mainView.start();
+    Config config = new Config();
 //    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
-//    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
-//    if (dataFile != null) {
-//      int numBlocks = calculateNumBlocks(dataFile);
-//      if (numBlocks != 0) {
-//        showMessage(AlertType.INFORMATION, String.format("Number of Blocks = %d", numBlocks));
-//        View mainView = new View(primaryStage);
-//        mainView.start();
-//      }
-//    }
+    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
+    if (dataFile != null) {
+      config.loadXMLFile(dataFile);
+      Simulation<BasicCell> gameOfLife = new GameOfLife();
+      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+          gameOfLife);
+
+      View mainView = new View(primaryStage, grid, config.getParameters(),
+          config.getSimulationTextInfo());
+
+      mainView.start();
+
+    }
   }
 
   /**

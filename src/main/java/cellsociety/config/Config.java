@@ -48,11 +48,9 @@ public class Config {
    * @throws Exception
    */
   // make sure to take care of the Exception
-  public void loadXMLFile(String path) throws Exception {
+  public void loadXMLFile(File xmlFile) throws Exception {
 
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = dbf.newDocumentBuilder();
-    Document doc = db.parse(path);
+    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
 
     doc.getDocumentElement().normalize();
 
