@@ -5,13 +5,16 @@ import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
-import cellsociety.view.View;
+import cellsociety.view.Control;
+import cellsociety.view.Display;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -89,7 +92,7 @@ public class Main extends Application {
 //
 //    mainView.start();
     Config config = new Config();
-//    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
+    showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
     File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
     if (dataFile != null) {
       config.loadXMLFile(dataFile);
@@ -97,10 +100,10 @@ public class Main extends Application {
       Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
           gameOfLife);
 
-      View mainView = new View(primaryStage, grid, config.getParameters(),
+      Display mainDisplay = new Display(primaryStage, grid, config.getParameters(),
           config.getSimulationTextInfo());
 
-      mainView.start();
+      mainDisplay.start();
 
     }
   }
@@ -149,6 +152,9 @@ public class Main extends Application {
 
   // display given message to user using the given type of Alert dialog box
   void showMessage(AlertType type, String message) {
-    new Alert(type, message).showAndWait();
+    Alert alert = new Alert(type, message);
+    alert.setTitle("Cell Society");
+    alert.setHeaderText("");
+    alert.showAndWait();
   }
 }

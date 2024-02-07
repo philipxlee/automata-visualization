@@ -2,6 +2,8 @@ package cellsociety.view;
 
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -23,7 +25,7 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
 
-public class View {
+public class Display {
 
   private static final String language = "English";
   public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
@@ -48,7 +50,8 @@ public class View {
   private Map<String, Double> parameterValues;
   //endregion
   private Stage primaryStage;
-  private Grid simulationGrid;
+  private Grapher myGrapher;
+  private Grid<Cell> simulationGrid;
   private ResourceBundle resources;
   private Button playButton;
   private Button pauseButton;
@@ -57,7 +60,7 @@ public class View {
   private BorderPane root;
 
 
-  public View(Stage primaryStage, Grid grid, Map<String, Double> parameters,
+  public Display(Stage primaryStage, Grid grid, Map<String, Double> parameters,
       String[] simulationTexts) {
     this.primaryStage = primaryStage;
     this.simulationGrid = grid;
@@ -65,6 +68,7 @@ public class View {
     this.simType = simulationTexts[0];
     this.author = simulationTexts[2];
     this.description = simulationTexts[3];
+
   }
 
   public void start() {
@@ -72,6 +76,11 @@ public class View {
     //make simulation class with the info passed from config
     showScene();
     primaryStage.setTitle(resources.getString("title"));
+
+    Stage graphStage = new Stage();
+    graphStage.setTitle("Cell Population Over Time");
+    this.myGrapher = new Grapher(graphStage);
+    this.myGrapher.updateData(simulationGrid.getCellCounts());
   }
 
   private void showScene() {
@@ -110,6 +119,7 @@ public class View {
       for (int j = 0; j < grid[i].length; j++) {
         Rectangle cell = new Rectangle(cellWidth, cellHeight);
         cell.getStyleClass().add("cell");
+        cell.setStrokeWidth(calculateStrokeWidth(grid.length));
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
         String state = grid[i][j].getState();
@@ -189,6 +199,8 @@ public class View {
     nextButton = makeButton("NextCommand", event -> {
       simulationGrid.computeNextGenerationGrid();
       updateGrid();
+      myGrapher.updateData(simulationGrid.getCellCounts());
+      myGrapher.updateGraph();
     });
     backButton = makeButton("BackCommand", event -> {
       simulationGrid.computePreviousGenerationGrid();
@@ -198,6 +210,19 @@ public class View {
     row2.getChildren().add(backButton);
     row2.setAlignment(Pos.BASELINE_CENTER);
     controlPane.getChildren().add(row2);
+
+    HBox row3 = new HBox();
+    Button toggleGrapher = makeButton("GraphCommand", event -> {
+      if(myGrapher.isShowing()){
+        myGrapher.close();
+      } else {
+        myGrapher.show();
+      }
+    });
+    row3.setAlignment(Pos.BASELINE_CENTER);
+
+    row3.getChildren().add(toggleGrapher);
+    controlPane.getChildren().add(row3);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
@@ -215,5 +240,9 @@ public class View {
     }
     result.setOnAction(handler);
     return result;
+  }
+
+  private double calculateStrokeWidth(double gridSize) {
+    return gridSize <= 10 ? 5 : 50 / gridSize;
   }
 }

@@ -5,7 +5,6 @@
 .cell {
   -fx-border-color: gray;
   -fx-stroke: gray;
-  -fx-stroke-width: 5;
 }
 
 .cell:hover {
@@ -61,4 +60,9 @@
 
 .button:hover {
   -fx-background-color: #3a3a3a;
+}
+
+.chart-line-symbol {
+  -fx-background-radius: 0px;
+  -fx-padding: 2px;
 }
