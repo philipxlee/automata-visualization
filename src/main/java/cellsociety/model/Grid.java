@@ -15,7 +15,7 @@ public class Grid<CellType extends Cell> {
   private final Map<CellType, List<CellType>> cellNeighbors;
   private Simulation<CellType> simulation;
   private Stack<String[][]> history;
-  private List<Map<String, Integer>> cellCounts;
+  private Map<String, Integer> cellCounts;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -32,8 +32,7 @@ public class Grid<CellType extends Cell> {
     this.history = new Stack<String[][]>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     initializeGridCells(gridState);
-    this.cellCounts = new ArrayList<>();
-    this.cellCounts.add(countCellAmount());
+    this.cellCounts = countCellAmount();
   }
 
   /**
@@ -68,7 +67,7 @@ public class Grid<CellType extends Cell> {
       }
     }
 
-    cellCounts.add(countCellAmount());
+    this.cellCounts = countCellAmount();
   }
 
   /**
@@ -171,8 +170,8 @@ public class Grid<CellType extends Cell> {
     return state;
   }
 
-  public List<Map<String, Integer>> getCellCounts() {
-    return new ArrayList<>(cellCounts);
+  public Map<String, Integer> getCellCounts() {
+    return cellCounts;
   }
 
   private Map<String, Integer> countCellAmount() {

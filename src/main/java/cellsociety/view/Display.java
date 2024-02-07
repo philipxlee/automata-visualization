@@ -78,7 +78,7 @@ public class Display {
     Stage graphStage = new Stage();
     graphStage.setTitle("Cell Population Over Time");
     this.myGrapher = new Grapher(graphStage);
-    this.myGrapher.updateData(simulationGrid.getCellCounts());
+    this.myGrapher.addData(simulationGrid.getCellCounts(), 0);
 
     this.myTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> nextTick()));
     myTimeline.setCycleCount(Timeline.INDEFINITE);
@@ -189,7 +189,7 @@ public class Display {
   private void nextTick() {
     simulationGrid.computeNextGenerationGrid();
     updateGrid();
-//    myGrapher.updateData(simulationGrid.getCellCounts());
+    myGrapher.addData(simulationGrid.getCellCounts(), myGrapher.getTick() + 1);
 //    myGrapher.updateGraph();
   }
 
@@ -215,6 +215,7 @@ public class Display {
     Button backButton = makeButton("BackCommand", event -> {
       simulationGrid.computePreviousGenerationGrid();
       updateGrid();
+      myGrapher.setTick(myGrapher.getTick() - 1);
     });
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);

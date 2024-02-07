@@ -2,6 +2,7 @@ package cellsociety.view;
 
 import cellsociety.model.Cell;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.geometry.Side;
@@ -17,66 +18,55 @@ public class Grapher {
   private static final int GRAPHER_HEIGHT = 500;
   private List<Map<String, Integer>> cellCounts;
   private LineChart<Number, Number> myLineChart;
+  private Map<String, XYChart.Series<Number, Number>> seriesMap;
+  private int currentTick;
+  private int maxTick;
   private Stage myStage;
   private Scene myScene;
   public Grapher(Stage stage) {
     this.myStage = stage;
     this.cellCounts = new ArrayList<>();
+    this.currentTick = 0;
 
     NumberAxis xAxis = new NumberAxis();
     xAxis.setLabel("Ticks");
-    xAxis.setTickUnit(1);
     NumberAxis yAxis = new NumberAxis();
     yAxis.setLabel("Population");
 
     // Creating the line chart
     this.myLineChart = new LineChart<>(xAxis, yAxis);
+    this.seriesMap = new HashMap<>();
 //    this.myLineChart.setTitle("Cell Population Over Time");
     this.myLineChart.setLegendSide(Side.TOP);
     this.myScene = new Scene(myLineChart, GRAPHER_WIDTH, GRAPHER_HEIGHT);
-    myScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-    myStage.setScene(myScene);
+    this.myScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+    this.myStage.setScene(myScene);
   }
 
   public void show() {
-    // Creating a scene object
-    updateGraph();
-
-    // Displaying the contents of the stage
     myStage.show();
   }
 
-  public void updateGraph(){
-    // Iterate over cellCounts
-    for (int i = 0; i < cellCounts.size(); i++) {
-      Map<String, Integer> cellCount = cellCounts.get(i);
-      for (Map.Entry<String, Integer> entry : cellCount.entrySet()) {
-        String seriesName = entry.getKey();
-        Integer count = entry.getValue();
 
-        // Check if series already exists
-        XYChart.Series<Number, Number> series = myLineChart.getData().stream()
-            .filter(s -> s.getName().equals(seriesName))
-            .findFirst()
-            .orElse(null);
 
-        if (series == null) {
-          // If series does not exist, create it and add to chart
-          series = new XYChart.Series<>();
-          series.setName(seriesName);
-          myLineChart.getData().add(series);
-        }
-
-        // Add data to series
-        series.getData().add(new XYChart.Data<>(i, count));
-      }
+  public void addData(Map<String, Integer> dataPoint, int tick) {
+    if(tick <= maxTick){
+      currentTick = tick;
+      return;
     }
-  }
-
-
-  public void updateData(List<Map<String, Integer>> cellCounts) {
-    this.cellCounts.clear();
-    this.cellCounts.addAll(cellCounts);
+    for (Map.Entry<String, Integer> entry : dataPoint.entrySet()) {
+      String seriesName = entry.getKey();
+      XYChart.Series<Number, Number> series = seriesMap.get(seriesName);
+      if (series == null) {
+        series = new XYChart.Series<>();
+        series.setName(seriesName);
+        myLineChart.getData().add(series);
+        seriesMap.put(seriesName, series);
+      }
+      series.getData().add(new XYChart.Data<>(tick, entry.getValue()));
+    }
+    currentTick = tick;
+    maxTick = currentTick;
   }
 
   public void close() {
@@ -85,5 +75,11 @@ public class Grapher {
 
   public boolean isShowing(){
     return myStage.isShowing();
+  }
+  public int getTick() {
+    return currentTick;
+  }
+  public void setTick(int tick) {
+    currentTick = tick;
   }
 }
