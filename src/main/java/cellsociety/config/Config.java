@@ -297,4 +297,10 @@ public class Config {
     return child;
   }
 
+//  public static void main(String[] args) throws Exception {
+//    Config newConfig = new Config();
+//    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\Schelling\\Schelling1.xml"));
+//
+//  }
+
 }
