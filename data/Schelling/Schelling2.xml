@@ -3,7 +3,7 @@
     <parameters>
       <Threshold>0.30</Threshold>
     </parameters>
-    <title>Schelling Simulation #1</title>
+    <title>Schelling Simulation #2</title>
     <authors>Thomas Schelling</authors>
     <description>
       "Schelling's model of segregation is an agent-based model developed by economist Thomas Schelling. Schelling's model does not include outside factors that place pressure on agents to segregate such as Jim Crow laws in the United States, but Schelling's work does demonstrate that having people with "mild" in-group preference towards their own group could still lead to a highly segregated society via de facto segregation." - Wikipedia
@@ -12,6 +12,6 @@
       <width>50</width>
       <height>50</height>
     </gridDimensions>
-    <fileName>/Schelling/SCHELLING1.txt</fileName>
+    <fileName>/Schelling/SCHELLING2.txt</fileName>
   </type>
 </simulation>

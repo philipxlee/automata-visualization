@@ -14,6 +14,6 @@
       <width>50</width>
       <height>50</height>
     </gridDimensions>
-    <fileName>./GOL2.txt</fileName>
+    <fileName>/GameOfLife/GOL2.txt</fileName>
   </type>
 </simulation>

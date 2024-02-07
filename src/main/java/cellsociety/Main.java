@@ -4,27 +4,16 @@ import cellsociety.config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
-import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.GameOfLife;
-import cellsociety.model.variations.Percolation;
-import cellsociety.model.variations.SpreadingOfFire;
-import cellsociety.model.variations.WaTor;
-
-import cellsociety.view.View;
+import cellsociety.model.variations.Schelling;
+import cellsociety.view.Display;
 import java.io.File;
-import java.io.IOException;
-import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -36,7 +25,7 @@ public class Main extends Application {
   public static final String DATA_FILE_EXTENSION = "*.xml";
   // default to start in the data folder to make it easy on the user to find
   public static final String DATA_FILE_FOLDER =
-      System.getProperty("user.dir") + File.separator + "data" + File.separator + "GameOfLife";
+      System.getProperty("user.dir") + File.separator + "data";
   // internal configuration file
   public static final String INTERNAL_CONFIGURATION = "cellsociety.Version";
   // NOTE: make ONE chooser since generally accepted behavior
@@ -68,14 +57,8 @@ public class Main extends Application {
    * @see Application#start(Stage)
    */
   @Override
-  public void start(Stage primaryStage) throws Exception {
+  public void start(Stage primaryStage) {
     // init config, read using config and get the info organized
-    String testFile = "GameOfLife2.xml";
-//=======
-//    String testFile = "test.xml";
-//>>>>>>> main
-    Config config = new Config();
-    config.loadXMLFile(DATA_FILE_FOLDER + File.separator + testFile);
     // then pass the info to the view
     //hard code game of life simulation
 
@@ -83,9 +66,9 @@ public class Main extends Application {
 //    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //        gameOfLife);
 
-    Simulation<BasicCell> percolation = new Percolation();
-    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-        percolation);
+//    Simulation<BasicCell> percolation = new Percolation();
+//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//        percolation);
 
 //      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
 //      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
@@ -95,66 +78,49 @@ public class Main extends Application {
 //      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //          wator);
 
-    View mainView = new View(primaryStage, grid, config.getParameters(),
-        config.getSimulationTextInfo());
+//    View mainView = new View(primaryStage, grid, config.getParameters(),
+//        config.getSimulationTextInfo());
+//
+//    mainView.start();
+    makeSimulation(primaryStage);
+    showMessage(AlertType.INFORMATION, "Press N to start another simulation");
+    primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+      switch (event.getCode()) {
+        case N:
+          Stage newStage = new Stage();
+          makeSimulation(newStage);
+          break;
+      }
+    });
 
-    mainView.start();
-//    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
-//    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
-//    if (dataFile != null) {
-//      int numBlocks = calculateNumBlocks(dataFile);
-//      if (numBlocks != 0) {
-//        showMessage(AlertType.INFORMATION, String.format("Number of Blocks = %d", numBlocks));
-//        View mainView = new View(primaryStage);
-//        mainView.start();
-//      }
-//    }
   }
 
-  /**
-   * Returns number of blocks needed to cover the width and height given in the data file.
-   */
-  public int calculateNumBlocks(File xmlFile) {
+  private void makeSimulation(Stage primaryStage) {
     try {
-      Document xmlDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-          .parse(xmlFile);
-      Element root = xmlDocument.getDocumentElement();
-      int width = Integer.parseInt(getTextValue(root, "width"));
-      int height = Integer.parseInt(getTextValue(root, "height"));
-      return width * height;
-    } catch (NumberFormatException e) {
-      showMessage(AlertType.ERROR, "Invalid number given in data");
-      return 0;
-    } catch (ParserConfigurationException e) {
-      showMessage(AlertType.ERROR, "Invalid XML Configuration");
-      return 0;
-    } catch (SAXException | IOException e) {
-      showMessage(AlertType.ERROR, "Invalid XML Data");
-      return 0;
+      Config config = new Config();
+      showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
+      File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
+      if (dataFile != null) {
+        config.loadXMLFile(dataFile);
+        Simulation<BasicCell> gameOfLife = new Schelling();
+        Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+            gameOfLife);
+
+        Display newDisplay = new Display(primaryStage, grid, config);
+        newDisplay.start();
+      }
+    } catch (Exception e) {
+      showMessage(AlertType.ERROR, e.getMessage());
     }
   }
 
-  /**
-   * A method to test getting internal resources.
-   */
-  public double getVersion() {
-    ResourceBundle resources = ResourceBundle.getBundle(INTERNAL_CONFIGURATION);
-    return Double.parseDouble(resources.getString("Version"));
-  }
 
-  // get value of Element's text
-  private String getTextValue(Element e, String tagName) {
-    NodeList nodeList = e.getElementsByTagName(tagName);
-    if (nodeList.getLength() > 0) {
-      return nodeList.item(0).getTextContent();
-    } else {
-      // FIXME: empty string or exception? In some cases it may be an error to not find any text
-      return "";
-    }
-  }
 
   // display given message to user using the given type of Alert dialog box
   void showMessage(AlertType type, String message) {
-    new Alert(type, message).showAndWait();
+    Alert alert = new Alert(type, message);
+    alert.setTitle("Cell Society");
+    alert.setHeaderText("");
+    alert.showAndWait();
   }
 }

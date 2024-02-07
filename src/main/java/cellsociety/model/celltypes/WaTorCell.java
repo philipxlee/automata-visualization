@@ -7,7 +7,6 @@ public class WaTorCell extends Cell {
   private final int STARTING_SHARK_ENERGY = 5;
   private final int FISH_TIME_TO_REPRODUCE = 7;
   private final int SHARK_TIME_TO_REPRODUCE = 10;
-  private final int ENERGY_GAIN_FROM_EATING_FISH = 2;
 
   private int energy = STARTING_SHARK_ENERGY;
   private int reproductionTime = STARTING_REPRODUCTION_TIME;
@@ -16,10 +15,6 @@ public class WaTorCell extends Cell {
     super(row, col, state);
   }
 
-  public void incrementReproductionTime() { this.reproductionTime++; }
-
-  public void decrementEnergy() { this.energy--; }
-
   public boolean canReproduce(String creatureType) {
     int threshold = creatureType.equals("FISH") ? FISH_TIME_TO_REPRODUCE : SHARK_TIME_TO_REPRODUCE;
     return this.reproductionTime >= threshold;
@@ -27,13 +22,8 @@ public class WaTorCell extends Cell {
 
   public void resetReproductionTime() { this.reproductionTime = STARTING_REPRODUCTION_TIME; }
 
+  public void resetEnergy() { this.energy = STARTING_SHARK_ENERGY; }
 
-
-  public void gainEnergyFromEatingFish() { this.energy += ENERGY_GAIN_FROM_EATING_FISH; }
-
-  public boolean isStarving() { return this.energy <= 0; }
-
-  // Getters and Setters
   public int getEnergy() { return this.energy; }
 
   public void setEnergy(int energy) { this.energy = energy; }
