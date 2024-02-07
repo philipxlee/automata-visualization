@@ -4,15 +4,14 @@ import cellsociety.config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
+import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.GameOfLife;
-<<<<<<< HEAD
 import cellsociety.model.variations.Percolation;
 import cellsociety.model.variations.Schelling;
 import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.model.variations.WaTor;
 
-=======
->>>>>>> main
+
 import cellsociety.view.View;
 import java.io.File;
 import java.io.IOException;
@@ -75,47 +74,51 @@ public class Main extends Application {
     // init config, read using config and get the info organized
     // then pass the info to the view
     //hard code game of life simulation
+    String testFile = "test.xml";
+    Config config = new Config();
+    config.loadXMLFilePhilipTest(DATA_FILE_FOLDER + File.separator + testFile);
 
 //    Simulation<BasicCell> gameOfLife = new GameOfLife();
 //    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //        gameOfLife);
-
+//
 //    Simulation<BasicCell> percolation = new Percolation();
 //    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //        percolation);
 
-//      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
-//      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-//        spreadingOfFire);
-
+      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
+      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+        spreadingOfFire);
+//
 //      Simulation<WaTorCell> wator = new WaTor();
 //      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //          wator);
 
-//        Simulation<BasicCell> schelling = new Schelling();
-//        Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), schelling);
+//    Simulation<BasicCell> schelling = new Schelling();
+//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//        schelling);
+
+    View mainView = new View(primaryStage, grid, config.getParameters(),
+        config.getSimulationTextInfo());
+
+    mainView.start();
+//    Config config = new Config();
+////    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
+//    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
+//    if (dataFile != null) {
+//      config.loadXMLFile(dataFile);
+//      Simulation<BasicCell> gameOfLife = new GameOfLife();
+//      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//          gameOfLife);
 //
-//    View mainView = new View(primaryStage, grid, config.getParameters(),
-//        config.getSimulationTextInfo());
-
-//    mainView.start();
-    Config config = new Config();
-//    showMessage(AlertType.INFORMATION, String.format("Version: %s", getVersion()));
-    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
-    if (dataFile != null) {
-      config.loadXMLFile(dataFile);
-      Simulation<BasicCell> gameOfLife = new GameOfLife();
-      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-          gameOfLife);
-
-      View mainView = new View(primaryStage, grid, config.getParameters(),
-          config.getSimulationTextInfo());
-
-      mainView.start();
-
-    }
+//      View mainView = new View(primaryStage, grid, config.getParameters(),
+//          config.getSimulationTextInfo());
+//
+//      mainView.start();
+//
+//    }
+//  }
   }
-
   /**
    * Returns number of blocks needed to cover the width and height given in the data file.
    */

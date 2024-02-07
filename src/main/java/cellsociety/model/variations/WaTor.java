@@ -3,120 +3,76 @@ package cellsociety.model.variations;
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.WaTorCell;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class WaTor implements Simulation<WaTorCell> {
 
   private final String EMPTY = CellStates.EMPTY.name();
   private final String FISH = CellStates.FISH.name();
   private final String SHARK = CellStates.SHARK.name();
-  private Set<String> claimedCells = new HashSet<>();
-
+  private List<WaTorCell> emptyCells = new ArrayList<>();
+  private Map<WaTorCell, WaTorCell> intendedMoves = new HashMap<>();
   private Random rand = new Random();
 
   @Override
   public WaTorCell createVariationCell(int row, int col, String state) {
-    return new WaTorCell(row, col, state);
+    WaTorCell cell = new WaTorCell(row, col, state);
+    if (state.equals(EMPTY)) {
+      emptyCells.add(cell);
+    }
+    return cell;
   }
 
   @Override
   public void prepareCellNextState(WaTorCell cell, List<WaTorCell> neighbors) {
+    // This method will now only decide on moves, not execute them immediately
     String currentState = cell.getState();
-    switch (currentState) {
-      case "FISH" -> handleFish(cell, neighbors);
-      case "SHARK" -> handleShark(cell, neighbors);
-    }
-  }
+    if (!currentState.equals(EMPTY)) {
+      List<WaTorCell> validTargets = new ArrayList<>();
+      if (currentState.equals(FISH)) {
+        validTargets = findSpecificNeighbors(neighbors, EMPTY);
+      } else if (currentState.equals(SHARK)) {
+        validTargets.addAll(findSpecificNeighbors(neighbors, FISH)); // Prefer fish
+        if (validTargets.isEmpty()) {
+          validTargets.addAll(findSpecificNeighbors(neighbors, EMPTY)); // Then empty if no fish
+        }
+      }
 
-  private void handleFish(WaTorCell fish, List<WaTorCell> neighbors) {
-    List<WaTorCell> emptySpaces = findSpecificNeighbors(neighbors, EMPTY);
-    emptySpaces.removeIf(e -> claimedCells.contains(e.getRow() + "," + e.getCol()));
-    if (!emptySpaces.isEmpty()) {
-      WaTorCell target = emptySpaces.get(rand.nextInt(emptySpaces.size()));
-      String fishState = fish.getState();
-      int fishReproductionTime = fish.getReproductionTime();
-      int fishEnergy = fish.getEnergy();
-
-      // move fishes
-      boolean reproduced = moveAnimal(FISH, target, fishState, fishEnergy, fishReproductionTime + 1);
-
-      // check for reproduction
-      if (reproduced) {
-        fish.setNextState(FISH);
-        fish.resetReproductionTime();
-        fish.resetEnergy();;
-      } else {
-        fish.setNextState(EMPTY); // Move and leave the spot empty if not reproducing
-        fish.resetReproductionTime();
-        fish.resetEnergy();
+      // Decide on move
+      if (!validTargets.isEmpty()) {
+        Collections.shuffle(validTargets); // Randomize to simulate random selection
+        WaTorCell target = validTargets.get(0); // Take the first after shuffling
+        intendedMoves.put(cell, target); // Map current cell to target for move execution later
       }
     }
   }
 
-  private void handleShark(WaTorCell shark, List<WaTorCell> neighbors) {
-    List<WaTorCell> fishCells = findSpecificNeighbors(neighbors, FISH);
-    fishCells.removeIf(e -> claimedCells.contains(e.getRow() + "," + e.getCol()));
-    if (!fishCells.isEmpty()) {
-      WaTorCell target = fishCells.get(rand.nextInt(fishCells.size()));
-      String sharkState = shark.getState();
-      int sharkReproductionTime = shark.getReproductionTime();
-      int sharkEnergy = shark.getEnergy();
+  public void executeMoves() {
+    // Execute moves based on intendedMoves map
+    for (Map.Entry<WaTorCell, WaTorCell> entry : intendedMoves.entrySet()) {
+      WaTorCell source = entry.getKey();
+      WaTorCell target = entry.getValue();
 
-      // move shark
-      boolean reproduced = moveAnimal(SHARK, target, sharkState, sharkEnergy + 2,
-          sharkReproductionTime + 1);
-
-      if (reproduced) {
-        shark.setNextState(SHARK);
-        shark.resetReproductionTime();
-        shark.resetEnergy();
-      } else {
-        shark.setNextState(EMPTY); // Move and leave the spot empty if not reproducing
-        shark.resetReproductionTime();
-        shark.resetEnergy();
-      }
-      return;
-    }
-
-    List<WaTorCell> emptySpaces = findSpecificNeighbors(neighbors, EMPTY);
-    if (!emptySpaces.isEmpty()) {
-
-      WaTorCell target = emptySpaces.get(rand.nextInt(emptySpaces.size()));
-      String sharkState = shark.getState();
-      int sharkReproductionTime = shark.getReproductionTime();
-      int sharkEnergy = shark.getEnergy();
-
-      // move shark
-      boolean reproduced = moveAnimal(SHARK, target, sharkState, sharkEnergy - 1, sharkReproductionTime + 1);
-
-      // check for reproduction
-      if (reproduced) {
-        shark.setNextState(SHARK);
-        shark.resetReproductionTime();
-        shark.resetEnergy();
-      } else {
-        shark.setNextState(EMPTY); // Move and leave the spot empty if not reproducing
-        shark.resetReproductionTime();
-        shark.resetEnergy();
+      if (source.getState().equals(FISH) && target.getState().equals(EMPTY)) {
+        performMove(source, target, FISH);
+      } else if (source.getState().equals(SHARK)) {
+        if (target.getState().equals(FISH) || target.getState().equals(EMPTY)) {
+          performMove(source, target, SHARK);
+        }
       }
     }
+    intendedMoves.clear(); // Clear moves for next round
   }
 
-
-  private boolean moveAnimal(String animal, WaTorCell target, String state, int energy, int reproductionTime) {
-    claimedCells.add(target.getRow() + "," + target.getCol());
-    target.setNextState(state); // Move to the target cell
-    target.setEnergy(energy); // Transfer energy
-    target.setReproductionTime(reproductionTime); // Transfer reproduction time
-    if (target.canReproduce(animal)) {
-      target.resetReproductionTime();
-      return true;
+  private void performMove(WaTorCell source, WaTorCell target, String newState) {
+    target.setNextState(newState);
+    source.setNextState(EMPTY);
+    // Update emptyCells list
+    if (!newState.equals(EMPTY)) {
+      emptyCells.remove(target); // Target is no longer empty
+      emptyCells.add(source); // Source becomes empty
     }
-    return false;
+    // Further adjustments for energy, reproduction, etc., should be handled here
   }
 
   private List<WaTorCell> findSpecificNeighbors(List<WaTorCell> neighbors, String state) {
@@ -128,4 +84,6 @@ public class WaTor implements Simulation<WaTorCell> {
     }
     return specificNeighbors;
   }
+
+  // Additional methods for managing energy, reproduction, etc.
 }
