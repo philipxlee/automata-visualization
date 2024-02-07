@@ -189,8 +189,8 @@ public class Display {
   private void nextTick() {
     simulationGrid.computeNextGenerationGrid();
     updateGrid();
-    myGrapher.updateData(simulationGrid.getCellCounts());
-    myGrapher.updateGraph();
+//    myGrapher.updateData(simulationGrid.getCellCounts());
+//    myGrapher.updateGraph();
   }
 
   private void createControlUI(VBox controlPane) {
