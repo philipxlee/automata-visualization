@@ -4,6 +4,7 @@ import cellsociety.model.Cell;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -12,6 +13,8 @@ import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 
 public class Grapher {
+  private static final int GRAPHER_WIDTH = 600;
+  private static final int GRAPHER_HEIGHT = 500;
   private List<Map<String, Integer>> cellCounts;
   private LineChart<Number, Number> myLineChart;
   private Stage myStage;
@@ -22,13 +25,15 @@ public class Grapher {
 
     NumberAxis xAxis = new NumberAxis();
     xAxis.setLabel("Ticks");
+    xAxis.setTickUnit(1);
     NumberAxis yAxis = new NumberAxis();
     yAxis.setLabel("Population");
 
     // Creating the line chart
     this.myLineChart = new LineChart<>(xAxis, yAxis);
-    this.myLineChart.setTitle("Cell Population Over Time");
-    this.myScene = new Scene(myLineChart, 600, 400);
+//    this.myLineChart.setTitle("Cell Population Over Time");
+    this.myLineChart.setLegendSide(Side.TOP);
+    this.myScene = new Scene(myLineChart, GRAPHER_WIDTH, GRAPHER_HEIGHT);
     myScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
     myStage.setScene(myScene);
   }
@@ -42,7 +47,6 @@ public class Grapher {
   }
 
   public void updateGraph(){
-//    myLineChart.getData().clear();
     // Iterate over cellCounts
     for (int i = 0; i < cellCounts.size(); i++) {
       Map<String, Integer> cellCount = cellCounts.get(i);
