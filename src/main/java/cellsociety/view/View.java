@@ -43,7 +43,10 @@ public class View {
       "BURNING", Color.RED,
       "TREE", Color.GREEN,
       "FISH", Color.ORANGE,
-      "SHARK", Color.DARKGRAY
+      "SHARK", Color.DARKGRAY,
+      "X", Color.RED,
+      "O", Color.BLUE
+
   );
   private Map<String, Double> parameterValues;
   //endregion

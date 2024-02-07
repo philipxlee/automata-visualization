@@ -7,6 +7,7 @@ import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.model.variations.Percolation;
+import cellsociety.model.variations.Schelling;
 import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.model.variations.WaTor;
 
@@ -80,9 +81,9 @@ public class Main extends Application {
 //    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //        gameOfLife);
 
-    Simulation<BasicCell> percolation = new Percolation();
-    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-        percolation);
+//    Simulation<BasicCell> percolation = new Percolation();
+//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//        percolation);
 
 //      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
 //      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
@@ -91,6 +92,9 @@ public class Main extends Application {
 //      Simulation<WaTorCell> wator = new WaTor();
 //      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //          wator);
+
+        Simulation<BasicCell> schelling = new Schelling();
+        Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(), schelling);
 
     View mainView = new View(primaryStage, grid, config.getParameters(),
         config.getSimulationTextInfo());
