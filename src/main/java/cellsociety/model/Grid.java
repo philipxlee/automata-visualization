@@ -60,7 +60,6 @@ public class Grid<CellType extends Cell> {
       for (int j = 0; j < col; j++) {
         CellType cell = cellGrid[i][j];
         if (cell.isReadyForNextState()) {
-          // Apply the prepared state. This might involve checking the cell's delayed state or similar.
           cell.applyNextState();
           cell.setReadyForNextState(false); // Reset the flag
         }

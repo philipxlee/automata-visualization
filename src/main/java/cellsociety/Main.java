@@ -5,6 +5,7 @@ import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
+import cellsociety.model.variations.Schelling;
 import cellsociety.view.Display;
 import java.io.File;
 import javafx.application.Application;
@@ -101,9 +102,9 @@ public class Main extends Application {
       File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
       if (dataFile != null) {
         config.loadXMLFile(dataFile);
-        Simulation<BasicCell> gameOfLife = new GameOfLife();
+        Simulation<BasicCell> schelling = new Schelling();
         Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-            gameOfLife);
+            schelling);
 
         Display newDisplay = new Display(primaryStage, grid, config);
         newDisplay.start();
