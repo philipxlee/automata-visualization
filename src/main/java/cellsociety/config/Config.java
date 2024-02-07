@@ -242,6 +242,10 @@ public class Config {
     return new String[]{simulationType, simulationTitle, authors, description};
   }
 
+  public String getSimulationType() {
+    return simulationType;
+  }
+
 
   /**
    * @return an int which is the width of given in the XML file
