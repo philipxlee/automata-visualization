@@ -1,11 +1,15 @@
 package cellsociety;
 
 import cellsociety.config.Config;
+import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
+import cellsociety.model.variations.Percolation;
 import cellsociety.model.variations.Schelling;
+import cellsociety.model.variations.SpreadingOfFire;
+import cellsociety.model.variations.WaTor;
 import cellsociety.view.Display;
 import java.io.File;
 import javafx.application.Application;
@@ -102,9 +106,9 @@ public class Main extends Application {
       File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
       if (dataFile != null) {
         config.loadXMLFile(dataFile);
-        Simulation<BasicCell> schelling = new Schelling();
+        Simulation<BasicCell> simulation = returnSimulation(config.getSimulationType());
         Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-            schelling);
+            simulation);
 
         Display newDisplay = new Display(primaryStage, grid, config);
         newDisplay.start();
@@ -122,5 +126,18 @@ public class Main extends Application {
     alert.setTitle("Cell Society");
     alert.setHeaderText("");
     alert.showAndWait();
+  }
+
+  private Simulation<BasicCell> returnSimulation(String simulationType) {
+    Simulation<BasicCell> simulation = null;
+    switch (simulationType) {
+      case "GameOfLife" -> simulation = new GameOfLife();
+      case "Schelling" -> simulation = new Schelling();
+      case "Percolation" -> simulation = new Percolation();
+      case "SpreadingOfFire" -> simulation = new SpreadingOfFire();
+      default -> simulation = new GameOfLife();
+    }
+
+    return simulation;
   }
 }
