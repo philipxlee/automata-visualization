@@ -1,11 +1,12 @@
 package cellsociety.view;
 
+import cellsociety.config.Config;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -22,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.imageio.ImageIO;
 
 
@@ -31,7 +33,7 @@ public class Display {
   public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
   public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
   public String STYLESHEET = "styles.css";
-  private int WINDOW_WIDTH =  1024;
+  private int WINDOW_WIDTH = 1024;
   private int WINDOW_HEIGHT = 768;
   //region Temporary hard-coded values
   private String simType;
@@ -51,23 +53,19 @@ public class Display {
   //endregion
   private Stage primaryStage;
   private Grapher myGrapher;
+  private Timeline myTimeline;
   private Grid<Cell> simulationGrid;
   private ResourceBundle resources;
-  private Button playButton;
-  private Button pauseButton;
-  private Button nextButton;
-  private Button backButton;
   private BorderPane root;
 
 
-  public Display(Stage primaryStage, Grid grid, Map<String, Double> parameters,
-      String[] simulationTexts) {
+  public Display(Stage primaryStage, Grid grid, Config config) {
     this.primaryStage = primaryStage;
     this.simulationGrid = grid;
-    this.parameterValues = parameters;
-    this.simType = simulationTexts[0];
-    this.author = simulationTexts[2];
-    this.description = simulationTexts[3];
+    this.parameterValues = config.getParameters();
+    this.simType = config.getSimulationTextInfo()[0];
+    this.author = config.getSimulationTextInfo()[2];
+    this.description = config.getSimulationTextInfo()[3];
 
   }
 
@@ -80,7 +78,10 @@ public class Display {
     Stage graphStage = new Stage();
     graphStage.setTitle("Cell Population Over Time");
     this.myGrapher = new Grapher(graphStage);
-    this.myGrapher.updateData(simulationGrid.getCellCounts());
+    this.myGrapher.addData(simulationGrid.getCellCounts(), 0);
+
+    this.myTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> nextTick()));
+    myTimeline.setCycleCount(Timeline.INDEFINITE);
   }
 
   private void showScene() {
@@ -185,10 +186,24 @@ public class Display {
     infoPane.setAlignment(Pos.BASELINE_CENTER);
   }
 
+  private void nextTick() {
+    simulationGrid.computeNextGenerationGrid();
+    updateGrid();
+    myGrapher.addData(simulationGrid.getCellCounts(), myGrapher.getTick() + 1);
+//    myGrapher.updateGraph();
+  }
+
   private void createControlUI(VBox controlPane) {
     HBox row1 = new HBox();
-    playButton = makeButton("PlayCommand", null);
-    pauseButton = makeButton("PauseCommand", null);
+    Button playButton = makeButton("PlayCommand", event -> {
+      if (myTimeline.getStatus().equals(Timeline.Status.RUNNING)) {
+        return;
+      } else if (myTimeline.getStatus().equals(Timeline.Status.PAUSED) || myTimeline.getStatus()
+          .equals(Timeline.Status.STOPPED)) {
+        myTimeline.play();
+      }
+    });
+    Button pauseButton = makeButton("PauseCommand", event -> myTimeline.pause());
 
     row1.getChildren().add(playButton);
     row1.getChildren().add(pauseButton);
@@ -196,15 +211,11 @@ public class Display {
     controlPane.getChildren().add(row1);
 
     HBox row2 = new HBox();
-    nextButton = makeButton("NextCommand", event -> {
-      simulationGrid.computeNextGenerationGrid();
-      updateGrid();
-      myGrapher.updateData(simulationGrid.getCellCounts());
-      myGrapher.updateGraph();
-    });
-    backButton = makeButton("BackCommand", event -> {
+    Button nextButton = makeButton("NextCommand", event -> nextTick());
+    Button backButton = makeButton("BackCommand", event -> {
       simulationGrid.computePreviousGenerationGrid();
       updateGrid();
+      myGrapher.setTick(myGrapher.getTick() - 1);
     });
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);
@@ -213,7 +224,7 @@ public class Display {
 
     HBox row3 = new HBox();
     Button toggleGrapher = makeButton("GraphCommand", event -> {
-      if(myGrapher.isShowing()){
+      if (myGrapher.isShowing()) {
         myGrapher.close();
       } else {
         myGrapher.show();
