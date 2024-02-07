@@ -37,7 +37,7 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
       nextState = EMPTY;
     } else if (currentState.equals(TREE)) {
       boolean hasBurningNeighbor = checkForBurningNeighbor(cell, neighbors);
-      if (hasBurningNeighbor && rand.nextDouble() < CATCH_FIRE_PROBABILITY) { // randomless error
+      if (hasBurningNeighbor && rand.nextDouble() < CATCH_FIRE_PROBABILITY) {
         nextState = BURNING;
       }
     }

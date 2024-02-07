@@ -5,6 +5,7 @@ import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.GameOfLife;
+import cellsociety.model.variations.Schelling;
 import cellsociety.view.Display;
 import java.io.File;
 import javafx.application.Application;
