@@ -102,9 +102,9 @@ public class Main extends Application {
       File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
       if (dataFile != null) {
         config.loadXMLFile(dataFile);
-        Simulation<BasicCell> gameOfLife = new GameOfLife();
+        Simulation<BasicCell> schelling = new Schelling();
         Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-            gameOfLife);
+            schelling);
 
         Display newDisplay = new Display(primaryStage, grid, config);
         newDisplay.start();
