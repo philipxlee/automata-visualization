@@ -1,6 +1,7 @@
 package cellsociety;
 
 import cellsociety.config.Config;
+import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
