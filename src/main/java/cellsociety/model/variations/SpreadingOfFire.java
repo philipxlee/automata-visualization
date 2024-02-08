@@ -28,12 +28,10 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
     return new BasicCell(row, col, state);
   }
 
-
   @Override
   public void prepareCellNextState(BasicCell cell, List<BasicCell> neighbors) {
     String currentState = cell.getState();
     String nextState = currentState; // Default to current state
-
     if (currentState.equals(BURNING)) {
       nextState = EMPTY;
     } else if (currentState.equals(EMPTY) && rand.nextDouble() < BECOME_TREE_PROBABILITY) {
@@ -53,7 +51,7 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
       if (isCardinalNeighbor(cell, neighbor)) {
         if (neighbor.getState().equals(BURNING)) {
           hasBurningNeighbor = true;
-          break; // Exit the loop as soon as a burning neighbor is found
+          break;
         }
       }
     }
@@ -61,7 +59,6 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
   }
 
   private boolean isCardinalNeighbor(BasicCell centralCell, BasicCell neighbor) {
-    // Check if the neighbor is directly north, south, east, or west of the central cell
     boolean sameRow = centralCell.getRow() == neighbor.getRow();
     boolean sameCol = centralCell.getCol() == neighbor.getCol();
     boolean adjacentRow = Math.abs(centralCell.getRow() - neighbor.getRow()) == 1;
