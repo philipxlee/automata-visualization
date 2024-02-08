@@ -164,6 +164,7 @@ public class Grid<CellType extends Cell> {
       case 'S' -> state = CellStates.SHARK.name();
       case 'P' -> state = CellStates.PERCOLATED.name();
       case 'W' -> state = CellStates.WALL.name();
+      case 'D' -> state = CellStates.SAND.name();
       default -> state = CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
     }
     return state;

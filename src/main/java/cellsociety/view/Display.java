@@ -3,6 +3,7 @@ package cellsociety.view;
 import cellsociety.config.Config;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -39,18 +40,19 @@ public class Display {
   private String simType;
   private String author;
   private String description;
-  private Map<String, Color> stateColors = Map.of(
-      "ALIVE", Color.BLACK,
-      "EMPTY", Color.WHITE,
-      "PERCOLATED", Color.BLUE,
-      "WALL", Color.BLACK,
-      "BURNING", Color.RED,
-      "TREE", Color.GREEN,
-      "FISH", Color.ORANGE,
-      "SHARK", Color.DARKGRAY,
-      "X", Color.RED,
-      "O", Color.BLUE
-
+  private Map<String, Color> stateColors = Map.ofEntries(
+      new SimpleEntry<>("ALIVE", Color.BLACK),
+      new SimpleEntry<>("EMPTY", Color.WHITE),
+      new SimpleEntry<>("PERCOLATED", Color.BLUE),
+      new SimpleEntry<>("WALL", Color.BLACK),
+      new SimpleEntry<>("BURNING", Color.RED),
+      new SimpleEntry<>("TREE", Color.GREEN),
+      new SimpleEntry<>("FISH", Color.ORANGE),
+      new SimpleEntry<>("SHARK", Color.DARKGRAY),
+      new SimpleEntry<>("X", Color.RED),
+      new SimpleEntry<>("O", Color.BLUE),
+      new SimpleEntry<>("SAND", Color.PEACHPUFF)
+      // Add more entries as needed
   );
   private Map<String, Double> parameterValues;
   //endregion
