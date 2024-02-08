@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,6 +37,7 @@ public class Config {
   private int width;
   private int height;
   private char[][] grid;
+  private Queue<Character> cellValues;
   private Map<String, Double> parameters;
 
   public Config() {
@@ -285,6 +287,7 @@ public class Config {
         String line = reader.readLine();
         for (int j = 0; j < width; j++) {
           fileGrid[i][j] = line.charAt(j);
+          cellValues.add(fileGrid[i][j]);
         }
       }
     } catch (IOException e) {
@@ -300,6 +303,11 @@ public class Config {
     Element child = createElement(document, childName);
     parent.appendChild(child);
     return child;
+  }
+
+  public char nextCellValue() {
+    char c = cellValues.remove();
+    return c;
   }
 
 //  public static void main(String[] args) throws Exception {
