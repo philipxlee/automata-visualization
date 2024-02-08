@@ -3,7 +3,12 @@ package cellsociety.model.variations;
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.WaTorCell;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class WaTor implements Simulation<WaTorCell> {
 
@@ -84,6 +89,4 @@ public class WaTor implements Simulation<WaTorCell> {
     }
     return specificNeighbors;
   }
-
-  // Additional methods for managing energy, reproduction, etc.
 }
