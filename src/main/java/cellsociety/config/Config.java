@@ -287,7 +287,7 @@ public class Config {
         String line = reader.readLine();
         for (int j = 0; j < width; j++) {
           fileGrid[i][j] = line.charAt(j);
-          cellValues.add(fileGrid[i][j]);
+//          cellValues.add(fileGrid[i][j]);
         }
       }
     } catch (IOException e) {
@@ -305,10 +305,10 @@ public class Config {
     return child;
   }
 
-  public char nextCellValue() {
-    char c = cellValues.remove();
-    return c;
-  }
+//  public char nextCellValue() {
+//    char c = cellValues.remove();
+//    return c;
+//  }
 
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
