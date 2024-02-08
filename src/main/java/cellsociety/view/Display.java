@@ -51,7 +51,8 @@ public class Display {
       new SimpleEntry<>("SHARK", Color.DARKGRAY),
       new SimpleEntry<>("X", Color.RED),
       new SimpleEntry<>("O", Color.BLUE),
-      new SimpleEntry<>("SAND", Color.PEACHPUFF)
+      new SimpleEntry<>("ANT", Color.SADDLEBROWN),
+      new SimpleEntry<>("VISITED", Color.DARKBLUE)
       // Add more entries as needed
   );
   private Map<String, Double> parameterValues;
@@ -116,7 +117,13 @@ public class Display {
   }
 
   private void createGridUI(Pane gridSection) {
-    Cell[][] grid = simulationGrid.getCellGrid();
+//    Cell[][] grid = simulationGrid.getCellGrid();
+    Cell[][] grid = new Cell[simulationGrid.getCellRow()][simulationGrid.getCellCol()];
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
+        grid[i][j] = simulationGrid.getCell();
+      }
+    }
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
     double cellHeight = (double) WINDOW_HEIGHT / grid.length;

@@ -4,11 +4,13 @@ import cellsociety.config.Config;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
+import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.FallingSand;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.model.variations.Percolation;
 import cellsociety.model.variations.Schelling;
 import cellsociety.model.variations.SpreadingOfFire;
+import cellsociety.model.variations.WaTor;
 import cellsociety.view.Display;
 import java.io.File;
 import javafx.application.Application;
@@ -61,30 +63,6 @@ public class Main extends Application {
    */
   @Override
   public void start(Stage primaryStage) {
-    // init config, read using config and get the info organized
-    // then pass the info to the view
-    //hard code game of life simulation
-
-//    Simulation<BasicCell> gameOfLife = new GameOfLife();
-//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-//        gameOfLife);
-
-//    Simulation<BasicCell> percolation = new Percolation();
-//    Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-//        percolation);
-
-//      Simulation<BasicCell> spreadingOfFire = new SpreadingOfFire();
-//      Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-//        spreadingOfFire);
-
-//      Simulation<WaTorCell> wator = new WaTor();
-//      Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
-//          wator);
-
-//    View mainView = new View(primaryStage, grid, config.getParameters(),
-//        config.getSimulationTextInfo());
-//
-//    mainView.start();
     makeSimulation(primaryStage);
     showMessage(AlertType.INFORMATION, "Press N to start another simulation");
     primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
@@ -135,7 +113,7 @@ public class Main extends Application {
       case "Percolation" -> simulation = new Percolation();
       case "SpreadingOfFire" -> simulation = new SpreadingOfFire();
       case "FallingSand" -> simulation = new FallingSand();
-      default -> simulation = new GameOfLife();
+      default -> simulation = new Schelling();
     }
 
     return simulation;

@@ -1,5 +1,5 @@
 <simulation>
-    <type id = "Game of Life">
+    <type id = "Schelling">
         <parameters>
             <UnderpopulationThreshold>1</UnderpopulationThreshold>
             <MinAppropriateNeighbors>2</MinAppropriateNeighbors>
