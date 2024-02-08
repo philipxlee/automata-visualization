@@ -51,6 +51,7 @@ public class Display {
       new SimpleEntry<>("SHARK", Color.DARKGRAY),
       new SimpleEntry<>("X", Color.RED),
       new SimpleEntry<>("O", Color.BLUE),
+      new SimpleEntry<>("SAND", Color.PEACHPUFF),
       new SimpleEntry<>("ANT", Color.SADDLEBROWN),
       new SimpleEntry<>("VISITED", Color.DARKBLUE)
       // Add more entries as needed
