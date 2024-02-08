@@ -33,7 +33,6 @@ public class GameOfLife implements Simulation<BasicCell> {
    *
    * @param cell         The cell whose next state is to be determined.
    * @param neighbors    A list of the cell's neighbors, used to count how many are "ALIVE"
-   * @return The next state of the cell ("ALIVE" or "DEAD") based on the rules of the simulation.
    * @throws IllegalStateException if the cell's current state is neither "ALIVE" nor "DEAD".
    */
   @Override

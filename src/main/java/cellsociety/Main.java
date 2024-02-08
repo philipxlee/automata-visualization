@@ -1,15 +1,14 @@
 package cellsociety;
 
 import cellsociety.config.Config;
-import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
+import cellsociety.model.variations.FallingSand;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.model.variations.Percolation;
 import cellsociety.model.variations.Schelling;
 import cellsociety.model.variations.SpreadingOfFire;
-import cellsociety.model.variations.WaTor;
 import cellsociety.view.Display;
 import java.io.File;
 import javafx.application.Application;
@@ -135,6 +134,7 @@ public class Main extends Application {
       case "Schelling" -> simulation = new Schelling();
       case "Percolation" -> simulation = new Percolation();
       case "SpreadingOfFire" -> simulation = new SpreadingOfFire();
+      case "FallingSand" -> simulation = new FallingSand();
       default -> simulation = new GameOfLife();
     }
 

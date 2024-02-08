@@ -12,5 +12,6 @@ public enum CellStates {
   SHARK,
   PERCOLATED,
   WALL,
+  SAND,
   ERROR_DETECTED_IN_STATE_NAME
 }

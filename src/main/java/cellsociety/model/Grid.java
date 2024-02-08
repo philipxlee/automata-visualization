@@ -13,8 +13,8 @@ public class Grid<CellType extends Cell> {
 
   private final CellType[][] cellGrid;
   private final Map<CellType, List<CellType>> cellNeighbors;
-  private Simulation<CellType> simulation;
-  private Stack<String[][]> history;
+  private final Simulation<CellType> simulation;
+  private final Stack<String[][]> history;
   private Map<String, Integer> cellCounts;
 
   /**
@@ -85,13 +85,12 @@ public class Grid<CellType extends Cell> {
     }
   }
 
-  /**
-   * Retrieves the current state of the cell grid.
-   *
-   * @return A 2D array (Cell[][]) representing the current grid of cells of type Cell.
-   */
   public CellType[][] getCellGrid() {
     return cellGrid;
+  }
+
+  public Map<String, Integer> getCellCounts() {
+    return cellCounts;
   }
 
   private void initializeGridCells(char[][] gridState) {
@@ -114,10 +113,6 @@ public class Grid<CellType extends Cell> {
     }
   }
 
-//  private void updateGridWithNewStates(CellType[][] tempGrid) {
-//
-//  }
-
   private void recordCurrentGenerationForHistory(CellType[][] currentCellGrid) {
     String[][] stateSnapshot = new String[row][col];
     for (int i = 0; i < row; i++) {
@@ -125,10 +120,8 @@ public class Grid<CellType extends Cell> {
         stateSnapshot[i][j] = cellGrid[i][j].getState();
       }
     }
-    // Assuming you have a way to store these snapshots, perhaps as Object if types vary
     history.push(stateSnapshot);
   }
-
 
   private void addNeighborsWithinBounds(int newRow, int newCol, List<CellType> neighbors) {
     if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
@@ -149,7 +142,6 @@ public class Grid<CellType extends Cell> {
   }
 
   // Generates the state as a string from the read-in characters
-  // .name() returns the string form of the enum constants
   private String getStateFromChar(char cell) {
     String state = "";
     switch (cell) {
@@ -164,13 +156,10 @@ public class Grid<CellType extends Cell> {
       case 'S' -> state = CellStates.SHARK.name();
       case 'P' -> state = CellStates.PERCOLATED.name();
       case 'W' -> state = CellStates.WALL.name();
+      case 'D' -> state = CellStates.SAND.name();
       default -> state = CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
     }
     return state;
-  }
-
-  public Map<String, Integer> getCellCounts() {
-    return cellCounts;
   }
 
   private Map<String, Integer> countCellAmount() {
