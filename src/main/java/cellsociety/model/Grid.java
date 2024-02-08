@@ -1,6 +1,8 @@
 package cellsociety.model;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ public class Grid<CellType extends Cell> {
   private final Simulation<CellType> simulation;
   private final Stack<String[][]> history;
   private Map<String, Integer> cellCounts;
+  private Deque<CellType> cellDeque = new ArrayDeque<>();
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -65,8 +68,8 @@ public class Grid<CellType extends Cell> {
         }
       }
     }
-
     this.cellCounts = countCellAmount();
+    convertCellGridToDeque(cellGrid);
   }
 
   /**
@@ -83,10 +86,18 @@ public class Grid<CellType extends Cell> {
         }
       }
     }
+    convertCellGridToDeque(cellGrid);
+  }
+  public int getCellRow() {
+    return cellGrid.length;
   }
 
-  public CellType[][] getCellGrid() {
-    return cellGrid;
+  public int getCellCol() {
+    return cellGrid[0].length;
+  }
+
+  public CellType getCell() {
+    return cellDeque.pop();
   }
 
   public Map<String, Integer> getCellCounts() {
@@ -96,12 +107,12 @@ public class Grid<CellType extends Cell> {
   private void initializeGridCells(char[][] gridState) {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        System.out.println(j);
         String state = getStateFromChar(gridState[i][j]);
         CellType currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
       }
     }
+    convertCellGridToDeque(cellGrid);
     buildCellNeighborMap();
   }
 
@@ -157,6 +168,8 @@ public class Grid<CellType extends Cell> {
       case 'P' -> state = CellStates.PERCOLATED.name();
       case 'W' -> state = CellStates.WALL.name();
       case 'D' -> state = CellStates.SAND.name();
+      case 'A' -> state = CellStates.ANT.name();
+      case 'V' -> state = CellStates.VISITED.name();
       default -> state = CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
     }
     return state;
@@ -171,5 +184,14 @@ public class Grid<CellType extends Cell> {
       }
     }
     return cellCount;
+  }
+
+  private void convertCellGridToDeque(CellType[][] cellGrid) {
+    cellDeque.clear();
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        cellDeque.add(cellGrid[i][j]);
+      }
+    }
   }
 }
