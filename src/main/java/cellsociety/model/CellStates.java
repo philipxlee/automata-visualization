@@ -13,5 +13,7 @@ public enum CellStates {
   PERCOLATED,
   WALL,
   SAND,
+  ANT,
+  VISITED,
   ERROR_DETECTED_IN_STATE_NAME
 }
