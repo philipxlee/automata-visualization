@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import javax.xml.parsers.DocumentBuilder;
@@ -41,8 +42,8 @@ public class Config {
   private Map<String, Double> parameters;
 
   public Config() {
-    grid = new char[10][10];
     parameters = new HashMap<>();
+    cellValues = new LinkedList<>();
   }
 
   /**
@@ -282,12 +283,11 @@ public class Config {
 
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
       int character;
-
       for (int i = 0; i < height; i++) {
         String line = reader.readLine();
         for (int j = 0; j < width; j++) {
           fileGrid[i][j] = line.charAt(j);
-//          cellValues.add(fileGrid[i][j]);
+          cellValues.offer(fileGrid[i][j]);
         }
       }
     } catch (IOException e) {
@@ -305,15 +305,19 @@ public class Config {
     return child;
   }
 
-//  public char nextCellValue() {
-//    char c = cellValues.remove();
-//    return c;
-//  }
+  // If the cellValues is empty, only return the value of empty cell
+  public char nextCellValue() {
+    Character c = cellValues.poll();
+    if (c != null) {
+      return c;
+    } else {
+      return '0';
+    }
+  }
 
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
-//    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\Schelling\\Schelling1.xml"));
-//
+//    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\Percolation\\Percolation1.xml"));
 //  }
 
 }
