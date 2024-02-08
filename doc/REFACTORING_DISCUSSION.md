@@ -1,6 +1,6 @@
 # Refactoring Discussion
 
-#### NAMEs
+#### Philip Lee, Abhishek Chataut, Saad Hakim
 
 ## Review Design Principles
 
@@ -27,12 +27,17 @@ Some of the ways that LSP is violated are:
 ### Describe How 3 of Your Project's Abstractions Do or Do Not Obey Open/Closed and Liskov Substitution
 
 #### Existing Abstraction 1:
+Simulation Interface
 
 
 #### Existing Abstraction 2:
-
+CellStates Enum
+Stores and abstracts the different states of a cell and cell types 
 
 #### Existing Abstraction 3:
+Abstract Class Cell
+It follows Liskov Substitution Principle because it is a superclass and its subclasses 
+can be substituted for it without breaking the code.
 
 
 ### Describe 3 New Abstractions Based on the Change Requirements
@@ -60,4 +65,5 @@ eg. `Class.method` - public instance variable `foo`.
 
 
 ### Planned Refactorings from Design Principles
+Make more variables static and fix pipelines issues.
 
