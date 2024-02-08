@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.Stream;
 
 public class Grid<CellType extends Cell> {
 
@@ -88,6 +89,7 @@ public class Grid<CellType extends Cell> {
     }
     convertCellGridToDeque(cellGrid);
   }
+
   public int getCellRow() {
     return cellGrid.length;
   }
@@ -154,25 +156,12 @@ public class Grid<CellType extends Cell> {
 
   // Generates the state as a string from the read-in characters
   private String getStateFromChar(char cell) {
-    String state = "";
-    switch (cell) {
-      case '0' -> state = CellStates.EMPTY.name();
-      case '1' -> state = CellStates.ALIVE.name();
-      case '2' -> state = CellStates.DEAD.name();
-      case 'T' -> state = CellStates.TREE.name();
-      case 'B' -> state = CellStates.BURNING.name();
-      case 'X' -> state = CellStates.X.name();
-      case 'O' -> state = CellStates.O.name();
-      case 'F' -> state = CellStates.FISH.name();
-      case 'S' -> state = CellStates.SHARK.name();
-      case 'P' -> state = CellStates.PERCOLATED.name();
-      case 'W' -> state = CellStates.WALL.name();
-      case 'D' -> state = CellStates.SAND.name();
-      case 'A' -> state = CellStates.ANT.name();
-      case 'V' -> state = CellStates.VISITED.name();
-      default -> state = CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
+    for (CellStates state : CellStates.values()) {
+      if (state.getCellChar() == cell) {
+        return state.name();
+      }
     }
-    return state;
+    return CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
   }
 
   private Map<String, Integer> countCellAmount() {

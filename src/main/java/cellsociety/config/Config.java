@@ -43,49 +43,6 @@ public class Config {
     parameters = new HashMap<>();
   }
 
-  /**
-   * @param path The String path of the xml file to be loaded and read
-   * @throws Exception
-   */
-  // make sure to take care of the Exception
-  public void loadXMLFilePhilipTest(String path) throws Exception {
-
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = dbf.newDocumentBuilder();
-    Document doc = db.parse(path);
-
-    doc.getDocumentElement().normalize();
-
-    simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id");
-
-    NodeList parameterList = getChildNodes(doc, "parameters");
-    for (int i = 0; i < parameterList.getLength(); i++) {
-      Node currentNode = parameterList.item(i);
-
-      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-        // Process the element node
-        Element element = (Element) currentNode;
-        parameters.put(element.getTagName(), Double.parseDouble(element.getTextContent().trim()));
-
-      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
-          !currentNode.getTextContent().trim().isEmpty()) {
-        System.out.println("Testing: " + currentNode.getTextContent().trim());
-      }
-    }
-
-    simulationTitle = getTagText(doc, "title");
-    authors = getTagText(doc, "authors");
-    description = getTagText(doc, "description");
-    width = Integer.parseInt(getTagText(doc, "width"));
-    height = Integer.parseInt(getTagText(doc, "height"));
-
-    String fileName = getTagText(doc, "fileName");
-    grid = fileToGrid(fileName);
-
-
-  }
-
-
   public void loadXMLFile(File xmlFile) throws Exception {
 
     Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
