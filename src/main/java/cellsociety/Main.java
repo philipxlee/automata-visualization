@@ -135,7 +135,7 @@ public class Main extends Application {
       case "Schelling" -> simulation = new Schelling();
       case "Percolation" -> simulation = new Percolation();
       case "SpreadingOfFire" -> simulation = new SpreadingOfFire();
-      default -> simulation = new GameOfLife();
+      default -> simulation = new SpreadingOfFire();
     }
 
     return simulation;

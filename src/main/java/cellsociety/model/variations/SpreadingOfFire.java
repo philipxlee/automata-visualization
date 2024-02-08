@@ -8,7 +8,8 @@ import java.util.Random;
 
 public class SpreadingOfFire implements Simulation<BasicCell> {
 
-  private final double CATCH_FIRE_PROBABILITY = 0.15;
+  private final double CATCH_FIRE_PROBABILITY = 0.01;
+  private final double BECOME_TREE_PROBABILITY = 0.01;
   private final String BURNING = CellStates.BURNING.name();
   private final String EMPTY = CellStates.EMPTY.name();
   private final String TREE = CellStates.TREE.name();
@@ -33,11 +34,13 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
     String currentState = cell.getState();
     String nextState = currentState; // Default to current state
 
-    if (currentState.equals(BURNING) || currentState.equals(EMPTY)) {
+    if (currentState.equals(BURNING)) {
       nextState = EMPTY;
+    } else if (currentState.equals(EMPTY) && rand.nextDouble() < BECOME_TREE_PROBABILITY) {
+      nextState = TREE;
     } else if (currentState.equals(TREE)) {
       boolean hasBurningNeighbor = checkForBurningNeighbor(cell, neighbors);
-      if (hasBurningNeighbor && rand.nextDouble() < CATCH_FIRE_PROBABILITY) {
+      if (hasBurningNeighbor || rand.nextDouble() < CATCH_FIRE_PROBABILITY) {
         nextState = BURNING;
       }
     }
