@@ -123,6 +123,7 @@ public class Config {
 
 
   /**
+   * saves the state of the simulation into XML file
    * @param path The String path of the xml file to be created and written to
    * @param simulationTextInfo The array containing simulation type, title, authors, description
    * @param parameters The map which contains key-value pairs for each parameter's value
