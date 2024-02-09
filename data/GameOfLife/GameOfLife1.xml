@@ -1,11 +1,6 @@
 <simulation>
   <type id = "GameOfLife">
     <parameters>
-      <UnderpopulationThreshold>1</UnderpopulationThreshold>
-      <MinAppropriateNeighbors>2</MinAppropriateNeighbors>
-      <MaxAppropriateNeighbors>3</MaxAppropriateNeighbors>
-      <OverpopulationThreshold>4</OverpopulationThreshold>
-      <NumberOfNeighborsForBirth>3</NumberOfNeighborsForBirth>
     </parameters>
     <title>Game of Life Simulation #1</title>
     <authors>John Conway</authors>
