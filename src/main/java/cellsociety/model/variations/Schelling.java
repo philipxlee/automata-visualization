@@ -8,8 +8,7 @@ import java.util.Queue;
 
 public class Schelling implements Simulation<BasicCell> {
 
-  private final double THRESHOLD = 0.30;
-  private final String EMPTY = "EMPTY";
+  private static final String EMPTY = "EMPTY";
   private final Queue<BasicCell> emptyCells = new LinkedList<>();
 
   @Override
@@ -38,6 +37,7 @@ public class Schelling implements Simulation<BasicCell> {
   private boolean calculateSatisfaction(String currentState, int[] counts) {
     int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
     int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
+    double THRESHOLD = 0.30;
     return (otherStateCount == 0 || (double) sameStateCount / (otherStateCount + sameStateCount) >= THRESHOLD);
   }
 

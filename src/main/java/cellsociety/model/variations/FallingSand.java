@@ -7,9 +7,9 @@ import java.util.List;
 
 public class FallingSand implements Simulation<BasicCell> {
 
-  private final String SAND = CellStates.SAND.name();
-  private final String WALL = CellStates.WALL.name();
-  private final String EMPTY = CellStates.EMPTY.name();
+  private static final String SAND = CellStates.SAND.name();
+  private static final String WALL = CellStates.WALL.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
 
   @Override
   public BasicCell createVariationCell(int row, int col, String state) {

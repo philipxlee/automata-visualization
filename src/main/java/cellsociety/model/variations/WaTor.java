@@ -11,13 +11,10 @@ import java.util.Random;
 
 public class WaTor implements Simulation<WaTorCell> {
 
-  private final String EMPTY = CellStates.EMPTY.name();
-  private final String FISH = CellStates.FISH.name();
-  private final String SHARK = CellStates.SHARK.name();
-
-  private int fishBreedTime = 0;
-  private int sharkBreedTime = 0;
-  private int sharkStarveTime = 0;
+  private static final String FISH = CellStates.FISH.name();
+  private static final String SHARK = CellStates.SHARK.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
+  private static final Random rand = new Random();
 
   @Override
   public WaTorCell createVariationCell(int row, int col, String state) {
@@ -26,54 +23,92 @@ public class WaTor implements Simulation<WaTorCell> {
 
   @Override
   public void prepareCellNextState(WaTorCell cell, List<WaTorCell> neighbors) {
-    if (cell.getState().equals(EMPTY)) {
-      handleEmptyCell(cell, neighbors);
-    } else if (cell.getState().equals(FISH)) {
-      handleFishCell(cell, neighbors);
-    } else if (cell.getState().equals(SHARK)) {
-      handleSharkCell(cell, neighbors);
+    String currentState = cell.getState();
+    switch (currentState) {
+      case "FISH" -> handleFish(cell, neighbors);
+      case "SHARK" -> handleShark(cell, neighbors);
     }
   }
 
-  private void handleEmptyCell(WaTorCell cell, List<WaTorCell> neighbors) {
-    // Do nothing, as empty cells remain empty
-  }
-
-  private void handleFishCell(WaTorCell cell, List<WaTorCell> neighbors) {
-    WaTorCell randomNeighbor = getRandomNeighbor(cell, neighbors);
-    if (randomNeighbor != null && randomNeighbor.getState().equals(EMPTY)) {
-      randomNeighbor.setNextState(FISH);
-      randomNeighbor.setFishBreedTime(cell.getFishBreedTime() - 1);
+  private void handleFish(WaTorCell currentCell, List<WaTorCell> neighbors) {
+    List<WaTorCell> emptyNeighbors = findNeighbors(currentCell, neighbors, EMPTY);
+    if (!emptyNeighbors.isEmpty()) {
+      WaTorCell nextCell = emptyNeighbors.get(rand.nextInt(emptyNeighbors.size()));
+      moveFish(currentCell, nextCell);
     }
-    cell.setNextState(FISH);
-    cell.setFishBreedTime(fishBreedTime - 1);
   }
 
-  private void handleSharkCell(WaTorCell cell, List<WaTorCell> neighbors) {
-    WaTorCell randomNeighbor = getRandomNeighbor(cell, neighbors);
-    if (randomNeighbor != null && randomNeighbor.getState().equals(EMPTY)) {
-      randomNeighbor.setNextState(SHARK);
-      randomNeighbor.setFishBreedTime(cell.getSharkBreedTime() - 1);
-      randomNeighbor.setSharkStarveTime(cell.getSharkStarveTime() - 1);
-    } else if (randomNeighbor != null && randomNeighbor.getState().equals(FISH)) {
-      randomNeighbor.setNextState(SHARK);
-      randomNeighbor.setFishBreedTime(cell.getSharkBreedTime() - 1);
-      randomNeighbor.setSharkStarveTime(cell.getSharkStarveTime() - 1);
+  private void moveFish(WaTorCell currentCell, WaTorCell nextCell) {
+    if (currentCell.getIsEaten()) {
+      currentCell.setNextState(SHARK);
+      currentCell.resetAnimal();
+      return;
     }
-    cell.setNextState(EMPTY);
+    currentCell.setNextState(EMPTY);
+    nextCell.setNextState(FISH);
+    nextCell.setBreedTime(currentCell.getBreedTime() + 1);
+    if (nextCell.canReproduce(FISH)) {
+      currentCell.setNextState(FISH);
+      currentCell.resetAnimal();
+      nextCell.resetAnimal();
+    } else {
+      currentCell.setNextState(EMPTY);
+      currentCell.resetAnimal();
+    }
   }
 
-  private WaTorCell getRandomNeighbor(WaTorCell cell, List<WaTorCell> neighbors) {
-    List<WaTorCell> emptyNeighbors = new ArrayList<>();
+  private void handleShark(WaTorCell currentCell, List<WaTorCell> neighbors) {
+    List<WaTorCell> fishNeighbors = findNeighbors(currentCell, neighbors, FISH);
+    if (!fishNeighbors.isEmpty()) {
+      WaTorCell nextCell = fishNeighbors.get(rand.nextInt(fishNeighbors.size()));
+      moveShark(currentCell, nextCell);
+      return;
+    }
+
+    List<WaTorCell> emptyNeighbors = findNeighbors(currentCell, neighbors, EMPTY);
+    if (!emptyNeighbors.isEmpty()) {
+      WaTorCell nextCell = emptyNeighbors.get(rand.nextInt(emptyNeighbors.size()));
+      moveShark(currentCell, nextCell);
+      return;
+    }
+
+    currentCell.setNextState(SHARK);
+  }
+
+  private void moveShark(WaTorCell currentCell, WaTorCell nextCell) {
+    nextCell.setNextState(SHARK);
+    nextCell.setBreedTime(currentCell.getBreedTime() + 1);
+
+    if (nextCell.getState().equals(FISH)) {
+      nextCell.setEnergy(currentCell.getEnergy() + 2);
+      nextCell.setIsEaten(true);
+    } else {
+      nextCell.setEnergy(currentCell.getEnergy() - 1);
+    }
+
+    if (nextCell.sharkStarve()) {
+      currentCell.setNextState(EMPTY);
+      currentCell.resetAnimal();
+      nextCell.setNextState(EMPTY);
+      nextCell.resetAnimal();
+    }
+    else if (nextCell.canReproduce(SHARK)) {
+      currentCell.setNextState(SHARK);
+      currentCell.resetAnimal();
+      nextCell.setBreedTime(0);
+    } else {
+      currentCell.setNextState(EMPTY);
+      currentCell.resetAnimal();
+    }
+  }
+
+  private List<WaTorCell> findNeighbors(WaTorCell cell, List<WaTorCell> neighbors, String target) {
+    List<WaTorCell> validNeighbors = new ArrayList<>();
     for (WaTorCell neighbor : neighbors) {
-      if (neighbor.getState().equals(EMPTY)) {
-        emptyNeighbors.add(neighbor);
+      if (neighbor.getState().equals(target)) {
+        validNeighbors.add(neighbor);
       }
     }
-    if (!emptyNeighbors.isEmpty()) {
-      Collections.shuffle(emptyNeighbors);
-      return emptyNeighbors.get(0);
-    }
-    return null;
+    return validNeighbors;
   }
 }
