@@ -3,9 +3,7 @@ package cellsociety.model.variations;
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.WaTorCell;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -27,6 +25,7 @@ public class WaTor implements Simulation<WaTorCell> {
     switch (currentState) {
       case "FISH" -> handleFish(cell, neighbors);
       case "SHARK" -> handleShark(cell, neighbors);
+      default -> cell.setNextState(EMPTY);
     }
   }
 
