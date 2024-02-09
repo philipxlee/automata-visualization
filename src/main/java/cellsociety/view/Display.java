@@ -6,6 +6,7 @@ import cellsociety.model.Grid;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -13,8 +14,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -51,6 +54,7 @@ public class Display {
       new SimpleEntry<>("SHARK", Color.DARKGRAY),
       new SimpleEntry<>("X", Color.RED),
       new SimpleEntry<>("O", Color.BLUE),
+      new SimpleEntry<>("SAND", Color.PEACHPUFF),
       new SimpleEntry<>("ANT", Color.SADDLEBROWN),
       new SimpleEntry<>("VISITED", Color.DARKBLUE)
       // Add more entries as needed
@@ -162,6 +166,7 @@ public class Display {
     newUI.getChildren().add(separator);
 
     VBox controlPane = new VBox();
+    controlPane.getStyleClass().add("control-pane");
     controlPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     controlPane.setPrefHeight(WINDOW_HEIGHT / 2);
     createControlUI(controlPane);
@@ -202,50 +207,73 @@ public class Display {
     simulationGrid.computeNextGenerationGrid();
     updateGrid();
     myGrapher.addData(simulationGrid.getCellCounts(), myGrapher.getTick() + 1);
-//    myGrapher.updateGraph();
+  }
+
+  private void lastTick() {
+    simulationGrid.computePreviousGenerationGrid();
+    updateGrid();
+    myGrapher.setTick(myGrapher.getTick() - 1);
+  }
+
+  private void toggleGrapher() {
+    if (myGrapher.isShowing()) {
+      myGrapher.close();
+    } else {
+      myGrapher.show();
+    }
   }
 
   private void createControlUI(VBox controlPane) {
     HBox row1 = new HBox();
-    Button playButton = makeButton("PlayCommand", event -> {
-      if (myTimeline.getStatus().equals(Timeline.Status.RUNNING)) {
-        return;
-      } else if (myTimeline.getStatus().equals(Timeline.Status.PAUSED) || myTimeline.getStatus()
-          .equals(Timeline.Status.STOPPED)) {
-        myTimeline.play();
-      }
-    });
+    row1.getStyleClass().add("button-row");
+    Button playButton = makeButton("PlayCommand", event -> myTimeline.play());
     Button pauseButton = makeButton("PauseCommand", event -> myTimeline.pause());
+
+
+    HBox row2 = new HBox();
+    row2.getStyleClass().add("button-row");
+    Button nextButton = makeButton("NextCommand", event -> nextTick());
+    Button backButton = makeButton("BackCommand", event -> lastTick());
+
+    HBox row3 = new HBox();
+    row3.getStyleClass().add("button-row");
+
+    Label sliderLabel = new Label("Simulation Speed");
+    Slider speedSlider = new Slider();
+    speedSlider.setMin(0);
+    speedSlider.setMax(100);
+    speedSlider.setValue(10);
+    speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+      myTimeline.setRate(newValue.doubleValue() / 10);
+    });
+    VBox sliderBox = new VBox(sliderLabel, speedSlider);
+    sliderBox.getStyleClass().add("dropdown");
+
+    Label comboBoxLabel = new Label("Edge Policy:");
+    ComboBox<String> comboBox = new ComboBox<>();
+    comboBox.getItems().addAll("Plane", "Toroidal");
+    comboBox.setValue("Plane");
+    VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
+    comboEdgePolicy.getStyleClass().add("dropdown");
+
+    HBox row4 = new HBox();
+    row4.getStyleClass().add("button-row");
+    Button saveButton = makeButton("SaveCommand", event -> {});
+    Button toggleGrapher = makeButton("GraphCommand", event -> toggleGrapher());
 
     row1.getChildren().add(playButton);
     row1.getChildren().add(pauseButton);
-    row1.setAlignment(Pos.BASELINE_CENTER);
-    controlPane.getChildren().add(row1);
-
-    HBox row2 = new HBox();
-    Button nextButton = makeButton("NextCommand", event -> nextTick());
-    Button backButton = makeButton("BackCommand", event -> {
-      simulationGrid.computePreviousGenerationGrid();
-      updateGrid();
-      myGrapher.setTick(myGrapher.getTick() - 1);
-    });
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);
-    row2.setAlignment(Pos.BASELINE_CENTER);
+    row3.getChildren().add(sliderBox);
+    row3.getChildren().add(comboEdgePolicy);
+    row4.getChildren().add(toggleGrapher);
+    row4.getChildren().add(saveButton);
+
+    controlPane.getChildren().add(row1);
     controlPane.getChildren().add(row2);
-
-    HBox row3 = new HBox();
-    Button toggleGrapher = makeButton("GraphCommand", event -> {
-      if (myGrapher.isShowing()) {
-        myGrapher.close();
-      } else {
-        myGrapher.show();
-      }
-    });
-    row3.setAlignment(Pos.BASELINE_CENTER);
-
-    row3.getChildren().add(toggleGrapher);
     controlPane.getChildren().add(row3);
+    controlPane.getChildren().add(row4);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }

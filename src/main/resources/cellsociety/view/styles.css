@@ -50,6 +50,20 @@
   -fx-text-alignment: left;
 }
 
+.combo-box {
+  -fx-font-size: 10px;
+  -fx-text-fill: #006464;
+  -fx-background-color: #DFB951;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-padding: 8;
+}
+
+.dropdown .label, .dropdown {
+  -fx-font-size: 11px;
+  -fx-alignment: center;
+}
+
 .button {
   -fx-text-fill: #006464;
   -fx-background-color: #DFB951;
@@ -60,6 +74,17 @@
 
 .button:hover {
   -fx-background-color: #3a3a3a;
+}
+
+.button-row {
+  -fx-spacing: 10;
+  -fx-alignment: center;
+}
+
+.control-pane {
+  -fx-padding: 20;
+  -fx-spacing: 10;
+  -fx-background-color: rgba(203, 239, 186, 0.24);
 }
 
 .chart-line-symbol {
