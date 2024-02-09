@@ -1,40 +1,70 @@
 package cellsociety.model.celltypes;
 
 import cellsociety.model.Cell;
+import cellsociety.model.CellStates;
 
 public class WaTorCell extends Cell {
 
+  private static final String SHARK = CellStates.SHARK.name();
+  private static final int SHARK_BREED_TIME = 7;
+  private static final int FISH_BREED_TIME = 5;
+  private static final int SHARK_STARTING_ENERGY = 10;
 
-  private int fishBreedTime = 0;
-  private int sharkBreedTime = 0;
-  private int sharkStarveTime = 0;
-
+  private int breedTime = 0;
+  private int energy = SHARK_STARTING_ENERGY;
+  private boolean eaten = false;
+  private boolean fishMoved = false;
 
   public WaTorCell(int row, int col, String state) {
     super(row, col, state);
   }
 
-  public int getFishBreedTime() {
-    return fishBreedTime;
+  public int getBreedTime() {
+    return this.breedTime;
   }
 
-  public void setFishBreedTime(int fishBreedTime) {
-    this.fishBreedTime = fishBreedTime;
+  public void setBreedTime(int time) {
+    this.breedTime = time;
   }
 
-  public int getSharkBreedTime() {
-    return sharkBreedTime;
+  public void setEnergy(int energy) {
+    this.breedTime = energy;
   }
 
-  public void setSharkBreedTime(int sharkBreedTime) {
-    this.sharkBreedTime = sharkBreedTime;
+  public int getEnergy() {
+    return this.energy;
   }
 
-  public int getSharkStarveTime() {
-    return sharkStarveTime;
+  public void setFishMovedAway(boolean moved) {
+    this.fishMoved = moved;
   }
 
-  public void setSharkStarveTime(int sharkStarveTime) {
-    this.sharkStarveTime = sharkStarveTime;
+  public boolean getFishMovedAway() {
+    return this.fishMoved;
   }
+
+  public boolean canReproduce(String animal) {
+    return (animal.equals(SHARK)) ? breedTime == SHARK_BREED_TIME : breedTime == FISH_BREED_TIME;
+  }
+
+  public boolean sharkStarve() {
+    return this.energy == 0;
+  }
+
+  public boolean getIsEaten() {
+    return this.eaten;
+  }
+
+  public void setIsEaten(boolean eaten) {
+    this.eaten = eaten;
+  }
+
+  public void resetAnimal() {
+    this.energy = 0;
+    this.breedTime = 0;
+    this.eaten = false;
+    this.fishMoved = false;
+  }
+
+
 }
