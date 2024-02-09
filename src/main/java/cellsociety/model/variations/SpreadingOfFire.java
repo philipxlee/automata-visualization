@@ -8,9 +8,9 @@ import java.util.Random;
 
 public class SpreadingOfFire implements Simulation<BasicCell> {
 
-  private final String BURNING = CellStates.BURNING.name();
-  private final String EMPTY = CellStates.EMPTY.name();
-  private final String TREE = CellStates.TREE.name();
+  private static final String BURNING = CellStates.BURNING.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
+  private static final String TREE = CellStates.TREE.name();
   private final Random rand = new Random();
 
   /**

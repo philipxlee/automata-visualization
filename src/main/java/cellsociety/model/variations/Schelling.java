@@ -8,7 +8,7 @@ import java.util.Queue;
 
 public class Schelling implements Simulation<BasicCell> {
 
-  private final String EMPTY = "EMPTY";
+  private static final String EMPTY = "EMPTY";
   private final Queue<BasicCell> emptyCells = new LinkedList<>();
 
   @Override

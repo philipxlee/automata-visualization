@@ -2,6 +2,7 @@ package cellsociety.model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ public class Grid<CellType extends Cell> {
   private final Simulation<CellType> simulation;
   private final Stack<String[][]> history;
   private Map<String, Integer> cellCounts;
-  private Deque<CellType> cellDeque = new ArrayDeque<>();
+  private final Deque<CellType> cellDeque = new ArrayDeque<>();
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -178,9 +179,7 @@ public class Grid<CellType extends Cell> {
   private void convertCellGridToDeque(CellType[][] cellGrid) {
     cellDeque.clear();
     for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
-        cellDeque.add(cellGrid[i][j]);
-      }
+      cellDeque.addAll(Arrays.asList(cellGrid[i]).subList(0, col));
     }
   }
 }

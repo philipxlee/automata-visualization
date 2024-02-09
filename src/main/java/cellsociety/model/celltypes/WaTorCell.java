@@ -13,7 +13,6 @@ public class WaTorCell extends Cell {
   private int breedTime = 0;
   private int energy = SHARK_STARTING_ENERGY;
   private boolean eaten = false;
-  private boolean fishMoved = false;
 
   public WaTorCell(int row, int col, String state) {
     super(row, col, state);
@@ -33,14 +32,6 @@ public class WaTorCell extends Cell {
 
   public int getEnergy() {
     return this.energy;
-  }
-
-  public void setFishMovedAway(boolean moved) {
-    this.fishMoved = moved;
-  }
-
-  public boolean getFishMovedAway() {
-    return this.fishMoved;
   }
 
   public boolean canReproduce(String animal) {
@@ -63,8 +54,5 @@ public class WaTorCell extends Cell {
     this.energy = 0;
     this.breedTime = 0;
     this.eaten = false;
-    this.fishMoved = false;
   }
-
-
 }

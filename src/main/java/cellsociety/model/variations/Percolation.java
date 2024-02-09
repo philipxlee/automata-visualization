@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Percolation implements Simulation<BasicCell> {
 
-  private final String PERCOLATED = CellStates.PERCOLATED.name();
-  private final String EMPTY = CellStates.EMPTY.name();
+  private static final String PERCOLATED = CellStates.PERCOLATED.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
 
   @Override
   public BasicCell createVariationCell(int row, int col, String state) {

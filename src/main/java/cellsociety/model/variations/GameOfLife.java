@@ -7,8 +7,8 @@ import java.util.List;
 
 public class GameOfLife implements Simulation<BasicCell> {
 
-  private final String ALIVE = CellStates.ALIVE.name();
-  private final String DEAD = CellStates.DEAD.name();
+  private static final String ALIVE = CellStates.ALIVE.name();
+  private static final String DEAD = CellStates.DEAD.name();
 
   /**
    * Creates a new GameOfLifeCell with specified row, column, and state.

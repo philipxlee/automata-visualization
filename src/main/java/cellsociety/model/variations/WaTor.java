@@ -45,7 +45,6 @@ public class WaTor implements Simulation<WaTorCell> {
       return;
     }
     currentCell.setNextState(EMPTY);
-    currentCell.setFishMovedAway(true);
     nextCell.setNextState(FISH);
     nextCell.setBreedTime(currentCell.getBreedTime() + 1);
     if (nextCell.canReproduce(FISH)) {

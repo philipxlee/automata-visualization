@@ -17,8 +17,6 @@ public enum CellStates {
   VISITED('V'),
   ERROR_DETECTED_IN_STATE_NAME('E');
 
-  private final char cellChar;
-
   CellStates(char cellChar) {
     this.cellChar = cellChar;
   }
@@ -26,4 +24,6 @@ public enum CellStates {
   public char getCellChar() {
     return cellChar;
   }
+
+  private final char cellChar;
 }
