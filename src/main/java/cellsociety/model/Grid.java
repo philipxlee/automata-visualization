@@ -41,10 +41,13 @@ public class Grid<CellType extends Cell> {
   }
 
   /**
-   * Computes the next generation of the grid by applying the given predefined rules. This method
-   * iterates over each cell in the current grid, determines its new state based on its neighbors,
-   * and updates the cell states in a temporary grid. Once all cells are processed, the main grid is
-   * updated with these new states.
+   * Computes the next generation of the grid. For each cell, the next state is determined based on
+   * the current state and the states of its neighbors. Then, the next state is applied to all cells
+   * that are ready for it.
+   * recordCurrentGenerationForHistory is called to store the current state of the grid in a stack
+   * for use in the back button.
+   * After the next generation is computed, the cell counts are updated and the grid is
+   * converted to a deque for use in the View.
    */
   public void computeNextGenerationGrid() {
     // Record history for back button
@@ -91,18 +94,40 @@ public class Grid<CellType extends Cell> {
     convertCellGridToDeque(cellGrid);
   }
 
+
+  /**
+   * Returns the cellGrid's row
+   *
+   * @return the row of the cellGrid
+   */
   public int getCellRow() {
     return cellGrid.length;
   }
 
+  /**
+   * Returns the cellGrid's column
+   *
+   * @return the column of the cellGrid
+   */
   public int getCellCol() {
     return cellGrid[0].length;
   }
 
+  /**
+   * Returns each cell in the grid as a stream to be used in the View, preventing direct access to
+   * the grid.
+   *
+   * @return the next cell in the grid
+   */
   public CellType getCell() {
     return cellDeque.pop();
   }
 
+  /**
+   * Returns the cellCounts map to be used in the View
+   *
+   * @return the cellCounts map
+   */
   public Map<String, Integer> getCellCounts() {
     return cellCounts;
   }

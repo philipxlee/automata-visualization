@@ -26,6 +26,17 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
     return new BasicCell(row, col, state);
   }
 
+
+  /**
+   * Determines the next state of a cell based on its current state and the states of its neighbors.
+   * This method implements the rules of Spreading of Fire simulation: - A "BURNING" cell becomes
+   * "EMPTY" in the next state. - An "EMPTY" cell becomes a "TREE" with a small probability. - A
+   * "TREE" cell becomes "BURNING" if any of its cardinal neighbors are "BURNING" or with a small
+   * probability.
+   *
+   * @param cell The cell whose next state is to be determined.
+   * @param neighbors A list of the cell's neighbors, used to check if any are "BURNING"
+   */
   @Override
   public void prepareCellNextState(BasicCell cell, List<BasicCell> neighbors) {
     String currentState = cell.getState();
