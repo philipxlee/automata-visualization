@@ -11,6 +11,8 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
   private static final String BURNING = CellStates.BURNING.name();
   private static final String EMPTY = CellStates.EMPTY.name();
   private static final String TREE = CellStates.TREE.name();
+  private static final String TREE_GROWTH_CHANCE = "probabilityProduction";
+  private static final String CATCH_FIRE_CHANCE = "probabilityFire";
   private final Random rand = new Random();
 
   /**
@@ -40,16 +42,14 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
   public void prepareCellNextState(BasicCell cell, List<BasicCell> neighbors) {
     String currentState = cell.getState();
     String nextState = currentState; // Default to current state
-    System.out.println("ParameterP: " + parameters.get("parameterP"));
-    double BECOME_TREE_PROBABILITY = parameters.get("parameterP");
+    double BECOME_TREE_PROBABILITY = parameters.get(TREE_GROWTH_CHANCE);
     if (currentState.equals(BURNING)) {
       nextState = EMPTY;
     } else if (currentState.equals(EMPTY) && rand.nextDouble() < BECOME_TREE_PROBABILITY) {
       nextState = TREE;
     } else if (currentState.equals(TREE)) {
       boolean hasBurningNeighbor = checkForBurningNeighbor(cell, neighbors);
-      System.out.println("ParameterF: " + parameters.get("parameterF"));
-      double CATCH_FIRE_PROBABILITY = parameters.get("parameterF");
+      double CATCH_FIRE_PROBABILITY = parameters.get(CATCH_FIRE_CHANCE);
       if (hasBurningNeighbor || rand.nextDouble() < CATCH_FIRE_PROBABILITY) {
         nextState = BURNING;
       }
