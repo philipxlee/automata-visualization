@@ -243,6 +243,10 @@ public class Config {
     return height;
   }
 
+  public String getLanguage() {
+    return language;
+  }
+
   private Element createElement(Document document, String childName) {
     return document.createElement(childName);
   }
