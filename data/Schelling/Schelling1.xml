@@ -1,7 +1,7 @@
 <simulation>
   <type id = "Schelling">
     <parameters>
-      <Threshold>0.30</Threshold>
+      <threshold>0.30</threshold>
     </parameters>
     <title>Schelling Simulation #1</title>
     <authors>Thomas Schelling</authors>
