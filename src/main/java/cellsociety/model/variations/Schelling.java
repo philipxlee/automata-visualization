@@ -55,15 +55,19 @@ public class Schelling implements Simulation<BasicCell> {
   private boolean calculateSatisfaction(String currentState, int[] counts) {
     int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
     int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
+    int totalCount = sameStateCount + otherStateCount;
     double THRESHOLD = parameters.get("threshold");
-    return (otherStateCount == 0 || (double) sameStateCount / (otherStateCount + sameStateCount) >= THRESHOLD);
+    return (otherStateCount == 0 || (double) sameStateCount / (totalCount) >= THRESHOLD);
   }
 
   private int[] countNeighborsStates(List<BasicCell> neighbors) {
-    int x = 0, o = 0;
+    int x = 0;
+    int o = 0;
     for (BasicCell neighbor : neighbors) {
-      if ("X".equals(neighbor.getState())) x++;
-      if ("O".equals(neighbor.getState())) o++;
+      int xCount = "X".equals(neighbor.getState()) ? 1 : 0;
+      int oCount = "O".equals(neighbor.getState()) ? 1 : 0;
+      x += xCount;
+      o += oCount;
     }
     return new int[]{x, o};
   }

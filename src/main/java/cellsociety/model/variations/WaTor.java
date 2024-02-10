@@ -50,7 +50,7 @@ public class WaTor implements Simulation<WaTorCell> {
   }
 
   private void handleFish(WaTorCell currentCell, List<WaTorCell> neighbors) {
-    List<WaTorCell> emptyNeighbors = findNeighbors(currentCell, neighbors, EMPTY);
+    List<WaTorCell> emptyNeighbors = findNeighbors(neighbors, EMPTY);
     if (!emptyNeighbors.isEmpty()) {
       WaTorCell nextCell = emptyNeighbors.get(rand.nextInt(emptyNeighbors.size()));
       moveFish(currentCell, nextCell);
@@ -77,14 +77,14 @@ public class WaTor implements Simulation<WaTorCell> {
   }
 
   private void handleShark(WaTorCell currentCell, List<WaTorCell> neighbors) {
-    List<WaTorCell> fishNeighbors = findNeighbors(currentCell, neighbors, FISH);
+    List<WaTorCell> fishNeighbors = findNeighbors(neighbors, FISH);
     if (!fishNeighbors.isEmpty()) {
       WaTorCell nextCell = fishNeighbors.get(rand.nextInt(fishNeighbors.size()));
       moveShark(currentCell, nextCell);
       return;
     }
 
-    List<WaTorCell> emptyNeighbors = findNeighbors(currentCell, neighbors, EMPTY);
+    List<WaTorCell> emptyNeighbors = findNeighbors(neighbors, EMPTY);
     if (!emptyNeighbors.isEmpty()) {
       WaTorCell nextCell = emptyNeighbors.get(rand.nextInt(emptyNeighbors.size()));
       moveShark(currentCell, nextCell);
@@ -110,8 +110,7 @@ public class WaTor implements Simulation<WaTorCell> {
       currentCell.resetAnimal();
       nextCell.setNextState(EMPTY);
       nextCell.resetAnimal();
-    }
-    else if (nextCell.canReproduce(SHARK)) {
+    } else if (nextCell.canReproduce(SHARK)) {
       currentCell.setNextState(SHARK);
       currentCell.resetAnimal();
       nextCell.setBreedTime(0);
@@ -121,7 +120,7 @@ public class WaTor implements Simulation<WaTorCell> {
     }
   }
 
-  private List<WaTorCell> findNeighbors(WaTorCell cell, List<WaTorCell> neighbors, String target) {
+  private List<WaTorCell> findNeighbors(List<WaTorCell> neighbors, String target) {
     List<WaTorCell> validNeighbors = new ArrayList<>();
     for (WaTorCell neighbor : neighbors) {
       if (neighbor.getState().equals(target)) {

@@ -27,8 +27,8 @@ public class FallingSand implements Simulation<BasicCell> {
   /**
    * Prepare the next state of the given cell based on its current state and the states of its
    * neighbors. This method implements the rules of the Falling Sand simulation: - A "SAND" cell
-   * falls down if there is an empty cell below it. - A "SAND" cell does not move if there is a "WALL"
-   * or another "SAND" cell below it.
+   * falls down if there is an empty cell below it. - A "SAND" cell does not move if a "WALL"
+   * or another "SAND" cell is below it.
    *
    * @param cell The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors.
