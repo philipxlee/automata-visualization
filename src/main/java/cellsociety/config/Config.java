@@ -64,7 +64,7 @@ public class Config {
     authors = getTagText(doc, "authors");
     description = getTagText(doc, "description");
     language = getTagText(doc, "language");
-    if (language.length() == 0) {
+    if (language.isEmpty()) {
       language = DEFAULT_LANGUAGE;
     }
 
