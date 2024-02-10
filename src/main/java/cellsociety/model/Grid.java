@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Stream;
 
 public class Grid<CellType extends Cell> {
 
@@ -28,6 +27,7 @@ public class Grid<CellType extends Cell> {
    * storing neighbors of each cell.
    *
    * @param simulation The simulation logic to be used to determine the next state of each cell.
+   * @param config The configuration object containing the initial state of the grid.
    */
   public Grid(Simulation<CellType> simulation, Config config) {
     this.row = config.getHeight();

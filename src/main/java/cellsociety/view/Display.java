@@ -14,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -33,7 +34,6 @@ import javax.imageio.ImageIO;
 
 public class Display {
 
-  private static final String language = "English";
   public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
   public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
   public String STYLESHEET = "styles.css";
@@ -67,6 +67,8 @@ public class Display {
   private Grid<Cell> simulationGrid;
   private ResourceBundle resources;
   private BorderPane root;
+  private String myLanguage;
+  private boolean gridOutline;
 
 
   public Display(Stage primaryStage, Grid grid, Config config) {
@@ -76,11 +78,12 @@ public class Display {
     this.simType = config.getSimulationTextInfo()[0];
     this.author = config.getSimulationTextInfo()[2];
     this.description = config.getSimulationTextInfo()[3];
-
+    this.myLanguage = config.getLanguage();
+    this.gridOutline = true;
   }
 
   public void start() {
-    resources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + language);
+    resources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + myLanguage);
     //make simulation class with the info passed from config
     showScene();
     primaryStage.setTitle(resources.getString("title"));
@@ -135,7 +138,7 @@ public class Display {
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
         Rectangle cell = new Rectangle(cellWidth, cellHeight);
-        cell.getStyleClass().add("cell");
+        cell.getStyleClass().add(gridOutline ? "cell-outlined" : "cell-no-outline");
         cell.setStrokeWidth(calculateStrokeWidth(grid.length));
         cell.setX(j * cellWidth);
         cell.setY(i * cellHeight);
@@ -259,21 +262,42 @@ public class Display {
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
     Button saveButton = makeButton("SaveCommand", event -> {});
-    Button toggleGrapher = makeButton("GraphCommand", event -> toggleGrapher());
+    CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));
+    toggleGrapher.setOnAction(event -> toggleGrapher());
+    CheckBox toggleOutline = new CheckBox(resources.getString("OutlineCommand"));
+    toggleOutline.setSelected(true);
+    toggleOutline.setOnAction(event -> {
+      if (toggleOutline.isSelected()) {
+        gridOutline = true;
+        simulationGrid.computeNextGenerationGrid();
+        simulationGrid.computePreviousGenerationGrid();
+        updateGrid();
+      } else {
+        gridOutline = false;
+        simulationGrid.computeNextGenerationGrid();
+        simulationGrid.computePreviousGenerationGrid();
+        updateGrid();
+      }
+    });
+
+    HBox row5 = new HBox();
+    row5.getStyleClass().add("button-row");
 
     row1.getChildren().add(playButton);
     row1.getChildren().add(pauseButton);
     row2.getChildren().add(nextButton);
     row2.getChildren().add(backButton);
     row3.getChildren().add(sliderBox);
-    row3.getChildren().add(comboEdgePolicy);
     row4.getChildren().add(toggleGrapher);
-    row4.getChildren().add(saveButton);
+    row4.getChildren().add(toggleOutline);
+    row5.getChildren().add(comboEdgePolicy);
+    row5.getChildren().add(saveButton);
 
     controlPane.getChildren().add(row1);
     controlPane.getChildren().add(row2);
     controlPane.getChildren().add(row3);
     controlPane.getChildren().add(row4);
+    controlPane.getChildren().add(row5);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
