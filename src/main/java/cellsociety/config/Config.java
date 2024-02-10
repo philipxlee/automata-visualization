@@ -2,6 +2,7 @@ package cellsociety.config;
 
 
 import cellsociety.Main;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -42,7 +43,8 @@ public class Config {
   private char[][] grid;
   private Queue<Character> cellValues;
   private Map<String, Double> parameters;
-  private Map<String, Double> stateColors;
+  private Map<String, Color> stateColors;
+
 
   public Config() {
     parameters = new HashMap<>();
@@ -71,7 +73,7 @@ public class Config {
     width = Integer.parseInt(getTagText(doc, "width"));
     height = Integer.parseInt(getTagText(doc, "height"));
 
-    putChildren(stateColors, doc, "stateColors");
+    putColors(stateColors, doc, "stateColors");
 
     String fileName = getTagText(doc, "fileName");
     grid = fileToGrid(fileName);
@@ -92,6 +94,27 @@ public class Config {
         // Process the element node
         Element element = (Element) currentNode;
         map.put(element.getTagName(), Double.parseDouble(element.getTextContent().trim()));
+
+      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
+          !currentNode.getTextContent().trim().isEmpty()) {
+        System.out.println("Testing: " + currentNode.getTextContent().trim());
+      }
+    }
+  }
+
+  private void putColors(Map<String, Color> map, Document document, String item) {
+    NodeList nodeList = returnChildNodes(document, item);
+    if (nodeList == null) {
+      return;
+    }
+
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      Node currentNode = nodeList.item(i);
+
+      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+        // Process the element node
+        Element element = (Element) currentNode;
+        map.put(element.getTagName(), Color.decode(element.getTextContent().trim()));
 
       } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
           !currentNode.getTextContent().trim().isEmpty()) {
@@ -300,11 +323,14 @@ public class Config {
     }
   }
 
+  public Map<String, Color> getStateColors() {
+    return stateColors;
+  }
+
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
-//    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\
-//    Percolation\\Percolation1.xml"));
-//    newConfig.saveXMLFile("testSave", newConfig.getGrid());
+//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire.xml"));
+//    System.out.println(newConfig.getStateColors().get("ALIVE").toString());
 //  }
 
 }
