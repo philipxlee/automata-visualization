@@ -25,6 +25,9 @@ public class Grid<CellType extends Cell> {
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
    * storing neighbors of each cell.
+   *
+   * @param simulation The simulation logic to be used to determine the next state of each cell.
+   * @param config The configuration object containing the initial state of the grid.
    */
   public Grid(Simulation<CellType> simulation, Config config) {
     this.row = config.getHeight();
@@ -34,6 +37,7 @@ public class Grid<CellType extends Cell> {
     this.history = new Stack<String[][]>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     initializeGridCells(config);
+    simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
   }
 
