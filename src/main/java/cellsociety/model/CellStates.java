@@ -1,5 +1,8 @@
 package cellsociety.model;
 
+/**
+ * Enum representing the possible states of a cell in a simulation.
+ */
 public enum CellStates {
   EMPTY('0'),
   ALIVE('1'),
@@ -17,12 +20,17 @@ public enum CellStates {
   VISITED('V'),
   ERROR_DETECTED_IN_STATE_NAME('E');
 
-  CellStates(char cellChar) {
-    this.cellChar = cellChar;
-  }
-
+  /**
+   * Get the character representation of the cell state.
+   *
+   * @return The character representation of the cell state.
+   */
   public char getCellChar() {
     return cellChar;
+  }
+
+  CellStates(char cellChar) {
+    this.cellChar = cellChar;
   }
 
   private final char cellChar;
