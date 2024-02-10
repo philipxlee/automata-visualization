@@ -64,6 +64,10 @@ public class Config {
     authors = getTagText(doc, "authors");
     description = getTagText(doc, "description");
     language = getTagText(doc, "language");
+    if (language.length() == 0) {
+      language = DEFAULT_LANGUAGE;
+    }
+
     width = Integer.parseInt(getTagText(doc, "width"));
     height = Integer.parseInt(getTagText(doc, "height"));
 
@@ -185,7 +189,7 @@ public class Config {
       System.out.println(tag);
       return element.getTextContent().trim();
     } else {
-      return DEFAULT_LANGUAGE;
+      return "";
     }
   }
 
