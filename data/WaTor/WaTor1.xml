@@ -1,0 +1,14 @@
+<simulation>
+  <type id = "WaTor">
+    <parameters>
+    </parameters>
+    <title>WaTor Simulation #1</title>
+    <authors>A. K. Dewdney</authors>
+    <description>"A predator-prey ecosystem simulation. It models fish and sharks, with the dynamics of birth, death, and movement, providing insights into population dynamics and ecological systems"</description>
+    <gridDimensions>
+      <width>10</width>
+      <height>10</height>
+    </gridDimensions>
+    <fileName>/WaTor/WaTorGRID1.txt</fileName>
+  </type>
+</simulation>

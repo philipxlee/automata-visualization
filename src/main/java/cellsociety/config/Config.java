@@ -29,6 +29,7 @@ import org.w3c.dom.NodeList;
 
 public class Config {
 
+  public static final String DEFAULT_LANGUAGE = "English";
   private String simulationType;
   private String simulationTitle;
   private String authors;
@@ -37,16 +38,19 @@ public class Config {
   // ideally combine them in a tuple
   private int width;
   private int height;
+  private String language;
   private char[][] grid;
   private Queue<Character> cellValues;
   private Map<String, Double> parameters;
+  private Map<String, Double> stateColors;
 
   public Config() {
     parameters = new HashMap<>();
+    stateColors = new HashMap<>();
     cellValues = new LinkedList<>();
   }
 
-  public void loadXMLFile(File xmlFile) throws Exception {
+  public void loadXmlFile(File xmlFile) throws Exception {
 
     Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
 
@@ -54,26 +58,16 @@ public class Config {
 
     simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id");
 
-    NodeList parameterList = getChildNodes(doc, "parameters");
-    for (int i = 0; i < parameterList.getLength(); i++) {
-      Node currentNode = parameterList.item(i);
-
-      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-        // Process the element node
-        Element element = (Element) currentNode;
-        parameters.put(element.getTagName(), Double.parseDouble(element.getTextContent().trim()));
-
-      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
-          !currentNode.getTextContent().trim().isEmpty()) {
-        System.out.println("Testing: " + currentNode.getTextContent().trim());
-      }
-    }
+    putChildren(parameters, doc, "parameters");
 
     simulationTitle = getTagText(doc, "title");
     authors = getTagText(doc, "authors");
     description = getTagText(doc, "description");
+    language = getTagText(doc, "language");
     width = Integer.parseInt(getTagText(doc, "width"));
     height = Integer.parseInt(getTagText(doc, "height"));
+
+    putChildren(stateColors, doc, "stateColors");
 
     String fileName = getTagText(doc, "fileName");
     grid = fileToGrid(fileName);
@@ -81,22 +75,37 @@ public class Config {
 
   }
 
+  private void putChildren(Map<String, Double> map, Document document, String item) {
+    NodeList nodeList = returnChildNodes(document, item);
+    if (nodeList == null) {
+      return;
+    }
+
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      Node currentNode = nodeList.item(i);
+
+      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+        // Process the element node
+        Element element = (Element) currentNode;
+        map.put(element.getTagName(), Double.parseDouble(element.getTextContent().trim()));
+
+      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
+          !currentNode.getTextContent().trim().isEmpty()) {
+        System.out.println("Testing: " + currentNode.getTextContent().trim());
+      }
+    }
+  }
+
 
   /**
    * saves the state of the simulation into XML file
-   * @param path The String path of the xml file to be created and written to
-   * @param simulationTextInfo The array containing simulation type, title, authors, description
-   * @param parameters The map which contains key-value pairs for each parameter's value
+   * @param xmlName The String name of the xml file to be created and written to
    * @param grid The grid state to be stored in the saved file
-   * @param width The width of the grid
-   * @param height The height of the grid
-   * @param textPath The String path of the txt file where the state of the grid will be stored
    * @throws ParserConfigurationException
    * @throws TransformerException
    * @throws IOException
    */
-  public void saveXMLFile(String path, String[] simulationTextInfo, Map<String, Double> parameters,
-      char[][] grid, int width, int height, String textPath)
+  public void saveXmlFile(String xmlName, char[][] grid)
       throws ParserConfigurationException, TransformerException, IOException {
 
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -110,7 +119,7 @@ public class Config {
     document.appendChild(simulationElement);
 
     Element typeElement = bearChild(document, simulationElement, "type");
-    typeElement.setAttribute("id", simulationTextInfo[0]);
+    typeElement.setAttribute("id", simulationType);
 
     Element parametersElement = bearChild(document, typeElement, "parameters");
 
@@ -118,12 +127,11 @@ public class Config {
       bearTextChild(document, parametersElement, key, Double.toString(parameters.get(key)));
     }
 
-    bearTextChild(document, typeElement, "title", simulationTextInfo[1]);
+    bearTextChild(document, typeElement, "title", simulationTitle);
 
-    bearTextChild(document, typeElement, "author", simulationTextInfo[2]);
+    bearTextChild(document, typeElement, "author", authors);
 
-    bearTextChild(document, typeElement, "description",
-        simulationTextInfo[3]);
+    bearTextChild(document, typeElement, "description", description);
 
     Element gridDimensionsElement = bearChild(document, typeElement, "gridDimensions");
 
@@ -133,6 +141,7 @@ public class Config {
     bearTextChild(document, gridDimensionsElement, "height",
         Integer.toString(height));
 
+    String textPath = xmlName + "GRID";
     bearTextChild(document, typeElement, "fileName", textPath);
 
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -141,6 +150,7 @@ public class Config {
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
+    String path = xmlName + ".xml";
     DOMSource source = new DOMSource(document);
     StreamResult result = new StreamResult(new java.io.File(path)); // Specify the output file
 
@@ -165,18 +175,29 @@ public class Config {
 
   private Node tagToNode(Document document, String tag) {
     NodeList nodeList = document.getElementsByTagName(tag);
+    System.out.println("tagToNode");
     return nodeList.item(0);
   }
 
   private String getTagText(Document document, String tag) {
     Element element = (Element) tagToNode(document, tag);
-    return element.getTextContent().trim();
+    if (element != null) {
+      System.out.println(tag);
+      return element.getTextContent().trim();
+    } else {
+      return DEFAULT_LANGUAGE;
+    }
   }
 
 
-  private NodeList getChildNodes(Document document, String tag) {
+
+  private NodeList returnChildNodes(Document document, String tag) {
     Node node = tagToNode(document, tag);
-    return node.getChildNodes();
+    if (node != null) {
+      return node.getChildNodes();
+    } else {
+      return null;
+    }
   }
 
 
@@ -239,7 +260,6 @@ public class Config {
     String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
-      int character;
       for (int i = 0; i < height; i++) {
         String line = reader.readLine();
         for (int j = 0; j < width; j++) {
@@ -274,7 +294,9 @@ public class Config {
 
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
-//    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\Percolation\\Percolation1.xml"));
+//    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\
+//    Percolation\\Percolation1.xml"));
+//    newConfig.saveXMLFile("testSave", newConfig.getGrid());
 //  }
 
 }

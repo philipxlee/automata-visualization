@@ -5,7 +5,6 @@ import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
-import cellsociety.model.celltypes.WaTorCell;
 import cellsociety.model.variations.FallingSand;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.model.variations.Percolation;
@@ -83,10 +82,13 @@ public class Main extends Application {
       showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
       File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
       if (dataFile != null) {
-        config.loadXMLFile(dataFile);
-        Simulation<BasicCell> simulation = returnSimulation(config.getSimulationType());
-        Grid<BasicCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+        config.loadXmlFile(dataFile);
+        Simulation<Cell> simulation = returnSimulation(config.getSimulationType());
+        Grid<Cell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
             simulation);
+//        Simulation<WaTorCell> simulation = new WaTor();
+//        Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
+//            simulation);
 
         Display newDisplay = new Display(primaryStage, grid, config);
         newDisplay.start();
@@ -105,16 +107,16 @@ public class Main extends Application {
     alert.setHeaderText("");
     alert.showAndWait();
   }
-
-  private Simulation<BasicCell> returnSimulation(String simulationType) {
-    Simulation<BasicCell> simulation = null;
+  private <T extends Cell> Simulation<T> returnSimulation(String simulationType) {
+    Simulation<T> simulation = null;
     switch (simulationType) {
-      case "GameOfLife" -> simulation = new GameOfLife();
-      case "Schelling" -> simulation = new Schelling();
-      case "Percolation" -> simulation = new Percolation();
-      case "SpreadingOfFire" -> simulation = new SpreadingOfFire();
-      case "FallingSand" -> simulation = new FallingSand();
-      default -> simulation = new Schelling();
+      case "GameOfLife" -> simulation = (Simulation<T>) new GameOfLife();
+      case "Schelling" -> simulation = (Simulation<T>) new Schelling();
+      case "Percolation" -> simulation = (Simulation<T>) new Percolation();
+      case "SpreadingOfFire" -> simulation = (Simulation<T>) new SpreadingOfFire();
+      case "FallingSand" -> simulation = (Simulation<T>) new FallingSand();
+      case "WaTor" -> simulation = (Simulation<T>) new WaTor();
+      default -> simulation = (Simulation<T>) new Schelling();
     }
 
     return simulation;
