@@ -46,6 +46,7 @@ public class Config {
 
   public Config() {
     parameters = new HashMap<>();
+    stateColors = new HashMap<>();
     cellValues = new LinkedList<>();
   }
 
@@ -99,19 +100,13 @@ public class Config {
 
   /**
    * saves the state of the simulation into XML file
-   * @param path The String path of the xml file to be created and written to
-   * @param simulationTextInfo The array containing simulation type, title, authors, description
-   * @param parameters The map which contains key-value pairs for each parameter's value
+   * @param xmlName The String name of the xml file to be created and written to
    * @param grid The grid state to be stored in the saved file
-   * @param width The width of the grid
-   * @param height The height of the grid
-   * @param textPath The String path of the txt file where the state of the grid will be stored
    * @throws ParserConfigurationException
    * @throws TransformerException
    * @throws IOException
    */
-  public void saveXMLFile(String path, String[] simulationTextInfo, Map<String, Double> parameters,
-      char[][] grid, int width, int height, String textPath)
+  public void saveXMLFile(String xmlName, char[][] grid)
       throws ParserConfigurationException, TransformerException, IOException {
 
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -125,7 +120,7 @@ public class Config {
     document.appendChild(simulationElement);
 
     Element typeElement = bearChild(document, simulationElement, "type");
-    typeElement.setAttribute("id", simulationTextInfo[0]);
+    typeElement.setAttribute("id", simulationType);
 
     Element parametersElement = bearChild(document, typeElement, "parameters");
 
@@ -133,12 +128,11 @@ public class Config {
       bearTextChild(document, parametersElement, key, Double.toString(parameters.get(key)));
     }
 
-    bearTextChild(document, typeElement, "title", simulationTextInfo[1]);
+    bearTextChild(document, typeElement, "title", simulationTitle);
 
-    bearTextChild(document, typeElement, "author", simulationTextInfo[2]);
+    bearTextChild(document, typeElement, "author", authors);
 
-    bearTextChild(document, typeElement, "description",
-        simulationTextInfo[3]);
+    bearTextChild(document, typeElement, "description", description);
 
     Element gridDimensionsElement = bearChild(document, typeElement, "gridDimensions");
 
@@ -148,6 +142,7 @@ public class Config {
     bearTextChild(document, gridDimensionsElement, "height",
         Integer.toString(height));
 
+    String textPath = xmlName + "GRID";
     bearTextChild(document, typeElement, "fileName", textPath);
 
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -156,6 +151,7 @@ public class Config {
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
+    String path = xmlName + ".xml";
     DOMSource source = new DOMSource(document);
     StreamResult result = new StreamResult(new java.io.File(path)); // Specify the output file
 
@@ -301,6 +297,7 @@ public class Config {
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
 //    newConfig.loadXMLFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\Percolation\\Percolation1.xml"));
+//    newConfig.saveXMLFile("testSave", newConfig.getGrid());
 //  }
 
 }
