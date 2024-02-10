@@ -4,7 +4,6 @@ import cellsociety.config.Config;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import cellsociety.model.Simulation;
-import cellsociety.model.celltypes.BasicCell;
 import cellsociety.model.variations.FallingSand;
 import cellsociety.model.variations.GameOfLife;
 import cellsociety.model.variations.Percolation;
@@ -75,8 +74,7 @@ public class Main extends Application {
       if (dataFile != null) {
         config.loadXmlFile(dataFile);
         Simulation<Cell> simulation = returnSimulation(config.getSimulationType());
-        Grid<Cell> grid = new Grid<>(config.getWidth(), config.getHeight(),
-            simulation, config);
+        Grid<Cell> grid = new Grid<>(simulation, config);
 //        Simulation<WaTorCell> simulation = new WaTor();
 //        Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //            simulation);

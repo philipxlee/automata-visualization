@@ -1,8 +1,8 @@
 <simulation>
   <type id = "SpreadingOfFire">
     <parameters>
-      <paramterF>0</paramterF>
-      <parameterP>0</parameterP>
+      <probabilityFire>0.01</probabilityFire>
+      <probabilityProduction>0.01</probabilityProduction>
     </parameters>
     <title>Spreading of Fire Simulation #1</title>
     <authors>Drossel and Schwabl</authors>
@@ -14,6 +14,9 @@
       An empty space fills with a tree with probability p
                                                         - Wikipedia
     </description>
+    <stateColors>
+      <ALIVE>#FF0000</ALIVE>
+    </stateColors>
     <gridDimensions>
       <width>10</width>
       <height>10</height>
