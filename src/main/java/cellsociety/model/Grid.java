@@ -1,5 +1,6 @@
 package cellsociety.model;
 
+import cellsociety.config.Config;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,14 +30,14 @@ public class Grid<CellType extends Cell> {
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
-  public Grid(int row, int col, char[][] gridState, Simulation<CellType> simulation) {
+  public Grid(int row, int col,  Simulation<CellType> simulation, Config config) {
     this.row = row;
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
-    initializeGridCells(gridState);
+    initializeGridCells(config);
     this.cellCounts = countCellAmount();
   }
 
@@ -132,10 +133,17 @@ public class Grid<CellType extends Cell> {
     return cellCounts;
   }
 
-  private void initializeGridCells(char[][] gridState) {
+  private void initializeGridCells(Config config) {
+    char[][] gridFromConfig = new char[row][col];
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        String state = getStateFromChar(gridState[i][j]);
+        gridFromConfig[i][j] = config.nextCellValue();
+      }
+    }
+
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        String state = getStateFromChar(gridFromConfig[i][j]);
         CellType currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
       }

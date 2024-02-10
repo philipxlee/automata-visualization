@@ -26,7 +26,6 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
     return new BasicCell(row, col, state);
   }
 
-
   /**
    * Determines the next state of a cell based on its current state and the states of its neighbors.
    * This method implements the rules of Spreading of Fire simulation: - A "BURNING" cell becomes
@@ -57,16 +56,14 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
   }
 
   private boolean checkForBurningNeighbor(BasicCell cell, List<BasicCell> neighbors) {
-    boolean hasBurningNeighbor = false;
     for (BasicCell neighbor : neighbors) {
       if (isCardinalNeighbor(cell, neighbor)) {
         if (neighbor.getState().equals(BURNING)) {
-          hasBurningNeighbor = true;
-          break;
+          return true;
         }
       }
     }
-    return hasBurningNeighbor;
+    return false;
   }
 
   private boolean isCardinalNeighbor(BasicCell centralCell, BasicCell neighbor) {
