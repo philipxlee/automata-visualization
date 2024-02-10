@@ -1,5 +1,6 @@
 package cellsociety.model;
 
+import cellsociety.config.Config;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,22 +30,25 @@ public class Grid<CellType extends Cell> {
    * @param row The number of rows in the grid.
    * @param col The number of columns in the grid.
    */
-  public Grid(int row, int col, char[][] gridState, Simulation<CellType> simulation) {
+  public Grid(int row, int col,  Simulation<CellType> simulation, Config config) {
     this.row = row;
     this.col = col;
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
-    initializeGridCells(gridState);
+    initializeGridCells(config);
     this.cellCounts = countCellAmount();
   }
 
   /**
-   * Computes the next generation of the grid by applying the given predefined rules. This method
-   * iterates over each cell in the current grid, determines its new state based on its neighbors,
-   * and updates the cell states in a temporary grid. Once all cells are processed, the main grid is
-   * updated with these new states.
+   * Computes the next generation of the grid. For each cell, the next state is determined based on
+   * the current state and the states of its neighbors. Then, the next state is applied to all cells
+   * that are ready for it.
+   * recordCurrentGenerationForHistory is called to store the current state of the grid in a stack
+   * for use in the back button.
+   * After the next generation is computed, the cell counts are updated and the grid is
+   * converted to a deque for use in the View.
    */
   public void computeNextGenerationGrid() {
     // Record history for back button
@@ -91,26 +95,55 @@ public class Grid<CellType extends Cell> {
     convertCellGridToDeque(cellGrid);
   }
 
+
+  /**
+   * Returns the cellGrid's row
+   *
+   * @return the row of the cellGrid
+   */
   public int getCellRow() {
     return cellGrid.length;
   }
 
+  /**
+   * Returns the cellGrid's column
+   *
+   * @return the column of the cellGrid
+   */
   public int getCellCol() {
     return cellGrid[0].length;
   }
 
+  /**
+   * Returns each cell in the grid as a stream to be used in the View, preventing direct access to
+   * the grid.
+   *
+   * @return the next cell in the grid
+   */
   public CellType getCell() {
     return cellDeque.pop();
   }
 
+  /**
+   * Returns the cellCounts map to be used in the View
+   *
+   * @return the cellCounts map
+   */
   public Map<String, Integer> getCellCounts() {
     return cellCounts;
   }
 
-  private void initializeGridCells(char[][] gridState) {
+  private void initializeGridCells(Config config) {
+    char[][] gridFromConfig = new char[row][col];
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        String state = getStateFromChar(gridState[i][j]);
+        gridFromConfig[i][j] = config.nextCellValue();
+      }
+    }
+
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        String state = getStateFromChar(gridFromConfig[i][j]);
         CellType currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
       }
