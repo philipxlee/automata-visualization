@@ -55,7 +55,7 @@ public class Schelling implements Simulation<BasicCell> {
   private boolean calculateSatisfaction(String currentState, int[] counts) {
     int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
     int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
-    double THRESHOLD = 0.30;
+    double THRESHOLD = parameters.get("threshold");
     return (otherStateCount == 0 || (double) sameStateCount / (otherStateCount + sameStateCount) >= THRESHOLD);
   }
 

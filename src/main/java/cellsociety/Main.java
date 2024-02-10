@@ -84,8 +84,7 @@ public class Main extends Application {
       if (dataFile != null) {
         config.loadXmlFile(dataFile);
         Simulation<Cell> simulation = returnSimulation(config.getSimulationType());
-        Grid<Cell> grid = new Grid<>(config.getWidth(), config.getHeight(),
-            simulation, config);
+        Grid<Cell> grid = new Grid<>(simulation, config);
 //        Simulation<WaTorCell> simulation = new WaTor();
 //        Grid<WaTorCell> grid = new Grid<>(config.getWidth(), config.getHeight(), config.getGrid(),
 //            simulation);

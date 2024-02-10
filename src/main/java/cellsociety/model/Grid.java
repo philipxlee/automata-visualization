@@ -27,17 +27,17 @@ public class Grid<CellType extends Cell> {
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
    * storing neighbors of each cell.
    *
-   * @param row The number of rows in the grid.
-   * @param col The number of columns in the grid.
+   * @param simulation The simulation logic to be used to determine the next state of each cell.
    */
-  public Grid(int row, int col,  Simulation<CellType> simulation, Config config) {
-    this.row = row;
-    this.col = col;
+  public Grid(Simulation<CellType> simulation, Config config) {
+    this.row = config.getHeight();
+    this.col = config.getWidth();
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
     this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
     initializeGridCells(config);
+    simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
   }
 
