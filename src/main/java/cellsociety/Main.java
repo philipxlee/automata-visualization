@@ -65,15 +65,6 @@ public class Main extends Application {
   public void start(Stage primaryStage) {
     makeSimulation(primaryStage);
     showMessage(AlertType.INFORMATION, "Press N to start another simulation");
-    primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-      switch (event.getCode()) {
-        case N:
-          Stage newStage = new Stage();
-          makeSimulation(newStage);
-          break;
-      }
-    });
-
   }
 
   private void makeSimulation(Stage primaryStage) {
@@ -92,6 +83,15 @@ public class Main extends Application {
 
         Display newDisplay = new Display(primaryStage, grid, config);
         newDisplay.start();
+
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+          switch (event.getCode()) {
+            case N:
+              Stage newStage = new Stage();
+              makeSimulation(newStage);
+              break;
+          }
+        });
       }
     } catch (Exception e) {
       showMessage(AlertType.ERROR, e.getMessage());

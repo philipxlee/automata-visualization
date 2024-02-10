@@ -2,7 +2,11 @@
   -fx-border-color: #4b4b4b;
 }
 
-.cell {
+.cell-no-outline {
+  -fx-border-color: white;
+}
+
+.cell-outlined {
   -fx-border-color: gray;
   -fx-stroke: gray;
 }
