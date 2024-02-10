@@ -64,10 +64,10 @@ public class Schelling implements Simulation<BasicCell> {
     int x = 0;
     int o = 0;
     for (BasicCell neighbor : neighbors) {
-      int xCount = "X".equals(neighbor.getState()) ? 1 : 0;
-      int oCount = "O".equals(neighbor.getState()) ? 1 : 0;
-      x += xCount;
-      o += oCount;
+      int letterX = "X".equals(neighbor.getState()) ? 1 : 0;
+      int letterO = "O".equals(neighbor.getState()) ? 1 : 0;
+      x += letterX;
+      o += letterO;
     }
     return new int[]{x, o};
   }
