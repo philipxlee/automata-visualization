@@ -29,6 +29,7 @@ import org.w3c.dom.NodeList;
 
 public class Config {
 
+  public static final String DEFAULT_LANGUAGE = "English";
   private String simulationType;
   private String simulationTitle;
   private String authors;
@@ -37,9 +38,11 @@ public class Config {
   // ideally combine them in a tuple
   private int width;
   private int height;
+  private String language;
   private char[][] grid;
   private Queue<Character> cellValues;
   private Map<String, Double> parameters;
+  private Map<String, Double> stateColors;
 
   public Config() {
     parameters = new HashMap<>();
@@ -54,9 +57,32 @@ public class Config {
 
     simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id");
 
-    NodeList parameterList = getChildNodes(doc, "parameters");
-    for (int i = 0; i < parameterList.getLength(); i++) {
-      Node currentNode = parameterList.item(i);
+    NodeList parameterList = returnChildNodes(doc, "parameters");
+    putChildren(parameters, doc, "parameters");
+
+    simulationTitle = getTagText(doc, "title");
+    authors = getTagText(doc, "authors");
+    description = getTagText(doc, "description");
+    language = getTagText(doc, "language");
+    width = Integer.parseInt(getTagText(doc, "width"));
+    height = Integer.parseInt(getTagText(doc, "height"));
+
+    putChildren(stateColors, doc, "stateColors");
+
+    String fileName = getTagText(doc, "fileName");
+    grid = fileToGrid(fileName);
+
+
+  }
+
+  private void putChildren(Map<String, Double> map, Document document, String item) {
+    NodeList nodeList = returnChildNodes(document, item);
+    if (nodeList == null) {
+      return;
+    }
+
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      Node currentNode = nodeList.item(i);
 
       if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
         // Process the element node
@@ -68,17 +94,6 @@ public class Config {
         System.out.println("Testing: " + currentNode.getTextContent().trim());
       }
     }
-
-    simulationTitle = getTagText(doc, "title");
-    authors = getTagText(doc, "authors");
-    description = getTagText(doc, "description");
-    width = Integer.parseInt(getTagText(doc, "width"));
-    height = Integer.parseInt(getTagText(doc, "height"));
-
-    String fileName = getTagText(doc, "fileName");
-    grid = fileToGrid(fileName);
-
-
   }
 
 
@@ -165,18 +180,29 @@ public class Config {
 
   private Node tagToNode(Document document, String tag) {
     NodeList nodeList = document.getElementsByTagName(tag);
+    System.out.println("tagToNode");
     return nodeList.item(0);
   }
 
   private String getTagText(Document document, String tag) {
     Element element = (Element) tagToNode(document, tag);
-    return element.getTextContent().trim();
+    if (element != null) {
+      System.out.println(tag);
+      return element.getTextContent().trim();
+    } else {
+      return DEFAULT_LANGUAGE;
+    }
   }
 
 
-  private NodeList getChildNodes(Document document, String tag) {
+
+  private NodeList returnChildNodes(Document document, String tag) {
     Node node = tagToNode(document, tag);
-    return node.getChildNodes();
+    if (node != null) {
+      return node.getChildNodes();
+    } else {
+      return null;
+    }
   }
 
 
