@@ -15,6 +15,5 @@ public interface Simulation<Celltype extends Cell> {
   default void setParameters(Map<String, Double> newParameters) {
     parameters.clear(); // Clear the current map
     parameters.putAll(newParameters);
-    System.out.println(parameters.get("parameterP"));
   }
 }

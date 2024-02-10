@@ -56,8 +56,8 @@ public class Schelling implements Simulation<BasicCell> {
     int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
     int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
     int totalCount = sameStateCount + otherStateCount;
-    double THRESHOLD = parameters.get("threshold");
-    return (otherStateCount == 0 || (double) sameStateCount / (totalCount) >= THRESHOLD);
+    double threshold = parameters.get("threshold");
+    return (otherStateCount == 0 || (double) sameStateCount / (totalCount) >= threshold);
   }
 
   private int[] countNeighborsStates(List<BasicCell> neighbors) {

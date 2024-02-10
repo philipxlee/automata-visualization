@@ -49,7 +49,7 @@ public class Main extends Application {
 
   /**
    * Start the program, give complete control to JavaFX.
-   * <p>
+   *
    * Default version of main() is actually included within JavaFX, so this is not technically
    * necessary!
    */
