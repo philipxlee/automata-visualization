@@ -105,7 +105,6 @@ public class Main extends Application {
     alert.setHeaderText("");
     alert.showAndWait();
   }
-
   private Simulation<BasicCell> returnSimulation(String simulationType) {
     Simulation<BasicCell> simulation = null;
     switch (simulationType) {
