@@ -200,7 +200,8 @@ public class Config {
   }
 
   public String getEdgePolicy() {
-    return "Normal";
+    return "Normal"; // placeholder, but just return whatever edge policy it is as a string
+    // it can only be "Normal" or "Vertical"
   }
 
 

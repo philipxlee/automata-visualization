@@ -1,30 +1,21 @@
 package cellsociety.model.edgepolicy;
 
 import cellsociety.model.Cell;
-import java.util.ArrayList;
-import java.util.List;
 
-public class NormalEdgePolicy<T extends Cell> implements EdgePolicy<T> {
+public class NormalEdgePolicy<T extends Cell> extends AbstractEdgePolicy<T> {
 
   /**
-   * Returns a list of the neighbors of the cell at the given row and column in the grid.
+   * Check if the new row and column are valid neighbors
    *
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
-   * @param cellGrid The grid of cells in the simulation.
-   * @return A list of the cell's neighbors.
+   * @param row The row of the cell
+   * @param col The column of the cell
+   * @param newRow The new row
+   * @param newCol The new column
+   * @param cellGrid The cell grid
+   * @return true if the new row and column are valid neighbors, false otherwise
    */
   @Override
-  public List<T> getNeighbors(int row, int col, T[][] cellGrid) {
-    List<T> neighbors = new ArrayList<>();
-    int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
-    for (int[] direction : directions) {
-      int newRow = row + direction[0];
-      int newCol = col + direction[1];
-      if (newRow >= 0 && newRow < cellGrid.length && newCol >= 0 && newCol < cellGrid[0].length) {
-        neighbors.add(cellGrid[newRow][newCol]);
-      }
-    }
-    return neighbors;
+  public boolean isValidNeighbor(int row, int col, int newRow, int newCol, T[][] cellGrid) {
+    return true;
   }
 }

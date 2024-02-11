@@ -38,9 +38,7 @@ public class Grid<T extends Cell> {
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
     this.cellGrid = (T[][]) new Cell[row][col]; // necessary cast
-    System.out.println("Test");
     initializeGridCells(config);
-    System.out.println("Test2");
     simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
   }
@@ -158,8 +156,8 @@ public class Grid<T extends Cell> {
   private void initializeEdgePolicy(Config config) {
     switch (config.getEdgePolicy()) {
       case "Normal" -> this.edgePolicy = new NormalEdgePolicy<>();
-      case "VerticalSplit" -> this.edgePolicy = new VerticalEdgePolicy<>();
-      default -> throw new IllegalArgumentException("Unknown edge policy: " + config.getEdgePolicy());
+      case "Vertical" -> this.edgePolicy = new VerticalEdgePolicy<>();
+      default -> throw new IllegalArgumentException("Bad edge policy: " + config.getEdgePolicy());
     }
   }
 
@@ -179,13 +177,6 @@ public class Grid<T extends Cell> {
       }
     }
     history.push(stateSnapshot);
-  }
-
-  private void addNeighborsWithinBounds(int newRow, int newCol, List<T> neighbors) {
-    if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
-      T neighbor = cellGrid[newRow][newCol];
-      neighbors.add(neighbor);
-    }
   }
 
   private List<T> findCellNeighbors(int i, int j) {
