@@ -112,7 +112,7 @@ public class Display {
 
     updateGrid();
 
-    VBox mainUserInterface = createMainUI();
+    VBox mainUserInterface = createMainUserInterface();
     root.setRight(mainUserInterface);
 
     return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -151,31 +151,31 @@ public class Display {
     }
   }
 
-  private VBox createMainUI() {
-    VBox newUI = new VBox();
-    newUI.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
-    newUI.getStyleClass().add("ui");
+  private VBox createMainUserInterface() {
+    VBox newUserInterface = new VBox();
+    newUserInterface.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
+    newUserInterface.getStyleClass().add("ui");
 
     VBox infoPane = new VBox();
     infoPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     infoPane.setPrefHeight(WINDOW_HEIGHT / 2);
-    createDisplayUI(infoPane);
-    newUI.getChildren().add(infoPane);
+    createDisplayUserInterface(infoPane);
+    newUserInterface.getChildren().add(infoPane);
 
     Separator separator = new Separator();
-    newUI.getChildren().add(separator);
+    newUserInterface.getChildren().add(separator);
 
     VBox controlPane = new VBox();
     controlPane.getStyleClass().add("control-pane");
     controlPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     controlPane.setPrefHeight(WINDOW_HEIGHT / 2);
-    createControlUI(controlPane);
-    newUI.getChildren().add(controlPane);
+    createControlUserInterface(controlPane);
+    newUserInterface.getChildren().add(controlPane);
 
-    return newUI;
+    return newUserInterface;
   }
 
-  private void createDisplayUI(VBox infoPane) {
+  private void createDisplayUserInterface(VBox infoPane) {
     Label simLabel = new Label(simType);
     simLabel.getStyleClass().add("title");
     infoPane.getChildren().add(simLabel);
@@ -233,7 +233,7 @@ public class Display {
     return grid;
   }
 
-  private void createControlUI(VBox controlPane) {
+  private void createControlUserInterface(VBox controlPane) {
     HBox row1 = new HBox();
     row1.getStyleClass().add("button-row");
     Button playButton = makeButton("PlayCommand", event -> myTimeline.play());

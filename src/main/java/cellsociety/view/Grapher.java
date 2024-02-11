@@ -15,7 +15,6 @@ public class Grapher {
 
   private static final int GRAPHER_WIDTH = 600;
   private static final int GRAPHER_HEIGHT = 500;
-  private List<Map<String, Integer>> cellCounts;
   private LineChart<Number, Number> myLineChart;
   private Map<String, XYChart.Series<Number, Number>> seriesMap;
   private int currentTick;
@@ -25,7 +24,6 @@ public class Grapher {
 
   public Grapher(Stage stage) {
     this.myStage = stage;
-    this.cellCounts = new ArrayList<>();
     this.currentTick = 0;
 
     NumberAxis chartAxisX = new NumberAxis();
