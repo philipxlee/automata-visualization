@@ -35,7 +35,7 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
    * "TREE" cell becomes "BURNING" if any of its cardinal neighbors are "BURNING" or with a small
    * probability.
    *
-   * @param cell The cell whose next state is to be determined.
+   * @param cell      The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors, used to check if any are "BURNING"
    */
   @Override

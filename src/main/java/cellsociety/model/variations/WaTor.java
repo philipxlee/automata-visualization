@@ -3,8 +3,8 @@ package cellsociety.model.variations;
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.WaTorCell;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WaTor implements Simulation<WaTorCell> {
@@ -17,8 +17,8 @@ public class WaTor implements Simulation<WaTorCell> {
   /**
    * Creates a new WaTorCell with specified row, column, and state.
    *
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
+   * @param row   The row position of the cell in the grid.
+   * @param col   The column position of the cell in the grid.
    * @param state The initial state of the cell, usually "FISH", "SHARK", or "EMPTY".
    * @return A new instance of WaTorCell with the given parameters.
    */
@@ -30,14 +30,14 @@ public class WaTor implements Simulation<WaTorCell> {
   /**
    * Determines the next state of a cell based on its current state and states of its neighbors.
    * This method implements the rules of WaTor: - A "FISH" cell moves to an empty cell if there is
-   * one available. - A "SHARK" cell moves to a cell with a fish in it if there is one available.
-   * - A "SHARK" cell moves to an empty cell if there are no fish available. - A "SHARK" cell dies
-   * if it is not eaten in a certain number of time steps. - A "FISH" cell reproduces if it has not
+   * one available. - A "SHARK" cell moves to a cell with a fish in it if there is one available. -
+   * A "SHARK" cell moves to an empty cell if there are no fish available. - A "SHARK" cell dies if
+   * it is not eaten in a certain number of time steps. - A "FISH" cell reproduces if it has not
    * reproduced in a certain number of time steps. - A "SHARK" cell reproduces if it has not
    * reproduced in a certain number of time steps. - A "SHARK" cell eats a fish if it moves to a
    * cell with a fish in it.
    *
-   * @param cell The cell whose next state is to be determined.
+   * @param cell      The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors, used to check if any are "EMPTY" or "WALL"
    */
   @Override

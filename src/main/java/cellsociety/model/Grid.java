@@ -19,15 +19,15 @@ public class Grid<T extends Cell> {
   private final Map<T, List<T>> cellNeighbors;
   private final Simulation<T> simulation;
   private final Stack<String[][]> history;
-  private Map<String, Integer> cellCounts;
   private final Deque<T> cellDeque = new ArrayDeque<>();
+  private Map<String, Integer> cellCounts;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
    * storing neighbors of each cell.
    *
    * @param simulation The simulation logic to be used to determine the next state of each cell.
-   * @param config The configuration object containing the initial state of the grid.
+   * @param config     The configuration object containing the initial state of the grid.
    */
   public Grid(Simulation<T> simulation, Config config) {
     this.row = config.getHeight();
@@ -44,11 +44,9 @@ public class Grid<T extends Cell> {
   /**
    * Computes the next generation of the grid. For each cell, the next state is determined based on
    * the current state and the states of its neighbors. Then, the next state is applied to all cells
-   * that are ready for it.
-   * recordCurrentGenerationForHistory is called to store the current state of the grid in a stack
-   * for use in the back button.
-   * After the next generation is computed, the cell counts are updated and the grid is
-   * converted to a deque for use in the View.
+   * that are ready for it. recordCurrentGenerationForHistory is called to store the current state
+   * of the grid in a stack for use in the back button. After the next generation is computed, the
+   * cell counts are updated and the grid is converted to a deque for use in the View.
    */
   public void computeNextGenerationGrid() {
     // Record history for back button
