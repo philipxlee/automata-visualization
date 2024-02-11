@@ -1,10 +1,10 @@
 <simulation>
   <type id = "SpreadingOfFire">
     <parameters>
-      <probabilityFire>0.01</probabilityFire>
-      <probabilityProduction>0.01</probabilityProduction>
+      <probabilityFire>0</probabilityFire>
+      <probabilityProduction>0.1</probabilityProduction>
     </parameters>
-    <title>Spreading of Fire Simulation #1</title>
+    <title>Spreading of Fire Simulation #2</title>
     <authors>Drossel and Schwabl</authors>
     <description>
       A cell can be empty, occupied by a tree, or burning. There are four rules:
@@ -12,12 +12,12 @@
       A tree will burn if at least one neighbor is burning
       A tree ignites with probability f even if no neighbor is burning
       An empty space fills with a tree with probability p
-                                                        - Wikipedia
+      - Wikipedia
     </description>
     <gridDimensions>
       <width>10</width>
       <height>10</height>
     </gridDimensions>
-    <fileName>/SpreadingOfFire/SpreadingOfFire1GRID.txt</fileName>
+    <fileName>/SpreadingOfFire/SpreadingOfFire2GRID.txt</fileName>
   </type>
 </simulation>
