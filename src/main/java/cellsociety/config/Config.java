@@ -295,7 +295,11 @@ public class Config {
       for (int i = 0; i < height; i++) {
         String line = reader.readLine();
         for (int j = 0; j < width; j++) {
-          fileGrid[i][j] = line.charAt(j);
+          try {
+            fileGrid[i][j] = line.charAt(j);
+          } catch (IndexOutOfBoundsException | NullPointerException e) {
+            fileGrid[i][j] = '0';
+          }
           cellValues.offer(fileGrid[i][j]);
         }
       }
@@ -330,7 +334,7 @@ public class Config {
 
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
-//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire.xml"));
+//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire1.xml"));
 //    System.out.println(newConfig.getStateColors().get("ALIVE").toString());
 //  }
 
