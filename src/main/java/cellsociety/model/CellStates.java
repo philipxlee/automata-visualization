@@ -20,6 +20,12 @@ public enum CellStates {
   VISITED('V'),
   ERROR_DETECTED_IN_STATE_NAME('E');
 
+  private final char cellChar;
+
+  CellStates(char cellChar) {
+    this.cellChar = cellChar;
+  }
+
   /**
    * Get the character representation of the cell state.
    *
@@ -28,10 +34,4 @@ public enum CellStates {
   public char getCellChar() {
     return cellChar;
   }
-
-  CellStates(char cellChar) {
-    this.cellChar = cellChar;
-  }
-
-  private final char cellChar;
 }

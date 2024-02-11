@@ -126,8 +126,9 @@ public class Config {
 
   /**
    * saves the state of the simulation into XML file
+   *
    * @param xmlName The String name of the xml file to be created and written to
-   * @param grid The grid state to be stored in the saved file
+   * @param grid    The grid state to be stored in the saved file
    * @throws ParserConfigurationException
    * @throws TransformerException
    * @throws IOException
@@ -189,7 +190,6 @@ public class Config {
 
     for (int row = 0; row < height; row++) {
       String rowString = String.valueOf(grid[row]);
-      System.out.println(rowString);
       Files.writeString(Path.of(textPath), rowString, StandardOpenOption.APPEND);
       Files.writeString(Path.of(textPath), "\n", StandardOpenOption.APPEND);
     }
@@ -199,23 +199,24 @@ public class Config {
 
   }
 
+  public String getEdgePolicy() {
+    return "Normal";
+  }
+
 
   private Node tagToNode(Document document, String tag) {
     NodeList nodeList = document.getElementsByTagName(tag);
-    System.out.println("tagToNode");
     return nodeList.item(0);
   }
 
   private String getTagText(Document document, String tag) {
     Element element = (Element) tagToNode(document, tag);
     if (element != null) {
-      System.out.println(tag);
       return element.getTextContent().trim();
     } else {
       return "";
     }
   }
-
 
 
   private NodeList returnChildNodes(Document document, String tag) {
@@ -229,8 +230,8 @@ public class Config {
 
 
   /**
-   * @return a grid of characters which represents the initial state
-   * of the cells at the start of the simulation
+   * @return a grid of characters which represents the initial state of the cells at the start of
+   * the simulation
    */
   public char[][] getGrid() {
     return grid;
@@ -244,8 +245,8 @@ public class Config {
   }
 
   /**
-   * @return an array of Strings which contain information about the
-   * simulation type, title, authors, and description
+   * @return an array of Strings which contain information about the simulation type, title,
+   * authors, and description
    */
   public String[] getSimulationTextInfo() {
     return new String[]{simulationType, simulationTitle, authors, description};

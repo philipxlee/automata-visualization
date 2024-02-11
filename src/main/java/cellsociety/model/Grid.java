@@ -1,8 +1,10 @@
 package cellsociety.model;
 
 import cellsociety.config.Config;
+import cellsociety.model.edgepolicy.EdgePolicy;
+import cellsociety.model.edgepolicy.NormalEdgePolicy;
+import cellsociety.model.edgepolicy.VerticalEdgePolicy;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
@@ -10,33 +12,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class Grid<CellType extends Cell> {
+public class Grid<T extends Cell> {
 
   private final int row;
   private final int col;
-
-  private final CellType[][] cellGrid;
-  private final Map<CellType, List<CellType>> cellNeighbors;
-  private final Simulation<CellType> simulation;
+  private final T[][] cellGrid;
+  private final Map<T, List<T>> cellNeighbors;
+  private final Simulation<T> simulation;
   private final Stack<String[][]> history;
+  private final Deque<T> cellDeque = new ArrayDeque<>();
   private Map<String, Integer> cellCounts;
-  private final Deque<CellType> cellDeque = new ArrayDeque<>();
+  private EdgePolicy edgePolicy;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
    * storing neighbors of each cell.
    *
    * @param simulation The simulation logic to be used to determine the next state of each cell.
-   * @param config The configuration object containing the initial state of the grid.
+   * @param config     The configuration object containing the initial state of the grid.
    */
-  public Grid(Simulation<CellType> simulation, Config config) {
+  public Grid(Simulation<T> simulation, Config config) {
     this.row = config.getHeight();
     this.col = config.getWidth();
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
-    this.cellGrid = (CellType[][]) new Cell[row][col]; // necessary cast
+    this.cellGrid = (T[][]) new Cell[row][col]; // necessary cast
+    System.out.println("Test");
     initializeGridCells(config);
+    System.out.println("Test2");
     simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
   }
@@ -44,11 +48,9 @@ public class Grid<CellType extends Cell> {
   /**
    * Computes the next generation of the grid. For each cell, the next state is determined based on
    * the current state and the states of its neighbors. Then, the next state is applied to all cells
-   * that are ready for it.
-   * recordCurrentGenerationForHistory is called to store the current state of the grid in a stack
-   * for use in the back button.
-   * After the next generation is computed, the cell counts are updated and the grid is
-   * converted to a deque for use in the View.
+   * that are ready for it. recordCurrentGenerationForHistory is called to store the current state
+   * of the grid in a stack for use in the back button. After the next generation is computed, the
+   * cell counts are updated and the grid is converted to a deque for use in the View.
    */
   public void computeNextGenerationGrid() {
     // Record history for back button
@@ -57,8 +59,8 @@ public class Grid<CellType extends Cell> {
     // First, prepare the next state for each cell
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        CellType cell = cellGrid[i][j];
-        List<CellType> neighbors = cellNeighbors.get(cell);
+        T cell = cellGrid[i][j];
+        List<T> neighbors = cellNeighbors.get(cell);
         simulation.prepareCellNextState(cell, neighbors); // Use the simulation logic
         cell.setReadyForNextState(true); // Indicate the cell is ready for its next state
       }
@@ -67,7 +69,7 @@ public class Grid<CellType extends Cell> {
     // Then, apply the next state for all cells that are ready
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        CellType cell = cellGrid[i][j];
+        T cell = cellGrid[i][j];
         if (cell.isReadyForNextState()) {
           cell.applyNextState();
           cell.setReadyForNextState(false); // Reset the flag
@@ -120,7 +122,7 @@ public class Grid<CellType extends Cell> {
    *
    * @return the next cell in the grid
    */
-  public CellType getCell() {
+  public T getCell() {
     return cellDeque.pop();
   }
 
@@ -144,12 +146,21 @@ public class Grid<CellType extends Cell> {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridFromConfig[i][j]);
-        CellType currentCell = simulation.createVariationCell(i, j, state);
+        T currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
       }
     }
     convertCellGridToDeque(cellGrid);
+    initializeEdgePolicy(config);
     buildCellNeighborMap();
+  }
+
+  private void initializeEdgePolicy(Config config) {
+    switch (config.getEdgePolicy()) {
+      case "Normal" -> this.edgePolicy = new NormalEdgePolicy<>();
+      case "VerticalSplit" -> this.edgePolicy = new VerticalEdgePolicy<>();
+      default -> throw new IllegalArgumentException("Unknown edge policy: " + config.getEdgePolicy());
+    }
   }
 
   private void buildCellNeighborMap() {
@@ -160,32 +171,25 @@ public class Grid<CellType extends Cell> {
     }
   }
 
-  private void recordCurrentGenerationForHistory(CellType[][] currentCellGrid) {
+  private void recordCurrentGenerationForHistory(T[][] currentCellGrid) {
     String[][] stateSnapshot = new String[row][col];
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        stateSnapshot[i][j] = cellGrid[i][j].getState();
+        stateSnapshot[i][j] = currentCellGrid[i][j].getState();
       }
     }
     history.push(stateSnapshot);
   }
 
-  private void addNeighborsWithinBounds(int newRow, int newCol, List<CellType> neighbors) {
+  private void addNeighborsWithinBounds(int newRow, int newCol, List<T> neighbors) {
     if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
-      CellType neighbor = cellGrid[newRow][newCol];
+      T neighbor = cellGrid[newRow][newCol];
       neighbors.add(neighbor);
     }
   }
 
-  private List<CellType> findCellNeighbors(int i, int j) {
-    List<CellType> neighbors = new ArrayList<>();
-    int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
-    for (int[] direction : directions) {
-      int newRow = i + direction[0];
-      int newCol = j + direction[1];
-      addNeighborsWithinBounds(newRow, newCol, neighbors);
-    }
-    return neighbors;
+  private List<T> findCellNeighbors(int i, int j) {
+    return edgePolicy.getNeighbors(i, j, cellGrid);
   }
 
   // Generates the state as a string from the read-in characters
@@ -202,14 +206,14 @@ public class Grid<CellType extends Cell> {
     Map<String, Integer> cellCount = new HashMap<>();
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        CellType cell = cellGrid[i][j];
+        T cell = cellGrid[i][j];
         cellCount.put(cell.getState(), cellCount.getOrDefault(cell.getState(), 0) + 1);
       }
     }
     return cellCount;
   }
 
-  private void convertCellGridToDeque(CellType[][] cellGrid) {
+  private void convertCellGridToDeque(T[][] cellGrid) {
     cellDeque.clear();
     for (int i = 0; i < row; i++) {
       cellDeque.addAll(Arrays.asList(cellGrid[i]).subList(0, col));

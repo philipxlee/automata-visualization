@@ -97,7 +97,6 @@ public class Main extends Application {
   }
 
 
-
   // display given message to user using the given type of Alert dialog box
   void showMessage(AlertType type, String message) {
     Alert alert = new Alert(type, message);
@@ -105,6 +104,7 @@ public class Main extends Application {
     alert.setHeaderText("");
     alert.showAndWait();
   }
+
   private <T extends Cell> Simulation<T> returnSimulation(String simulationType) {
     Simulation<T> simulation = null;
     switch (simulationType) {

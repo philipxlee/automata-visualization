@@ -31,8 +31,8 @@ public class GameOfLife implements Simulation<BasicCell> {
    * "ALIVE". If the cell's current state does not match "ALIVE" or "DEAD", an IllegalStateException
    * is thrown.
    *
-   * @param cell         The cell whose next state is to be determined.
-   * @param neighbors    A list of the cell's neighbors, used to count how many are "ALIVE"
+   * @param cell      The cell whose next state is to be determined.
+   * @param neighbors A list of the cell's neighbors, used to count how many are "ALIVE"
    * @throws IllegalStateException if the cell's current state is neither "ALIVE" nor "DEAD".
    */
   @Override
