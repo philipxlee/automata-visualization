@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
@@ -71,6 +72,7 @@ public class Display {
   private BorderPane root;
   private String myLanguage;
   private boolean gridOutline;
+  private String cellShape;
 
 
   public Display(Stage primaryStage, Grid grid, Config config) {
@@ -83,6 +85,8 @@ public class Display {
     this.description = config.getSimulationTextInfo()[3];
     this.myLanguage = config.getLanguage();
     this.gridOutline = true;
+//    this.cellShape = config.getCellShape();
+    this.cellShape = "Square";
   }
 
   public void start() {
@@ -135,12 +139,12 @@ public class Display {
 
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
-        double[] points = {
-            j * cellWidth, i * cellHeight,
-            (j + 1) * cellWidth, i * cellHeight,
-            j * cellWidth, (i + 1) * cellHeight
-        };
-        Polygon cell = new Polygon(points);
+        double[] points = getPoints(i, j, cellWidth, cellHeight);
+        Polygon cellTriangle = new Polygon(points);
+        Rectangle cellSquare = new Rectangle(cellWidth, cellHeight);
+        cellSquare.setX(j * cellWidth);
+        cellSquare.setY(i * cellHeight);
+        Shape cell = cellShape.equals("Triangle") ? cellTriangle : cellSquare;
         cell.getStyleClass().add(gridOutline ? "cell-outlined" : "cell-no-outline");
         cell.setStrokeWidth(calculateStrokeWidth(grid.length));
         String state = grid[i][j].getState();
@@ -153,23 +157,24 @@ public class Display {
         gridSection.getChildren().add(cell);
       }
     }
-//    for (int i = 0; i < grid.length; i++) {
-//      for (int j = 0; j < grid[i].length; j++) {
-//        Rectangle cell = new Rectangle(cellWidth, cellHeight);
-//        cell.getStyleClass().add(gridOutline ? "cell-outlined" : "cell-no-outline");
-//        cell.setStrokeWidth(calculateStrokeWidth(grid.length));
-//        cell.setX(j * cellWidth);
-//        cell.setY(i * cellHeight);
-//        String state = grid[i][j].getState();
-//        Color color = stateColors.get(state);
-//        if (color != null) {
-//          cell.setFill(color);
-//        } else {
-//          cell.setFill(Color.TRANSPARENT);
-//        }
-//        gridSection.getChildren().add(cell);
-//      }
-//    }
+  }
+
+  private double[] getPoints(int i, int j, double cellWidth, double cellHeight){
+    int triangleX = (int) Math.ceil((double) j/2);
+    if(j % 2 == 0){
+      return new double[]{
+          j * cellWidth, i * cellHeight,
+          j * cellWidth, (i+1) * cellHeight,
+          (triangleX+1) * 2 * cellWidth, (i + 1) * cellHeight
+      };
+    }
+    else{
+      return new double[]{
+          (triangleX) * 2 * cellWidth, i * cellHeight,
+          (triangleX-1) * 2*cellWidth, i * cellHeight,
+          (triangleX) * 2*cellWidth, (i + 1) * cellHeight
+      };
+    }
   }
 
 
@@ -284,8 +289,20 @@ public class Display {
     ComboBox<String> comboBox = new ComboBox<>();
     comboBox.getItems().addAll("Plane", "Toroidal"); // LANGUAGE CONSIDERATION
     comboBox.setValue("Plane");
+    comboBox.setOnAction(event -> {});
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
     comboEdgePolicy.getStyleClass().add("dropdown");
+
+    Label cellShapeLabel = new Label(resources.getString("CellShape"));
+    ComboBox<String> cellShapeBox = new ComboBox<>();
+    cellShapeBox.getItems().addAll("Square", "Triangle"); // LANGUAGE CONSIDERATION
+    cellShapeBox.setValue(cellShape);
+    cellShapeBox.setOnAction(event -> {
+      cellShape = cellShapeBox.getValue();
+      updateCurrentGrid();
+    });
+    VBox cellShapeDown = new VBox(cellShapeLabel, cellShapeBox);
+    cellShapeDown.getStyleClass().add("dropdown");
 
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
@@ -310,6 +327,9 @@ public class Display {
     HBox row5 = new HBox();
     row5.getStyleClass().add("button-row");
 
+    HBox row6 = new HBox();
+    row6.getStyleClass().add("button-row");
+
     row1.getChildren().add(playButton);
     row1.getChildren().add(pauseButton);
     row2.getChildren().add(nextButton);
@@ -318,13 +338,15 @@ public class Display {
     row4.getChildren().add(toggleGrapher);
     row4.getChildren().add(toggleOutline);
     row5.getChildren().add(comboEdgePolicy);
-    row5.getChildren().add(saveButton);
+    row5.getChildren().add(cellShapeDown);
+    row6.getChildren().add(saveButton);
 
     controlPane.getChildren().add(row1);
     controlPane.getChildren().add(row2);
     controlPane.getChildren().add(row3);
     controlPane.getChildren().add(row4);
     controlPane.getChildren().add(row5);
+    controlPane.getChildren().add(row6);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
