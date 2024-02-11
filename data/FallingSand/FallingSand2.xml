@@ -1,0 +1,16 @@
+<simulation>
+  <type id = "FallingSand">
+    <parameters>
+    </parameters>
+    <title>Falling Sand Simulation #2</title>
+    <authors>Dave Feinberg</authors>
+    <description>
+      The Falling Sand assignment lets users paint with particles--stationary metal particles, falling sand, flowing water, and whatever students can think up! Students have introduced acid, clouds, fire, gas, lightning, plants, seeds, and much more! Students are essentially inventing their own interactive 2-D cellular automata.
+    </description>
+    <gridDimensions>
+      <width>10</width>
+      <height>10</height>
+    </gridDimensions>
+    <fileName>/FallingSand/FallingSand2GRID.txt</fileName>
+  </type>
+</simulation>
