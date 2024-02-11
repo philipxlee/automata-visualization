@@ -2,13 +2,13 @@
   <type id = "WaTor">
     <parameters>
     </parameters>
-    <title>WaTor Simulation #1</title>
+    <title>WaTor Simulation #5</title>
     <authors>A. K. Dewdney</authors>
     <description>"A predator-prey ecosystem simulation. It models fish and sharks, with the dynamics of birth, death, and movement, providing insights into population dynamics and ecological systems"</description>
     <gridDimensions>
       <width>10</width>
       <height>10</height>
     </gridDimensions>
-    <fileName>/WaTor/WaTor1GRID.txt</fileName>
+    <fileName>/WaTor/WaTor5GRID.txt</fileName>
   </type>
 </simulation>
