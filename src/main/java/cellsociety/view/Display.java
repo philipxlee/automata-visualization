@@ -36,11 +36,11 @@ import javax.imageio.ImageIO;
 
 public class Display {
 
-  public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
-  public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
-  public String STYLESHEET = "styles.css";
-  private int WINDOW_WIDTH = 1024;
-  private int WINDOW_HEIGHT = 768;
+  public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
+  public static final String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
+  public static final String STYLESHEET = "styles.css";
+  private static final int WINDOW_WIDTH = 1024;
+  private static final int WINDOW_HEIGHT = 768;
   //region Temporary hard-coded values
   private String simType;
   private String author;
@@ -114,8 +114,8 @@ public class Display {
 
     updateGrid();
 
-    VBox mainUI = createMainUI();
-    root.setRight(mainUI);
+    VBox mainUserInterface = createMainUI();
+    root.setRight(mainUserInterface);
 
     return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
   }
@@ -123,11 +123,11 @@ public class Display {
   private void updateGrid() {
     Pane gridSection = new Pane();
     gridSection.getStyleClass().add("grid");
-    createGridUI(gridSection);
+    createGridUserInterface(gridSection);
     root.setCenter(gridSection);
   }
 
-  private void createGridUI(Pane gridSection) {
+  private void createGridUserInterface(Pane gridSection) {
 //    Cell[][] grid = simulationGrid.getCellGrid();
     Cell[][] grid = getCellGrid();
 
