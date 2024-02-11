@@ -42,15 +42,15 @@ public class SpreadingOfFire implements Simulation<BasicCell> {
   public void prepareCellNextState(BasicCell cell, List<BasicCell> neighbors) {
     String currentState = cell.getState();
     String nextState = currentState; // Default to current state
-    double BECOME_TREE_PROBABILITY = parameters.get(TREE_GROWTH_CHANCE);
+    double becomeTreeProbability = parameters.get(TREE_GROWTH_CHANCE);
     if (currentState.equals(BURNING)) {
       nextState = EMPTY;
-    } else if (currentState.equals(EMPTY) && rand.nextDouble() < BECOME_TREE_PROBABILITY) {
+    } else if (currentState.equals(EMPTY) && rand.nextDouble() < becomeTreeProbability) {
       nextState = TREE;
     } else if (currentState.equals(TREE)) {
       boolean hasBurningNeighbor = checkForBurningNeighbor(cell, neighbors);
-      double CATCH_FIRE_PROBABILITY = parameters.get(CATCH_FIRE_CHANCE);
-      if (hasBurningNeighbor || rand.nextDouble() < CATCH_FIRE_PROBABILITY) {
+      double catchFireProbability = parameters.get(CATCH_FIRE_CHANCE);
+      if (hasBurningNeighbor || rand.nextDouble() < catchFireProbability) {
         nextState = BURNING;
       }
     }

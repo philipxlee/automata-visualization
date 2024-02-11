@@ -26,7 +26,8 @@ public class Percolation implements Simulation<BasicCell> {
   /**
    * Determines the next state of a cell based on its current state and the states of its neighbors.
    * This method implements the rules of Percolation: - An "PERCOLATED" cell will make all of its
-   * "EMPTY" neighbors "PERCOLATED". If the cell's current state does not match "PERCOLATED" or
+   * "EMPTY" neighbors "PERCOLATED".
+   *
    * @param cell The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors, used to count how many are "PERCOLATED"
    */
