@@ -200,8 +200,7 @@ public class Config {
   }
 
   public String getEdgePolicy() {
-    System.out.println("Reached config");
-    return "VerticalSplit";
+    return "Normal";
   }
 
 
