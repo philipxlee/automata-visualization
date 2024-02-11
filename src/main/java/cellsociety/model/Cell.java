@@ -12,8 +12,8 @@ public abstract class Cell {
   /**
    * Create a new cell with the given state at the given row and column
    *
-   * @param row The row of the cell
-   * @param col The column of the cell
+   * @param row   The row of the cell
+   * @param col   The column of the cell
    * @param state The state of the cell
    */
   public Cell(int row, int col, String state) {
@@ -69,15 +69,6 @@ public abstract class Cell {
   }
 
   /**
-   * Set the state of the cell
-   *
-   * @param state the state of the cell
-   */
-  public void setState(String state) {
-    this.state = state;
-  }
-
-  /**
    * Get the state of the cell
    *
    * @return the state of the cell
@@ -93,5 +84,14 @@ public abstract class Cell {
    */
   public String getState() {
     return this.state;
+  }
+
+  /**
+   * Set the state of the cell
+   *
+   * @param state the state of the cell
+   */
+  public void setState(String state) {
+    this.state = state;
   }
 }

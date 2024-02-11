@@ -16,8 +16,8 @@ public class FallingSand implements Simulation<SandCell> {
   /**
    * Creates a new SandCell with specified row, column, and state.
    *
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
+   * @param row   The row position of the cell in the grid.
+   * @param col   The column position of the cell in the grid.
    * @param state The initial state of the cell, usually "SAND", "WALL", or "EMPTY".
    * @return A new instance of SandCell with the given parameters.
    */
@@ -32,7 +32,7 @@ public class FallingSand implements Simulation<SandCell> {
    * it if there is one available. - A "SAND" cell falls to an empty cell diagonally below it if
    * there is one available. - A "SAND" cell does not move if there are no empty cells below it.
    *
-   * @param cell The cell whose next state is to be determined.
+   * @param cell      The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors, used to check if any are "EMPTY" or "WALL"
    */
   @Override
@@ -44,7 +44,7 @@ public class FallingSand implements Simulation<SandCell> {
     if (!cell.getState().equals(SAND)) {
       return;
     }
-    SandCell below = getNeighbor(cell, neighbors, 1, 0);
+    SandCell below = getNeighbor(cell, neighbors, 0);
     if (below != null && below.getState().equals(EMPTY)) {
       swapStates(cell, below);
       return;
@@ -56,8 +56,8 @@ public class FallingSand implements Simulation<SandCell> {
   }
 
   private void attemptDiagonalMove(SandCell cell, List<SandCell> neighbors) {
-    SandCell leftDiagonal = getNeighbor(cell, neighbors, 1, -1);
-    SandCell rightDiagonal = getNeighbor(cell, neighbors, 1, 1);
+    SandCell leftDiagonal = getNeighbor(cell, neighbors, -1);
+    SandCell rightDiagonal = getNeighbor(cell, neighbors, 1);
     boolean canMoveLeft = leftDiagonal != null && leftDiagonal.getState().equals(EMPTY);
     boolean canMoveRight = rightDiagonal != null && rightDiagonal.getState().equals(EMPTY);
     if (canMoveLeft && (!canMoveRight || rand.nextBoolean())) {
@@ -74,8 +74,8 @@ public class FallingSand implements Simulation<SandCell> {
     source.setNextState(EMPTY);
   }
 
-  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int rOffset, int cOffset) {
-    int targetRow = cell.getRow() + rOffset;
+  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int cOffset) {
+    int targetRow = cell.getRow() + 1;
     int targetCol = cell.getCol() + cOffset;
     for (SandCell neighbor : neighbors) {
       if (neighbor.getRow() == targetRow && neighbor.getCol() == targetCol) {

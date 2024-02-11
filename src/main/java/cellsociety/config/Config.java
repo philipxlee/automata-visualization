@@ -126,8 +126,9 @@ public class Config {
 
   /**
    * saves the state of the simulation into XML file
+   *
    * @param xmlName The String name of the xml file to be created and written to
-   * @param grid The grid state to be stored in the saved file
+   * @param grid    The grid state to be stored in the saved file
    * @throws ParserConfigurationException
    * @throws TransformerException
    * @throws IOException
@@ -219,7 +220,6 @@ public class Config {
   }
 
 
-
   private NodeList returnChildNodes(Document document, String tag) {
     Node node = tagToNode(document, tag);
     if (node != null) {
@@ -231,8 +231,8 @@ public class Config {
 
 
   /**
-   * @return a grid of characters which represents the initial state
-   * of the cells at the start of the simulation
+   * @return a grid of characters which represents the initial state of the cells at the start of
+   * the simulation
    */
   public char[][] getGrid() {
     return grid;
@@ -246,8 +246,8 @@ public class Config {
   }
 
   /**
-   * @return an array of Strings which contain information about the
-   * simulation type, title, authors, and description
+   * @return an array of Strings which contain information about the simulation type, title,
+   * authors, and description
    */
   public String[] getSimulationTextInfo() {
     return new String[]{simulationType, simulationTitle, authors, description};

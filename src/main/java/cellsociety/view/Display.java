@@ -6,7 +6,6 @@ import cellsociety.model.Grid;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -34,11 +33,12 @@ import javax.imageio.ImageIO;
 
 public class Display {
 
-  public String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
-  public String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
-  public String STYLESHEET = "styles.css";
-  private int WINDOW_WIDTH = 1024;
-  private int WINDOW_HEIGHT = 768;
+  public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
+  public static final String DEFAULT_RESOURCE_FOLDER =
+      "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
+  public static final String STYLESHEET = "styles.css";
+  private static final int WINDOW_WIDTH = 1024;
+  private static final int WINDOW_HEIGHT = 768;
   //region Temporary hard-coded values
   private String simType;
   private String author;
@@ -63,6 +63,7 @@ public class Display {
   //endregion
   private Stage primaryStage;
   private Grapher myGrapher;
+  private Config myConfig;
   private Timeline myTimeline;
   private Grid<Cell> simulationGrid;
   private ResourceBundle resources;
@@ -74,6 +75,7 @@ public class Display {
   public Display(Stage primaryStage, Grid grid, Config config) {
     this.primaryStage = primaryStage;
     this.simulationGrid = grid;
+    this.myConfig = config;
     this.parameterValues = config.getParameters();
     this.simType = config.getSimulationTextInfo()[0];
     this.author = config.getSimulationTextInfo()[2];
@@ -89,7 +91,7 @@ public class Display {
     primaryStage.setTitle(resources.getString("title"));
 
     Stage graphStage = new Stage();
-    graphStage.setTitle("Cell Population Over Time");
+    graphStage.setTitle(resources.getString("GraphTitle"));
     this.myGrapher = new Grapher(graphStage);
     this.myGrapher.addData(simulationGrid.getCellCounts(), 0);
 
@@ -110,8 +112,8 @@ public class Display {
 
     updateGrid();
 
-    VBox mainUI = createMainUI();
-    root.setRight(mainUI);
+    VBox mainUserInterface = createMainUserInterface();
+    root.setRight(mainUserInterface);
 
     return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
   }
@@ -119,18 +121,13 @@ public class Display {
   private void updateGrid() {
     Pane gridSection = new Pane();
     gridSection.getStyleClass().add("grid");
-    createGridUI(gridSection);
+    createGridUserInterface(gridSection);
     root.setCenter(gridSection);
   }
 
-  private void createGridUI(Pane gridSection) {
+  private void createGridUserInterface(Pane gridSection) {
 //    Cell[][] grid = simulationGrid.getCellGrid();
-    Cell[][] grid = new Cell[simulationGrid.getCellRow()][simulationGrid.getCellCol()];
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid[0].length; j++) {
-        grid[i][j] = simulationGrid.getCell();
-      }
-    }
+    Cell[][] grid = getCellGrid();
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
     double cellHeight = (double) WINDOW_HEIGHT / grid.length;
@@ -154,31 +151,31 @@ public class Display {
     }
   }
 
-  private VBox createMainUI() {
-    VBox newUI = new VBox();
-    newUI.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
-    newUI.getStyleClass().add("ui");
+  private VBox createMainUserInterface() {
+    VBox newUserInterface = new VBox();
+    newUserInterface.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
+    newUserInterface.getStyleClass().add("ui");
 
     VBox infoPane = new VBox();
     infoPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     infoPane.setPrefHeight(WINDOW_HEIGHT / 2);
-    createDisplayUI(infoPane);
-    newUI.getChildren().add(infoPane);
+    createDisplayUserInterface(infoPane);
+    newUserInterface.getChildren().add(infoPane);
 
     Separator separator = new Separator();
-    newUI.getChildren().add(separator);
+    newUserInterface.getChildren().add(separator);
 
     VBox controlPane = new VBox();
     controlPane.getStyleClass().add("control-pane");
     controlPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     controlPane.setPrefHeight(WINDOW_HEIGHT / 2);
-    createControlUI(controlPane);
-    newUI.getChildren().add(controlPane);
+    createControlUserInterface(controlPane);
+    newUserInterface.getChildren().add(controlPane);
 
-    return newUI;
+    return newUserInterface;
   }
 
-  private void createDisplayUI(VBox infoPane) {
+  private void createDisplayUserInterface(VBox infoPane) {
     Label simLabel = new Label(simType);
     simLabel.getStyleClass().add("title");
     infoPane.getChildren().add(simLabel);
@@ -226,12 +223,21 @@ public class Display {
     }
   }
 
-  private void createControlUI(VBox controlPane) {
+  private Cell[][] getCellGrid() {
+    Cell[][] grid = new Cell[simulationGrid.getCellRow()][simulationGrid.getCellCol()];
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
+        grid[i][j] = simulationGrid.getCell();
+      }
+    }
+    return grid;
+  }
+
+  private void createControlUserInterface(VBox controlPane) {
     HBox row1 = new HBox();
     row1.getStyleClass().add("button-row");
     Button playButton = makeButton("PlayCommand", event -> myTimeline.play());
     Button pauseButton = makeButton("PauseCommand", event -> myTimeline.pause());
-
 
     HBox row2 = new HBox();
     row2.getStyleClass().add("button-row");
@@ -241,7 +247,7 @@ public class Display {
     HBox row3 = new HBox();
     row3.getStyleClass().add("button-row");
 
-    Label sliderLabel = new Label("Simulation Speed");
+    Label sliderLabel = new Label(resources.getString("SpeedSlider"));
     Slider speedSlider = new Slider();
     speedSlider.setMin(0);
     speedSlider.setMax(100);
@@ -252,16 +258,19 @@ public class Display {
     VBox sliderBox = new VBox(sliderLabel, speedSlider);
     sliderBox.getStyleClass().add("dropdown");
 
-    Label comboBoxLabel = new Label("Edge Policy:");
+    Label comboBoxLabel = new Label(resources.getString("EdgePolicy"));
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll("Plane", "Toroidal");
+    comboBox.getItems().addAll("Plane", "Toroidal"); // LANGUAGE CONSIDERATION
     comboBox.setValue("Plane");
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
     comboEdgePolicy.getStyleClass().add("dropdown");
 
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
-    Button saveButton = makeButton("SaveCommand", event -> {});
+    Button saveButton = makeButton("SaveCommand", event -> {
+//      myConfig.saveXmlFile("savedFile", getCellGrid());
+    });
+
     CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));
     toggleGrapher.setOnAction(event -> toggleGrapher());
     CheckBox toggleOutline = new CheckBox(resources.getString("OutlineCommand"));
@@ -269,14 +278,10 @@ public class Display {
     toggleOutline.setOnAction(event -> {
       if (toggleOutline.isSelected()) {
         gridOutline = true;
-        simulationGrid.computeNextGenerationGrid();
-        simulationGrid.computePreviousGenerationGrid();
-        updateGrid();
+        updateCurrentGrid();
       } else {
         gridOutline = false;
-        simulationGrid.computeNextGenerationGrid();
-        simulationGrid.computePreviousGenerationGrid();
-        updateGrid();
+        updateCurrentGrid();
       }
     });
 
@@ -319,5 +324,11 @@ public class Display {
 
   private double calculateStrokeWidth(double gridSize) {
     return gridSize <= 10 ? 5 : 50 / gridSize;
+  }
+
+  private void updateCurrentGrid() {
+    simulationGrid.computeNextGenerationGrid();
+    simulationGrid.computePreviousGenerationGrid();
+    updateGrid();
   }
 }

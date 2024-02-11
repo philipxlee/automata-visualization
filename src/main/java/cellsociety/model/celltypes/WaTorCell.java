@@ -5,13 +5,12 @@ import cellsociety.model.CellStates;
 
 public class WaTorCell extends Cell {
 
-  private static final String SHARK = CellStates.SHARK.name();
-  private static final String FISH = CellStates.FISH.name();
-  private static final String EMPTY = CellStates.EMPTY.name();
   public static final int SHARK_BREED_TIME = 7;
   public static final int FISH_BREED_TIME = 5;
   public static final int SHARK_STARTING_ENERGY = 10;
-
+  private static final String SHARK = CellStates.SHARK.name();
+  private static final String FISH = CellStates.FISH.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
   private int breedTime = 0;
   private int energy = SHARK_STARTING_ENERGY;
 
