@@ -16,8 +16,8 @@ public class FallingSand implements Simulation<SandCell> {
   /**
    * Creates a new SandCell with specified row, column, and state.
    *
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
+   * @param row   The row position of the cell in the grid.
+   * @param col   The column position of the cell in the grid.
    * @param state The initial state of the cell, usually "SAND", "WALL", or "EMPTY".
    * @return A new instance of SandCell with the given parameters.
    */
@@ -32,7 +32,7 @@ public class FallingSand implements Simulation<SandCell> {
    * it if there is one available. - A "SAND" cell falls to an empty cell diagonally below it if
    * there is one available. - A "SAND" cell does not move if there are no empty cells below it.
    *
-   * @param cell The cell whose next state is to be determined.
+   * @param cell      The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors, used to check if any are "EMPTY" or "WALL"
    */
   @Override
@@ -64,8 +64,7 @@ public class FallingSand implements Simulation<SandCell> {
       swapStates(cell, leftDiagonal);
     } else if (canMoveRight) {
       swapStates(cell, rightDiagonal);
-    }
-    else {
+    } else {
       cell.setStacked(true); // if no diagonal is possible
     }
   }
@@ -75,7 +74,8 @@ public class FallingSand implements Simulation<SandCell> {
     source.setNextState(EMPTY);
   }
 
-  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int rowOffset, int colOffset) {
+  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int rowOffset,
+      int colOffset) {
     int targetRow = cell.getRow() + rowOffset;
     int targetCol = cell.getCol() + colOffset;
     for (SandCell neighbor : neighbors) {

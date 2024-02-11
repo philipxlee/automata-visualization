@@ -3,11 +3,9 @@ package cellsociety.view;
 import cellsociety.config.Config;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
-import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -28,7 +26,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
@@ -37,7 +34,8 @@ import javax.imageio.ImageIO;
 public class Display {
 
   public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety.view.";
-  public static final String DEFAULT_RESOURCE_FOLDER = "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
+  public static final String DEFAULT_RESOURCE_FOLDER =
+      "/" + DEFAULT_RESOURCE_PACKAGE.replace(".", "/");
   public static final String STYLESHEET = "styles.css";
   private static final int WINDOW_WIDTH = 1024;
   private static final int WINDOW_HEIGHT = 768;
@@ -241,7 +239,6 @@ public class Display {
     Button playButton = makeButton("PlayCommand", event -> myTimeline.play());
     Button pauseButton = makeButton("PauseCommand", event -> myTimeline.pause());
 
-
     HBox row2 = new HBox();
     row2.getStyleClass().add("button-row");
     Button nextButton = makeButton("NextCommand", event -> nextTick());
@@ -273,7 +270,6 @@ public class Display {
     Button saveButton = makeButton("SaveCommand", event -> {
 //      myConfig.saveXmlFile("savedFile", getCellGrid());
     });
-
 
     CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));
     toggleGrapher.setOnAction(event -> toggleGrapher());

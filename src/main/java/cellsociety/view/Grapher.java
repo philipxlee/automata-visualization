@@ -1,19 +1,18 @@
 package cellsociety.view;
 
-import cellsociety.model.Cell;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 
 public class Grapher {
+
   private static final int GRAPHER_WIDTH = 600;
   private static final int GRAPHER_HEIGHT = 500;
   private List<Map<String, Integer>> cellCounts;
@@ -23,18 +22,19 @@ public class Grapher {
   private int maxTick;
   private Stage myStage;
   private Scene myScene;
+
   public Grapher(Stage stage) {
     this.myStage = stage;
     this.cellCounts = new ArrayList<>();
     this.currentTick = 0;
 
-    NumberAxis xAxis = new NumberAxis();
-    xAxis.setLabel("Ticks");
-    NumberAxis yAxis = new NumberAxis();
-    yAxis.setLabel("Population");
+    NumberAxis chartAxisX = new NumberAxis();
+    chartAxisX.setLabel("Ticks");
+    NumberAxis chartAxisY = new NumberAxis();
+    chartAxisY.setLabel("Population");
 
     // Creating the line chart
-    this.myLineChart = new LineChart<>(xAxis, yAxis);
+    this.myLineChart = new LineChart<>(chartAxisX, chartAxisY);
     this.seriesMap = new HashMap<>();
 //    this.myLineChart.setTitle("Cell Population Over Time");
     this.myLineChart.setLegendSide(Side.TOP);
@@ -48,9 +48,8 @@ public class Grapher {
   }
 
 
-
   public void addData(Map<String, Integer> dataPoint, int tick) {
-    if(tick <= maxTick){
+    if (tick <= maxTick) {
       currentTick = tick;
       return;
     }
@@ -73,12 +72,14 @@ public class Grapher {
     myStage.close();
   }
 
-  public boolean isShowing(){
+  public boolean isShowing() {
     return myStage.isShowing();
   }
+
   public int getTick() {
     return currentTick;
   }
+
   public void setTick(int tick) {
     currentTick = tick;
   }

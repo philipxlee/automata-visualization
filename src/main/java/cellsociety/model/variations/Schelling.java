@@ -12,12 +12,12 @@ public class Schelling implements Simulation<BasicCell> {
   private final Queue<BasicCell> emptyCells = new LinkedList<>();
 
   /**
-    * Create a new cell with the given state at the given row and column
-    *
-    * @param row The row position of the cell in the grid
-    * @param col The column position of the cell in the grid
-    * @param state The initial state of the cell, usually "X" or "O"
-    * @return A new instance of BasicCell with the given parameters
+   * Create a new cell with the given state at the given row and column
+   *
+   * @param row   The row position of the cell in the grid
+   * @param col   The column position of the cell in the grid
+   * @param state The initial state of the cell, usually "X" or "O"
+   * @return A new instance of BasicCell with the given parameters
    */
   @Override
   public BasicCell createVariationCell(int row, int col, String state) {
@@ -31,11 +31,11 @@ public class Schelling implements Simulation<BasicCell> {
   /**
    * Determines the next state of a cell based on its current state and the states of its neighbors.
    * This method implements the rules of Schelling's segregation model: - A cell is "satisfied" if
-   * at least THRESHOLD of its neighbors are of the same state. - If a cell is not satisfied,
-   * it moves to an empty space if one is available. - If a cell is satisfied, it stays in its
-   * current state.
+   * at least THRESHOLD of its neighbors are of the same state. - If a cell is not satisfied, it
+   * moves to an empty space if one is available. - If a cell is satisfied, it stays in its current
+   * state.
    *
-   * @param cell The cell whose next state is to be determined
+   * @param cell      The cell whose next state is to be determined
    * @param neighbors A list of the cell's neighbors, used to count how many are "X" and "O"
    */
   @Override
