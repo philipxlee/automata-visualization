@@ -305,7 +305,7 @@ public class Display {
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
     Button saveButton = makeButton("SaveCommand", event -> {
-//      myConfig.saveXmlFile("savedFile", getCellGrid());
+      myConfig.saveXmlFile("savedFile", getCellGrid());
     });
 
     CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));
