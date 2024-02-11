@@ -2,7 +2,7 @@
   <type id = "Percolation">
     <parameters>
     </parameters>
-    <title>Percolation Simulation #1</title>
+    <title>Percolation Simulation #5</title>
     <description>
       "Percolated cells spread to all empty cells unless all paths from percolated cells to an empty cell are blocked"
     </description>
@@ -10,6 +10,6 @@
       <width>10</width>
       <height>10</height>
     </gridDimensions>
-    <fileName>/Percolation/Percolation1GRID.txt</fileName>
+    <fileName>/Percolation/Percolation5GRID.txt</fileName>
   </type>
 </simulation>
