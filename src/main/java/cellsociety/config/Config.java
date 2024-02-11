@@ -200,7 +200,7 @@ public class Config {
   }
 
   public String getEdgePolicy() {
-    return "Normal";
+    return "Vertical";
   }
 
 

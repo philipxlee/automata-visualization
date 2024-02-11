@@ -38,9 +38,7 @@ public class Grid<T extends Cell> {
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
     this.cellGrid = (T[][]) new Cell[row][col]; // necessary cast
-    System.out.println("Test");
     initializeGridCells(config);
-    System.out.println("Test2");
     simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
   }
@@ -158,7 +156,7 @@ public class Grid<T extends Cell> {
   private void initializeEdgePolicy(Config config) {
     switch (config.getEdgePolicy()) {
       case "Normal" -> this.edgePolicy = new NormalEdgePolicy<>();
-      case "VerticalSplit" -> this.edgePolicy = new VerticalEdgePolicy<>();
+      case "Vertical" -> this.edgePolicy = new VerticalEdgePolicy<>();
       default -> throw new IllegalArgumentException("Bad edge policy: " + config.getEdgePolicy());
     }
   }
