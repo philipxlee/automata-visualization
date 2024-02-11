@@ -22,8 +22,6 @@ public class Grid<T extends Cell> {
   private final Stack<String[][]> history;
   private final Deque<T> cellDeque = new ArrayDeque<>();
   private Map<String, Integer> cellCounts;
-
-  private Map<String, Integer> cellCounts;
   private EdgePolicy edgePolicy;
 
   /**
