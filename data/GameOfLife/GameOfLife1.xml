@@ -10,6 +10,10 @@
       <width>50</width>
       <height>50</height>
     </gridDimensions>
+    <stateColors>
+      <ALIVE>BLACK</ALIVE>
+      <DEAD>GREEN</DEAD>
+    </stateColors>
     <fileName>/GameOfLife/GameOfLife1GRID.txt</fileName>
   </type>
 </simulation>
