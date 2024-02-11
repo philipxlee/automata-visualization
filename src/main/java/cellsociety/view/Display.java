@@ -3,6 +3,7 @@ package cellsociety.view;
 import cellsociety.config.Config;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
+import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -27,6 +28,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
@@ -63,6 +65,7 @@ public class Display {
   //endregion
   private Stage primaryStage;
   private Grapher myGrapher;
+  private Config myConfig;
   private Timeline myTimeline;
   private Grid<Cell> simulationGrid;
   private ResourceBundle resources;
@@ -74,6 +77,7 @@ public class Display {
   public Display(Stage primaryStage, Grid grid, Config config) {
     this.primaryStage = primaryStage;
     this.simulationGrid = grid;
+    this.myConfig = config;
     this.parameterValues = config.getParameters();
     this.simType = config.getSimulationTextInfo()[0];
     this.author = config.getSimulationTextInfo()[2];
@@ -89,7 +93,7 @@ public class Display {
     primaryStage.setTitle(resources.getString("title"));
 
     Stage graphStage = new Stage();
-    graphStage.setTitle("Cell Population Over Time");
+    graphStage.setTitle(resources.getString("GraphTitle"));
     this.myGrapher = new Grapher(graphStage);
     this.myGrapher.addData(simulationGrid.getCellCounts(), 0);
 
@@ -125,12 +129,7 @@ public class Display {
 
   private void createGridUI(Pane gridSection) {
 //    Cell[][] grid = simulationGrid.getCellGrid();
-    Cell[][] grid = new Cell[simulationGrid.getCellRow()][simulationGrid.getCellCol()];
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid[0].length; j++) {
-        grid[i][j] = simulationGrid.getCell();
-      }
-    }
+    Cell[][] grid = getCellGrid();
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
     double cellHeight = (double) WINDOW_HEIGHT / grid.length;
@@ -226,6 +225,16 @@ public class Display {
     }
   }
 
+  private Cell[][] getCellGrid() {
+    Cell[][] grid = new Cell[simulationGrid.getCellRow()][simulationGrid.getCellCol()];
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
+        grid[i][j] = simulationGrid.getCell();
+      }
+    }
+    return grid;
+  }
+
   private void createControlUI(VBox controlPane) {
     HBox row1 = new HBox();
     row1.getStyleClass().add("button-row");
@@ -241,7 +250,7 @@ public class Display {
     HBox row3 = new HBox();
     row3.getStyleClass().add("button-row");
 
-    Label sliderLabel = new Label("Simulation Speed");
+    Label sliderLabel = new Label(resources.getString("SpeedSlider"));
     Slider speedSlider = new Slider();
     speedSlider.setMin(0);
     speedSlider.setMax(100);
@@ -252,16 +261,20 @@ public class Display {
     VBox sliderBox = new VBox(sliderLabel, speedSlider);
     sliderBox.getStyleClass().add("dropdown");
 
-    Label comboBoxLabel = new Label("Edge Policy:");
+    Label comboBoxLabel = new Label(resources.getString("EdgePolicy"));
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll("Plane", "Toroidal");
+    comboBox.getItems().addAll("Plane", "Toroidal"); // LANGUAGE CONSIDERATION
     comboBox.setValue("Plane");
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
     comboEdgePolicy.getStyleClass().add("dropdown");
 
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
-    Button saveButton = makeButton("SaveCommand", event -> {});
+    Button saveButton = makeButton("SaveCommand", event -> {
+//      myConfig.saveXmlFile("savedFile", getCellGrid());
+    });
+
+
     CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));
     toggleGrapher.setOnAction(event -> toggleGrapher());
     CheckBox toggleOutline = new CheckBox(resources.getString("OutlineCommand"));
@@ -269,14 +282,10 @@ public class Display {
     toggleOutline.setOnAction(event -> {
       if (toggleOutline.isSelected()) {
         gridOutline = true;
-        simulationGrid.computeNextGenerationGrid();
-        simulationGrid.computePreviousGenerationGrid();
-        updateGrid();
+        updateCurrentGrid();
       } else {
         gridOutline = false;
-        simulationGrid.computeNextGenerationGrid();
-        simulationGrid.computePreviousGenerationGrid();
-        updateGrid();
+        updateCurrentGrid();
       }
     });
 
@@ -319,5 +328,11 @@ public class Display {
 
   private double calculateStrokeWidth(double gridSize) {
     return gridSize <= 10 ? 5 : 50 / gridSize;
+  }
+
+  private void updateCurrentGrid() {
+    simulationGrid.computeNextGenerationGrid();
+    simulationGrid.computePreviousGenerationGrid();
+    updateGrid();
   }
 }
