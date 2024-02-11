@@ -159,7 +159,7 @@ public class Grid<T extends Cell> {
     switch (config.getEdgePolicy()) {
       case "Normal" -> this.edgePolicy = new NormalEdgePolicy<>();
       case "VerticalSplit" -> this.edgePolicy = new VerticalEdgePolicy<>();
-      default -> throw new IllegalArgumentException("Unknown edge policy: " + config.getEdgePolicy());
+      default -> throw new IllegalArgumentException("Bad edge policy: " + config.getEdgePolicy());
     }
   }
 
@@ -179,13 +179,6 @@ public class Grid<T extends Cell> {
       }
     }
     history.push(stateSnapshot);
-  }
-
-  private void addNeighborsWithinBounds(int newRow, int newCol, List<T> neighbors) {
-    if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
-      T neighbor = cellGrid[newRow][newCol];
-      neighbors.add(neighbor);
-    }
   }
 
   private List<T> findCellNeighbors(int i, int j) {
