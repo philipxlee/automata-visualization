@@ -4,7 +4,10 @@ import cellsociety.config.Config;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -45,22 +48,7 @@ public class Display {
   private String simType;
   private String author;
   private String description;
-  private Map<String, Color> stateColors = Map.ofEntries(
-      new SimpleEntry<>("ALIVE", Color.BLACK),
-      new SimpleEntry<>("EMPTY", Color.WHITE),
-      new SimpleEntry<>("PERCOLATED", Color.BLUE),
-      new SimpleEntry<>("WALL", Color.BLACK),
-      new SimpleEntry<>("BURNING", Color.RED),
-      new SimpleEntry<>("TREE", Color.GREEN),
-      new SimpleEntry<>("FISH", Color.ORANGE),
-      new SimpleEntry<>("SHARK", Color.DARKGRAY),
-      new SimpleEntry<>("X", Color.RED),
-      new SimpleEntry<>("O", Color.BLUE),
-      new SimpleEntry<>("SAND", Color.PEACHPUFF),
-      new SimpleEntry<>("ANT", Color.SADDLEBROWN),
-      new SimpleEntry<>("VISITED", Color.DARKBLUE)
-      // Add more entries as needed
-  );
+  private Map<String, Color> stateColors;
   private Map<String, Double> parameterValues;
   //endregion
   private Stage primaryStage;
@@ -85,6 +73,7 @@ public class Display {
     this.description = config.getSimulationTextInfo()[3];
     this.myLanguage = config.getLanguage();
     this.gridOutline = true;
+    this.stateColors = makeMapCopy(config.getStateColorsIterator());
 //    this.cellShape = config.getCellShape();
     this.cellShape = "Square";
   }
@@ -157,6 +146,15 @@ public class Display {
         gridSection.getChildren().add(cell);
       }
     }
+  }
+
+  private Map<String, Color> makeMapCopy(Iterator<Entry<String, Color>> colorIterator){
+    Map<String, Color> copy = new HashMap<>();
+    while(colorIterator.hasNext()){
+      Entry<String, Color> entry = colorIterator.next();
+      copy.put(entry.getKey(), entry.getValue());
+    }
+    return copy;
   }
 
   private double[] getPoints(int i, int j, double cellWidth, double cellHeight){

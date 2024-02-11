@@ -1,8 +1,9 @@
 package cellsociety.config;
 
 
+import static java.util.Map.entry;
+
 import cellsociety.Main;
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,10 +11,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
+import javafx.scene.paint.Color;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,6 +36,21 @@ import org.w3c.dom.NodeList;
 public class Config {
 
   public static final String DEFAULT_LANGUAGE = "English";
+  private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
+      entry("ALIVE", Color.BLACK),
+      entry("EMPTY", Color.WHITE),
+      entry("PERCOLATED", Color.BLUE),
+      entry("WALL", Color.BLACK),
+      entry("BURNING", Color.RED),
+      entry("TREE", Color.GREEN),
+      entry("FISH", Color.ORANGE),
+      entry("SHARK", Color.DARKGRAY),
+      entry("X", Color.RED),
+      entry("O", Color.BLUE),
+      entry("SAND", Color.PEACHPUFF),
+      entry("ANT", Color.SADDLEBROWN),
+      entry("VISITED", Color.DARKBLUE)
+  );
   private String simulationType;
   private String simulationTitle;
   private String authors;
@@ -74,6 +94,9 @@ public class Config {
     height = Integer.parseInt(getTagText(doc, "height"));
 
     putColors(stateColors, doc, "stateColors");
+    if(stateColors.isEmpty()){
+      stateColors = DEFAULT_STATE_COLORS;
+    }
 
     String fileName = getTagText(doc, "fileName");
     grid = fileToGrid(fileName);
@@ -84,7 +107,6 @@ public class Config {
   private void putChildren(Map<String, Double> map, Document document, String item) {
     NodeList nodeList = returnChildNodes(document, item);
     if (nodeList == null) {
-      return;
     }
 
     for (int i = 0; i < nodeList.getLength(); i++) {
@@ -114,7 +136,8 @@ public class Config {
       if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
         // Process the element node
         Element element = (Element) currentNode;
-        map.put(element.getTagName(), Color.decode(element.getTextContent().trim()));
+        map.put(element.getTagName(), Color.web(element.getTextContent().trim()));
+//        map.put(element.getTagName(), Color.decode(element.getTextContent().trim()));
 
       } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
           !currentNode.getTextContent().trim().isEmpty()) {
@@ -329,10 +352,9 @@ public class Config {
     }
   }
 
-  public Map<String, Color> getStateColors() {
-    return stateColors;
+  public Iterator<Entry<String, Color>> getStateColorsIterator() {
+    return Collections.unmodifiableMap(stateColors).entrySet().iterator();
   }
-
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
 //    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire1.xml"));
