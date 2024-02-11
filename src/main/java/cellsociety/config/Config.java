@@ -31,10 +31,13 @@ import org.w3c.dom.NodeList;
 public class Config {
 
   public static final String DEFAULT_LANGUAGE = "English";
+  public static final String DEFAULT_EDGE_POLICY = "Normal";
+  public static final String DEFAULT_DIMENSION = "50";
   private String simulationType;
   private String simulationTitle;
   private String authors;
   private String description;
+  private String edgePolicy;
 
   // ideally combine them in a tuple
   private int width;
@@ -62,20 +65,18 @@ public class Config {
 
     putChildren(parameters, doc, "parameters");
 
-    simulationTitle = getTagText(doc, "title");
-    authors = getTagText(doc, "authors");
-    description = getTagText(doc, "description");
-    language = getTagText(doc, "language");
-    if (language.isEmpty()) {
-      language = DEFAULT_LANGUAGE;
-    }
+    simulationTitle = getTagText(doc, "title", "");
+    authors = getTagText(doc, "authors", "");
+    description = getTagText(doc, "description", "");
+    edgePolicy = getTagText(doc, "edgePolicy", DEFAULT_EDGE_POLICY);
+    language = getTagText(doc, "language", DEFAULT_LANGUAGE);
 
-    width = Integer.parseInt(getTagText(doc, "width"));
-    height = Integer.parseInt(getTagText(doc, "height"));
+    width = Integer.parseInt(getTagText(doc, "width", DEFAULT_DIMENSION));
+    height = Integer.parseInt(getTagText(doc, "height", DEFAULT_DIMENSION));
 
     putColors(stateColors, doc, "stateColors");
 
-    String fileName = getTagText(doc, "fileName");
+    String fileName = getTagText(doc, "fileName", "");
     grid = fileToGrid(fileName);
 
 
@@ -200,7 +201,7 @@ public class Config {
   }
 
   public String getEdgePolicy() {
-    return "Normal"; // placeholder, but just return whatever edge policy it is as a string
+    return edgePolicy; // placeholder, but just return whatever edge policy it is as a string
     // it can only be "Normal" or "Vertical"
   }
 
@@ -210,12 +211,12 @@ public class Config {
     return nodeList.item(0);
   }
 
-  private String getTagText(Document document, String tag) {
+  private String getTagText(Document document, String tag, String defaultReturn) {
     Element element = (Element) tagToNode(document, tag);
     if (element != null) {
       return element.getTextContent().trim();
     } else {
-      return "";
+      return defaultReturn;
     }
   }
 
