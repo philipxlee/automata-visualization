@@ -2,13 +2,13 @@
   <type id = "GameOfLife">
     <parameters>
     </parameters>
-    <title>Game of Life Simulation #2</title>
+    <title>Game of Life Blinker Simulation</title>
     <authors>John Conway</authors>
     <description>"The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves."</description>
     <gridDimensions>
-      <width>50</width>
-      <height>50</height>
+      <width>10</width>
+      <height>10</height>
     </gridDimensions>
-    <fileName>/GameOfLife/GameOfLife2GRID.txt</fileName>
+    <fileName>/GameOfLife/GameOfLifeBlinkerGRID.txt</fileName>
   </type>
 </simulation>

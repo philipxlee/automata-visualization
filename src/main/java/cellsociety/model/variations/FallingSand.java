@@ -74,9 +74,9 @@ public class FallingSand implements Simulation<SandCell> {
     source.setNextState(EMPTY);
   }
 
-  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int cOffset) {
+  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int colOffset) {
     int targetRow = cell.getRow() + 1;
-    int targetCol = cell.getCol() + cOffset;
+    int targetCol = cell.getCol() + colOffset;
     for (SandCell neighbor : neighbors) {
       if (neighbor.getRow() == targetRow && neighbor.getCol() == targetCol) {
         return neighbor;
