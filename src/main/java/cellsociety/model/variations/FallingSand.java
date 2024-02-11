@@ -64,8 +64,7 @@ public class FallingSand implements Simulation<SandCell> {
       swapStates(cell, leftDiagonal);
     } else if (canMoveRight) {
       swapStates(cell, rightDiagonal);
-    }
-    else {
+    } else {
       cell.setStacked(true); // if no diagonal is possible
     }
   }
@@ -75,9 +74,9 @@ public class FallingSand implements Simulation<SandCell> {
     source.setNextState(EMPTY);
   }
 
-  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int rowOffset, int colOffset) {
-    int targetRow = cell.getRow() + rowOffset;
-    int targetCol = cell.getCol() + colOffset;
+  private SandCell getNeighbor(SandCell cell, List<SandCell> neighbors, int rOffset, int cOffset) {
+    int targetRow = cell.getRow() + rOffset;
+    int targetCol = cell.getCol() + cOffset;
     for (SandCell neighbor : neighbors) {
       if (neighbor.getRow() == targetRow && neighbor.getCol() == targetCol) {
         return neighbor;

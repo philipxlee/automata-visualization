@@ -1,8 +1,10 @@
 package cellsociety.model;
 
 import cellsociety.config.Config;
+import cellsociety.model.edgepolicy.EdgePolicy;
+import cellsociety.model.edgepolicy.NormalEdgePolicy;
+import cellsociety.model.edgepolicy.VerticalEdgePolicy;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
@@ -14,13 +16,14 @@ public class Grid<T extends Cell> {
 
   private final int row;
   private final int col;
-
   private final T[][] cellGrid;
   private final Map<T, List<T>> cellNeighbors;
   private final Simulation<T> simulation;
   private final Stack<String[][]> history;
-  private Map<String, Integer> cellCounts;
   private final Deque<T> cellDeque = new ArrayDeque<>();
+
+  private Map<String, Integer> cellCounts;
+  private EdgePolicy edgePolicy;
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -36,7 +39,9 @@ public class Grid<T extends Cell> {
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
     this.cellGrid = (T[][]) new Cell[row][col]; // necessary cast
+    System.out.println("Test");
     initializeGridCells(config);
+    System.out.println("Test2");
     simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
   }
@@ -149,7 +154,16 @@ public class Grid<T extends Cell> {
       }
     }
     convertCellGridToDeque(cellGrid);
+    initializeEdgePolicy(config);
     buildCellNeighborMap();
+  }
+
+  private void initializeEdgePolicy(Config config) {
+    switch (config.getEdgePolicy()) {
+      case "Normal" -> this.edgePolicy = new NormalEdgePolicy<>();
+      case "VerticalSplit" -> this.edgePolicy = new VerticalEdgePolicy<>();
+      default -> throw new IllegalArgumentException("Unknown edge policy: " + config.getEdgePolicy());
+    }
   }
 
   private void buildCellNeighborMap() {
@@ -178,14 +192,7 @@ public class Grid<T extends Cell> {
   }
 
   private List<T> findCellNeighbors(int i, int j) {
-    List<T> neighbors = new ArrayList<>();
-    int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
-    for (int[] direction : directions) {
-      int newRow = i + direction[0];
-      int newCol = j + direction[1];
-      addNeighborsWithinBounds(newRow, newCol, neighbors);
-    }
-    return neighbors;
+    return edgePolicy.getNeighbors(i, j, cellGrid);
   }
 
   // Generates the state as a string from the read-in characters

@@ -189,7 +189,6 @@ public class Config {
 
     for (int row = 0; row < height; row++) {
       String rowString = String.valueOf(grid[row]);
-      System.out.println(rowString);
       Files.writeString(Path.of(textPath), rowString, StandardOpenOption.APPEND);
       Files.writeString(Path.of(textPath), "\n", StandardOpenOption.APPEND);
     }
@@ -199,17 +198,20 @@ public class Config {
 
   }
 
+  public String getEdgePolicy() {
+    System.out.println("Reached config");
+    return "VerticalSplit";
+  }
+
 
   private Node tagToNode(Document document, String tag) {
     NodeList nodeList = document.getElementsByTagName(tag);
-    System.out.println("tagToNode");
     return nodeList.item(0);
   }
 
   private String getTagText(Document document, String tag) {
     Element element = (Element) tagToNode(document, tag);
     if (element != null) {
-      System.out.println(tag);
       return element.getTextContent().trim();
     } else {
       return "";
