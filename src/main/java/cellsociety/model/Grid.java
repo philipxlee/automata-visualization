@@ -10,17 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class Grid<Celltype extends Cell> {
+public class Grid<T extends Cell> {
 
   private final int row;
   private final int col;
 
-  private final Celltype[][] cellGrid;
-  private final Map<Celltype, List<Celltype>> cellNeighbors;
-  private final Simulation<Celltype> simulation;
+  private final T[][] cellGrid;
+  private final Map<T, List<T>> cellNeighbors;
+  private final Simulation<T> simulation;
   private final Stack<String[][]> history;
   private Map<String, Integer> cellCounts;
-  private final Deque<Celltype> cellDeque = new ArrayDeque<>();
+  private final Deque<T> cellDeque = new ArrayDeque<>();
 
   /**
    * Constructs a Grid object representing the game board. Initializes a grid of cells and a map for
@@ -29,13 +29,13 @@ public class Grid<Celltype extends Cell> {
    * @param simulation The simulation logic to be used to determine the next state of each cell.
    * @param config The configuration object containing the initial state of the grid.
    */
-  public Grid(Simulation<Celltype> simulation, Config config) {
+  public Grid(Simulation<T> simulation, Config config) {
     this.row = config.getHeight();
     this.col = config.getWidth();
     this.simulation = simulation;
     this.cellNeighbors = new HashMap<>();
     this.history = new Stack<String[][]>();
-    this.cellGrid = (Celltype[][]) new Cell[row][col]; // necessary cast
+    this.cellGrid = (T[][]) new Cell[row][col]; // necessary cast
     initializeGridCells(config);
     simulation.setParameters(config.getParameters());
     this.cellCounts = countCellAmount();
@@ -57,8 +57,8 @@ public class Grid<Celltype extends Cell> {
     // First, prepare the next state for each cell
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        Celltype cell = cellGrid[i][j];
-        List<Celltype> neighbors = cellNeighbors.get(cell);
+        T cell = cellGrid[i][j];
+        List<T> neighbors = cellNeighbors.get(cell);
         simulation.prepareCellNextState(cell, neighbors); // Use the simulation logic
         cell.setReadyForNextState(true); // Indicate the cell is ready for its next state
       }
@@ -67,7 +67,7 @@ public class Grid<Celltype extends Cell> {
     // Then, apply the next state for all cells that are ready
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        Celltype cell = cellGrid[i][j];
+        T cell = cellGrid[i][j];
         if (cell.isReadyForNextState()) {
           cell.applyNextState();
           cell.setReadyForNextState(false); // Reset the flag
@@ -120,7 +120,7 @@ public class Grid<Celltype extends Cell> {
    *
    * @return the next cell in the grid
    */
-  public Celltype getCell() {
+  public T getCell() {
     return cellDeque.pop();
   }
 
@@ -144,7 +144,7 @@ public class Grid<Celltype extends Cell> {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridFromConfig[i][j]);
-        Celltype currentCell = simulation.createVariationCell(i, j, state);
+        T currentCell = simulation.createVariationCell(i, j, state);
         cellGrid[i][j] = currentCell;
       }
     }
@@ -160,7 +160,7 @@ public class Grid<Celltype extends Cell> {
     }
   }
 
-  private void recordCurrentGenerationForHistory(Celltype[][] currentCellGrid) {
+  private void recordCurrentGenerationForHistory(T[][] currentCellGrid) {
     String[][] stateSnapshot = new String[row][col];
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
@@ -170,15 +170,15 @@ public class Grid<Celltype extends Cell> {
     history.push(stateSnapshot);
   }
 
-  private void addNeighborsWithinBounds(int newRow, int newCol, List<Celltype> neighbors) {
+  private void addNeighborsWithinBounds(int newRow, int newCol, List<T> neighbors) {
     if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
-      Celltype neighbor = cellGrid[newRow][newCol];
+      T neighbor = cellGrid[newRow][newCol];
       neighbors.add(neighbor);
     }
   }
 
-  private List<Celltype> findCellNeighbors(int i, int j) {
-    List<Celltype> neighbors = new ArrayList<>();
+  private List<T> findCellNeighbors(int i, int j) {
+    List<T> neighbors = new ArrayList<>();
     int[][] directions = {{-1, 0}, {-1, -1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
     for (int[] direction : directions) {
       int newRow = i + direction[0];
@@ -202,14 +202,14 @@ public class Grid<Celltype extends Cell> {
     Map<String, Integer> cellCount = new HashMap<>();
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        Celltype cell = cellGrid[i][j];
+        T cell = cellGrid[i][j];
         cellCount.put(cell.getState(), cellCount.getOrDefault(cell.getState(), 0) + 1);
       }
     }
     return cellCount;
   }
 
-  private void convertCellGridToDeque(Celltype[][] cellGrid) {
+  private void convertCellGridToDeque(T[][] cellGrid) {
     cellDeque.clear();
     for (int i = 0; i < row; i++) {
       cellDeque.addAll(Arrays.asList(cellGrid[i]).subList(0, col));

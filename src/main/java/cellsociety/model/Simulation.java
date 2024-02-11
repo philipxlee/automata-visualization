@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface Simulation<Celltype extends Cell> {
+public interface Simulation<T extends Cell> {
 
   Map<String, Double> parameters = new HashMap<>();
 
-  Celltype createVariationCell(int row, int col, String state);
+  T createVariationCell(int row, int col, String state);
 
-  void prepareCellNextState(Celltype cell, List<Celltype> neighbors);
+  void prepareCellNextState(T cell, List<T> neighbors);
 
   default void setParameters(Map<String, Double> newParameters) {
     parameters.clear(); // Clear the current map
