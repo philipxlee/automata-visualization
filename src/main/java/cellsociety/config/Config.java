@@ -333,7 +333,7 @@ public class Config {
 
 //  public static void main(String[] args) throws Exception {
 //    Config newConfig = new Config();
-//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire.xml"));
+//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire1.xml"));
 //    System.out.println(newConfig.getStateColors().get("ALIVE").toString());
 //  }
 
