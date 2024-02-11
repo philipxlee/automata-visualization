@@ -25,6 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -134,11 +135,14 @@ public class Display {
 
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
-        Rectangle cell = new Rectangle(cellWidth, cellHeight);
+        double[] points = {
+            j * cellWidth, i * cellHeight,
+            (j + 1) * cellWidth, i * cellHeight,
+            j * cellWidth, (i + 1) * cellHeight
+        };
+        Polygon cell = new Polygon(points);
         cell.getStyleClass().add(gridOutline ? "cell-outlined" : "cell-no-outline");
         cell.setStrokeWidth(calculateStrokeWidth(grid.length));
-        cell.setX(j * cellWidth);
-        cell.setY(i * cellHeight);
         String state = grid[i][j].getState();
         Color color = stateColors.get(state);
         if (color != null) {
@@ -149,7 +153,25 @@ public class Display {
         gridSection.getChildren().add(cell);
       }
     }
+//    for (int i = 0; i < grid.length; i++) {
+//      for (int j = 0; j < grid[i].length; j++) {
+//        Rectangle cell = new Rectangle(cellWidth, cellHeight);
+//        cell.getStyleClass().add(gridOutline ? "cell-outlined" : "cell-no-outline");
+//        cell.setStrokeWidth(calculateStrokeWidth(grid.length));
+//        cell.setX(j * cellWidth);
+//        cell.setY(i * cellHeight);
+//        String state = grid[i][j].getState();
+//        Color color = stateColors.get(state);
+//        if (color != null) {
+//          cell.setFill(color);
+//        } else {
+//          cell.setFill(Color.TRANSPARENT);
+//        }
+//        gridSection.getChildren().add(cell);
+//      }
+//    }
   }
+
 
   private VBox createMainUserInterface() {
     VBox newUserInterface = new VBox();
