@@ -159,6 +159,7 @@ public class Display {
 
   private double[] getPoints(int i, int j, double cellWidth, double cellHeight){
     int triangleX = (int) Math.ceil((double) j/2);
+    double shiftFactor = 1;
     if(j % 2 == 0){
       return new double[]{
           j * cellWidth, i * cellHeight,
@@ -168,9 +169,9 @@ public class Display {
     }
     else{
       return new double[]{
-          (triangleX) * 2 * cellWidth, i * cellHeight,
-          (triangleX-1) * 2*cellWidth, i * cellHeight,
-          (triangleX) * 2*cellWidth, (i + 1) * cellHeight
+          (triangleX) * 2 * cellWidth + shiftFactor, i * cellHeight,
+          (triangleX-1) * 2*cellWidth - shiftFactor, i * cellHeight,
+          (triangleX) * 2*cellWidth + shiftFactor, (i + 1) * cellHeight + shiftFactor
       };
     }
   }

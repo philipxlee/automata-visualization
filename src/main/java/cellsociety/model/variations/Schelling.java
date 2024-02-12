@@ -9,6 +9,7 @@ import java.util.Queue;
 public class Schelling implements Simulation<BasicCell> {
 
   private static final String EMPTY = "EMPTY";
+  public static final double DEFAULT_THRESHOLD = 0.3;
   private final Queue<BasicCell> emptyCells = new LinkedList<>();
 
   /**
@@ -56,7 +57,12 @@ public class Schelling implements Simulation<BasicCell> {
     int sameStateCount = "X".equals(currentState) ? counts[0] : counts[1];
     int otherStateCount = "X".equals(currentState) ? counts[1] : counts[0];
     int totalCount = sameStateCount + otherStateCount;
-    double threshold = parameters.get("threshold");
+
+    double threshold = DEFAULT_THRESHOLD;
+    if (parameters.get("threshold") != null) {
+      threshold = parameters.get("threshold");
+    }
+
     return (otherStateCount == 0 || (double) sameStateCount / (totalCount) >= threshold);
   }
 
