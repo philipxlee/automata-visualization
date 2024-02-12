@@ -120,7 +120,6 @@ public class Display {
   }
 
   private void createGridUserInterface(Pane gridSection) {
-//    Cell[][] grid = simulationGrid.getCellGrid();
     Cell[][] grid = getCellGrid();
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
