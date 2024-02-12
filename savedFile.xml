@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<simulation>
+    <type id="GameOfLife">
+        <parameters/>
+        <title>Game of Life Simulation #1</title>
+        <author>John Conway</author>
+        <description>"The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves."</description>
+        <gridDimensions>
+            <width>50</width>
+            <height>50</height>
+        </gridDimensions>
+        <fileName>savedFileGRID</fileName>
+    </type>
+</simulation>
