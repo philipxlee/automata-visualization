@@ -17,6 +17,10 @@ public enum CellStates {
   WALL('W'),
   SAND('D'),
   ANT('A'),
+  HOME('H'),
+  FOOD('C'),
+  HIGHPHEROMONE('Z'),
+  LOWPHEROMONE('X'),
   VISITED('V'),
   ERROR_DETECTED_IN_STATE_NAME('E');
 
