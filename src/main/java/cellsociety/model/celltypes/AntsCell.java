@@ -101,7 +101,7 @@ public class AntsCell extends Cell {
       if(ant.hasFood()) {
         ant.returnHome(this, getOrientation(neighbors, "HOME"));
       } else {
-        ant.findFood(this.getState(), getOrientation(neighbors, "FOOD"));
+        ant.findFood(this, getOrientation(neighbors, "FOOD"));
       }
     }
   }
@@ -163,7 +163,7 @@ class Ant {
     if (direction != null) {
       dropFoodPheromone(antsCell, neighbors);
       //TODO: move ant to direction
-      if (antsCell.getState().equals(CellStates.HOME)) {
+      if (antsCell.getState().equals(CellStates.HOME.name())) {
         carryingFood = false;
       }
     }
@@ -177,17 +177,32 @@ class Ant {
     //TODO: if ant is now on home cell, drop food
 
   }
-  public void findFood(String cellState, List<AntsCell> neighbors) {
+  public void findFood(AntsCell antsCell, List<AntsCell> neighbors) {
     List<AntsCell> orientation = new ArrayList<>();
-    if(cellState.equals(CellStates.HOME.name())) {
-      orientation.addAll(neighbors);
+    AntsCell direction;
+    if(antsCell.getState().equals(CellStates.HOME.name())) {
+      direction = maxFoodPheromoneCell(neighbors);
+      return;
     }
     //TODO: X <- SELECT-LOCATION(foward)
+    direction = selectLocation(antsCell.returnForward(neighbors));
     //TODO: if X does not work - overcrowded, X <- SELECT-LOCATION(neighbors)
+    if (direction == null) {
+      direction = selectLocation(neighbors);
+    }
+
     //TODO: if X works
-    //TODO: drop-home-pheromone
-    //TODO: move ant to cell high food pheromone cell
-    //TODO: if ant is now on food, carry food
+    if (direction != null) {
+      //TODO: drop-home-pheromone
+      dropHomePheromone(antsCell, neighbors);
+      //TODO: move ant to cell high food pheromone cell
+
+      //TODO: if ant is now on food, carry food
+      if (antsCell.getState().equals(CellStates.FOOD.name())) {
+        carryingFood = true;
+      }
+    }
+
   }
 
   public void dropHomePheromone(AntsCell antsCell, List<AntsCell> neighbors) {
@@ -291,6 +306,19 @@ class Ant {
     }
 
     return  maxCell;
+  }
+
+  public AntsCell maxFoodPheromoneCell (List<AntsCell> neighbors) {
+    AntsCell maxCell = null;
+    double max = 0;
+    for (AntsCell neighbor : neighbors) {
+      if (neighbor.getFoodPheromone() > max) {
+        max = neighbor.getFoodPheromone();
+        maxCell = neighbor;
+      }
+    }
+
+    return maxCell;
   }
 
 
