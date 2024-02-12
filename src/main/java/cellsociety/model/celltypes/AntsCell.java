@@ -5,6 +5,7 @@ import cellsociety.model.CellStates;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Vector;
 
 public class AntsCell extends Cell {
@@ -34,6 +35,8 @@ public class AntsCell extends Cell {
   public double getFoodPheromone() {
     return foodPheromone;
   }
+
+  public  List<Ant> getCurAnts() { return curAnts; }
 
   public String updateCellState() {
     if(this.getState().equals(HOME) || this.getState().equals(FOOD)) {
@@ -100,6 +103,8 @@ public class AntsCell extends Cell {
 
 class Ant {
   private boolean carryingFood;
+  public static final double K = 0.001;
+  public static final double N = 10.0;
   public boolean hasFood() {
     return carryingFood;
   }
@@ -139,14 +144,46 @@ class Ant {
     //TODO: “home phero”→“food phero” and “home”→“food source”
   }
 
-  public List<AntsCell> selectLocation(List<AntsCell> orientation) {
+  public AntsCell selectLocation(List<AntsCell> orientation) {
     //TODO: return L = locations it can move to
     //TODO: L = L - obstacles
     //TODO: L = L - overcrowded
-    //TODO: if L is empty, return NULL
-    //TODO: select a location from L, where each location has probability of being selected:
-    //TODO: (K + foodPheroThere)^N
-    return null;
+    for (AntsCell neighbor: orientation) {
+      if (neighbor.getCurAnts().size() >= 10) {
+        orientation.remove(neighbor);
+      }
+    }
+
+    if (orientation.isEmpty()) {
+      //TODO: if L is empty, return NULL
+      return null;
+    } else {
+
+      double[] cumulativeProbabilities = new double[orientation.size()];
+      double cumulativeProbability = 0.0;
+      int i = 0;
+
+      // Calculate cumulative probabilities for each location in LocSet
+      for (AntsCell neighbor : orientation) {
+        double probability = Math.pow(K + neighbor.getFoodPheromone(), N);
+        cumulativeProbability += probability;
+        cumulativeProbabilities[i++] = cumulativeProbability;
+      }
+
+      // Generate a random number between 0 and 1
+      Random random = new Random();
+      double rand = random.nextDouble();
+
+      // Select a location based on the generated random number
+      for (i = 0; i < orientation.size(); i++) {
+        //TODO: select a location from L, where each location has probability of being selected:
+        //TODO: (K + foodPheroThere)^N
+        if (rand <= cumulativeProbabilities[i]) {
+          return orientation.get(i);
+        }
+      }
+    }
+    return  null;
   }
 
 
