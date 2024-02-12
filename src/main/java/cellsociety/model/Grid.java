@@ -21,6 +21,7 @@ public class Grid<T extends Cell> {
   private final Simulation<T> simulation;
   private final Stack<String[][]> history;
   private final Deque<T> cellDeque = new ArrayDeque<>();
+  private final Deque<T> saveDeque = new ArrayDeque<>();
   private Map<String, Integer> cellCounts;
   private EdgePolicy edgePolicy;
 
@@ -121,7 +122,9 @@ public class Grid<T extends Cell> {
    * @return the next cell in the grid
    */
   public T getCell() {
-    return cellDeque.pop();
+    T cell = cellDeque.pop();
+    cellDeque.add(cell);
+    return cell;
   }
 
   /**
@@ -206,8 +209,10 @@ public class Grid<T extends Cell> {
 
   private void convertCellGridToDeque(T[][] cellGrid) {
     cellDeque.clear();
+    saveDeque.clear();
     for (int i = 0; i < row; i++) {
       cellDeque.addAll(Arrays.asList(cellGrid[i]).subList(0, col));
+      saveDeque.addAll(Arrays.asList(cellGrid[i]).subList(0, col));
     }
   }
 }
