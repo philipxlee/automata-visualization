@@ -236,7 +236,9 @@ public class Config {
     }
 
     for (int row = 0; row < height; row++) {
-      for (int col = 0; col < width; row++) {
+      System.out.printf("height: %d and width: %d\n", height, width);
+      for (int col = 0; col < width; col++) {
+        System.out.printf("row: %d and col: %d\n", row, col);
         String writtenChar = stateToChar(cellGrid[row][col].getState()) + "";
         try {
           Files.writeString(Path.of(textPath), writtenChar, StandardOpenOption.APPEND);
