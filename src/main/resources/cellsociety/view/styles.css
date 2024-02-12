@@ -1,9 +1,12 @@
 .grid {
-  -fx-border-color: #4b4b4b;
+  /*-fx-border-color: #4b4b4b;*/
 }
 
 .cell-no-outline {
-  -fx-border-color: white;
+  -fx-stroke: null;
+  -fx-border-width: 0;
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
 }
 
 .cell-outlined {
