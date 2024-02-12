@@ -52,31 +52,11 @@ public class Grid<T extends Cell> {
    * cell counts are updated and the grid is converted to a deque for use in the View.
    */
   public void computeNextGenerationGrid() {
-    // Record history for back button
-    recordCurrentGenerationForHistory(cellGrid);
-
-    // First, prepare the next state for each cell
-    for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
-        T cell = cellGrid[i][j];
-        List<T> neighbors = cellNeighbors.get(cell);
-        simulation.prepareCellNextState(cell, neighbors); // Use the simulation logic
-        cell.setReadyForNextState(true); // Indicate the cell is ready for its next state
-      }
-    }
-
-    // Then, apply the next state for all cells that are ready
-    for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
-        T cell = cellGrid[i][j];
-        if (cell.isReadyForNextState()) {
-          cell.applyNextState();
-          cell.setReadyForNextState(false); // Reset the flag
-        }
-      }
-    }
-    this.cellCounts = countCellAmount();
+    recordCurrentGenerationForHistory(cellGrid); // Record history for back button
+    firstPassRecordState();
+    secondPassChangeGrid();
     convertCellGridToDeque(cellGrid);
+    this.cellCounts = countCellAmount();
   }
 
   /**
@@ -95,7 +75,6 @@ public class Grid<T extends Cell> {
     }
     convertCellGridToDeque(cellGrid);
   }
-
 
   /**
    * Returns the cellGrid's row
@@ -138,12 +117,14 @@ public class Grid<T extends Cell> {
 
   private void initializeGridCells(Config config) {
     char[][] gridFromConfig = new char[row][col];
-    for (int i = 0; i < row; i++) {
-      for (int j = 0; j < col; j++) {
-        gridFromConfig[i][j] = config.nextCellValue();
-      }
-    }
+    storeConfigGrid(config, gridFromConfig);
+    convertGridToCellType(gridFromConfig);
+    convertCellGridToDeque(cellGrid);
+    initializeEdgePolicy(config);
+    buildCellNeighborMap();
+  }
 
+  private void convertGridToCellType(char[][] gridFromConfig) {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridFromConfig[i][j]);
@@ -151,9 +132,14 @@ public class Grid<T extends Cell> {
         cellGrid[i][j] = currentCell;
       }
     }
-    convertCellGridToDeque(cellGrid);
-    initializeEdgePolicy(config);
-    buildCellNeighborMap();
+  }
+
+  private void storeConfigGrid(Config config, char[][] gridFromConfig) {
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        gridFromConfig[i][j] = config.nextCellValue();
+      }
+    }
   }
 
   private void initializeEdgePolicy(Config config) {
@@ -168,6 +154,29 @@ public class Grid<T extends Cell> {
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
         cellNeighbors.put(cellGrid[i][j], findCellNeighbors(i, j));
+      }
+    }
+  }
+
+  private void secondPassChangeGrid() {
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        T cell = cellGrid[i][j];
+        if (cell.isReadyForNextState()) {
+          cell.applyNextState();
+          cell.setReadyForNextState(false); // Reset the flag
+        }
+      }
+    }
+  }
+
+  private void firstPassRecordState() {
+    for (int i = 0; i < row; i++) {
+      for (int j = 0; j < col; j++) {
+        T cell = cellGrid[i][j];
+        List<T> neighbors = cellNeighbors.get(cell);
+        simulation.prepareCellNextState(cell, neighbors); // Use the simulation logic
+        cell.setReadyForNextState(true); // Indicate the cell is ready for its next state
       }
     }
   }

@@ -285,7 +285,7 @@ public class Display {
 
     Label comboBoxLabel = new Label(resources.getString("EdgePolicy"));
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll("Plane", "Toroidal"); // LANGUAGE CONSIDERATION
+    comboBox.getItems().addAll("Plane", "CustomVerticalEdge"); // LANGUAGE CONSIDERATION
     comboBox.setValue("Plane");
     comboBox.setOnAction(event -> {});
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
