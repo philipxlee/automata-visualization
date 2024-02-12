@@ -53,6 +53,7 @@ public class Grapher {
     }
     for (Map.Entry<String, Integer> entry : dataPoint.entrySet()) {
       String seriesName = entry.getKey();
+      if(seriesName.equals("EMPTY")) continue;
       XYChart.Series<Number, Number> series = seriesMap.get(seriesName);
       if (series == null) {
         series = new XYChart.Series<>();
