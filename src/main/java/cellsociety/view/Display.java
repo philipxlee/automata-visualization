@@ -191,7 +191,7 @@ public class Display {
     newUserInterface.getChildren().add(separator);
 
     VBox controlPane = new VBox();
-    controlPane.getStyleClass().add("control-pane");
+    controlPane.getStyleClass().add("Control-pane");
     controlPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     controlPane.setPrefHeight(WINDOW_HEIGHT / 2);
     createControlUserInterface(controlPane);

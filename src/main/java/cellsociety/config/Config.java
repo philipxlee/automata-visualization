@@ -361,7 +361,7 @@ public class Config {
 
   private char[][] fileToGrid(String path) {
     char[][] fileGrid = new char[height][width];
-    String fullPath = Main.DATA_FILE_FOLDER + File.separator + path;
+    String fullPath = Control.DATA_FILE_FOLDER + File.separator + path;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
       for (int i = 0; i < height; i++) {
