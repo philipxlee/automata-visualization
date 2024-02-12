@@ -19,10 +19,12 @@ public class AntsCell extends Cell {
   private static final String EMPTY = CellStates.EMPTY.name();
   private static final String HIGHPHEROMONE = CellStates.HIGHPHEROMONE.name();
   private static final String LOWPHEROMONE = CellStates.LOWPHEROMONE.name();
+  public static final double MAX_PHEROMONE = 1000.0;
   private int breedTime = 0;
   private List<Ant> curAnts = new ArrayList<>();
   private double homePheromone = 0;
   private double foodPheromone = 0;
+  private int[] direction = new int[]{0, 0};
   public AntsCell(int row, int col, String state) {
     super(row, col, state);
     initPheromone(state); //If the cell is a pheromone cell, set the appropriate pheromone level
@@ -32,9 +34,14 @@ public class AntsCell extends Cell {
     return homePheromone;
   }
 
+  public void setHomePheromone(double pheromoneLevel) { homePheromone = pheromoneLevel; }
+
   public double getFoodPheromone() {
     return foodPheromone;
   }
+
+  public int[] getDirection() { return direction; }
+  public void setFoodPheromone(double pheromoneLevel) { foodPheromone = pheromoneLevel; }
 
   public  List<Ant> getCurAnts() { return curAnts; }
 
@@ -92,11 +99,43 @@ public class AntsCell extends Cell {
   public void antsForage(List<AntsCell> neighbors) {
     for(Ant ant : curAnts) {
       if(ant.hasFood()) {
-        ant.returnHome(this.getState(), getOrientation(neighbors, "HOME"));
+        ant.returnHome(this, getOrientation(neighbors, "HOME"));
       } else {
         ant.findFood(this.getState(), getOrientation(neighbors, "FOOD"));
       }
     }
+  }
+
+  public List<AntsCell> returnForward(List<AntsCell> neighbors) {
+    List<AntsCell> forwardList = new ArrayList<>();
+    if (direction[0] == 0 && direction[1] == 0) {
+      return neighbors;
+    } else if (direction[0] == 0) {
+      for (AntsCell neighbor: neighbors) {
+        if (neighbor.getRow() == (this.getDirection()[1] + this.getRow())) {
+          forwardList.add(neighbor);
+        }
+      }
+    } else if (direction[1] == 0) {
+      for (AntsCell neighbor: neighbors) {
+        if (neighbor.getCol() == (this.getDirection()[0] + this.getCol())) {
+          forwardList.add(neighbor);
+        }
+      }
+    } else {
+      for (AntsCell neighbor: neighbors) {
+        if (neighbor.getCol() == (this.getDirection()[0] + this.getCol()) && neighbor.getRow() == 0) {
+          forwardList.add(neighbor);
+        } else if (neighbor.getRow() == (this.getDirection()[0] + this.getRow()) && neighbor.getCol() == 0) {
+          forwardList.add(neighbor);
+        } else if (neighbor.getCol() == (this.getDirection()[0] + this.getCol()) &&
+            neighbor.getRow() == (this.getDirection()[0] + this.getRow())) {
+          forwardList.add(neighbor);
+        }
+      }
+    }
+
+    return forwardList;
   }
 
 }
@@ -108,15 +147,33 @@ class Ant {
   public boolean hasFood() {
     return carryingFood;
   }
-  public void returnHome(String cellState, List<AntsCell> neighbors) {
+  public void returnHome(AntsCell antsCell, List<AntsCell> neighbors) {
     List<AntsCell> orientation = new ArrayList<>();
-    if(cellState.equals(CellStates.FOOD.name())) {
-      orientation.addAll(neighbors);
+    AntsCell direction;
+    if(antsCell.getState().equals(CellStates.FOOD.name())) {
+      direction = maxHomePheromoneCell(neighbors);
+      return;
     }
+
+    direction = maxHomePheromoneCell(antsCell.returnForward(neighbors));
+    if (direction == null) {
+      direction = maxHomePheromoneCell(neighbors);
+    }
+
+    if (direction != null) {
+      dropFoodPheromone(antsCell, neighbors);
+      //TODO: move ant to direction
+      if (antsCell.getState().equals(CellStates.HOME)) {
+        carryingFood = false;
+      }
+    }
+
+
+
     //TODO: move ant towards cell with highest home pheromone from orientation
     //as long as that cell is not overcrowded by ants or an obstacle(not implemented)
     //TODO: drop-food-pheromone
-    //TODO: move ant to cell high home pheromone cell
+
     //TODO: if ant is now on home cell, drop food
 
   }
@@ -133,15 +190,52 @@ class Ant {
     //TODO: if ant is now on food, carry food
   }
 
-  public void dropPheromone(String cellState, List<AntsCell> neighbors, String pheromoneType) {
-    if(cellState.equals(CellStates.HOME.name())) {
-      //TODO: set home phero to max
+  public void dropHomePheromone(AntsCell antsCell, List<AntsCell> neighbors) {
+    if(antsCell.getState().equals(CellStates.HOME.name())) {
+      antsCell.setHomePheromone(AntsCell.MAX_PHEROMONE);
+    } else {
+      double max = 0;
+      for (AntsCell neighbor: neighbors) {
+        if (neighbor.getHomePheromone() > max) {
+          max = neighbor.getHomePheromone();
+          double des = max - 2;
+          double deposit = des - antsCell.getHomePheromone();
+
+          if (deposit > 0) {
+            antsCell.setHomePheromone(antsCell.getHomePheromone() + deposit);
+          }
+        }
+      }
+      //TODO: get max home pheromones of neighbors
+      //TODO: D = maxHomePheromone - 2 - homePheromoneHere
+      //TODO: if D > 0, set homePheroHere to D
+      //TODO: to go from "drop-home" to "drop-food" do this:
+      //TODO: “home phero”→“food phero” and “home”→“food source”
     }
-    //TODO: get max home pheromones of neighbors
-    //TODO: D = maxHomePheromone - 2 - homePheromoneHere
-    //TODO: if D > 0, set homePheroHere to D
-    //TODO: to go from "drop-home" to "drop-food" do this:
-    //TODO: “home phero”→“food phero” and “home”→“food source”
+  }
+
+  public void dropFoodPheromone(AntsCell antsCell, List<AntsCell> neighbors) {
+    if (antsCell.getState().equals(CellStates.FOOD.name())) {
+      antsCell.setFoodPheromone(AntsCell.MAX_PHEROMONE);
+    } else {
+      double max = 0;
+      for (AntsCell neighbor: neighbors) {
+        if (neighbor.getFoodPheromone() > max) {
+          max = neighbor.getFoodPheromone();
+          double des = max - 2;
+          double deposit = des - antsCell.getFoodPheromone();
+
+          if (deposit > 0) {
+            antsCell.setFoodPheromone(antsCell.getFoodPheromone() + deposit);
+          }
+        }
+      }
+      //TODO: get max home pheromones of neighbors
+      //TODO: D = maxHomePheromone - 2 - homePheromoneHere
+      //TODO: if D > 0, set homePheroHere to D
+      //TODO: to go from "drop-home" to "drop-food" do this:
+      //TODO: “home phero”→“food phero” and “home”→“food source”
+    }
   }
 
   public AntsCell selectLocation(List<AntsCell> orientation) {
@@ -184,6 +278,19 @@ class Ant {
       }
     }
     return  null;
+  }
+
+  public AntsCell maxHomePheromoneCell (List<AntsCell> neighbors) {
+    AntsCell maxCell = null;
+    double max = 0;
+    for (AntsCell neighbor: neighbors) {
+      if (neighbor.getHomePheromone() > max) {
+        max = neighbor.getHomePheromone();
+        maxCell = neighbor;
+      }
+    }
+
+    return  maxCell;
   }
 
 
