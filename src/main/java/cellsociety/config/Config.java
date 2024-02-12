@@ -7,10 +7,12 @@ import cellsociety.Main;
 import cellsociety.model.Cell;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +71,8 @@ public class Config {
   private Queue<Character> cellValues;
   private Map<String, Double> parameters;
   private Map<String, Color> stateColors;
+  public static final String SAVED_FILE_FOLDER =
+      System.getProperty("user.dir") + File.separator + "data" + File.separator + "SavedFile";
 
 
   public Config() {
@@ -161,69 +165,61 @@ public class Config {
    */
   public void saveXmlFile(String xmlName, Cell[][] cellGrid) {
 
+    File directoryPath = new File(SAVED_FILE_FOLDER);
+    String xmlPath = xmlName + ".xml";
+    String textPath = xmlName + "GRID.txt";
+
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder documentBuilder = null;
     try {
       documentBuilder = documentBuilderFactory.newDocumentBuilder();
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException(e);
-    }
 
     // Create a new Document
-    Document document = documentBuilder.newDocument();
+      Document document = documentBuilder.newDocument();
 
-    // Create the root element
-    Element simulationElement = document.createElement("simulation");
-    document.appendChild(simulationElement);
+      // Create the root element
+      Element simulationElement = document.createElement("simulation");
+      document.appendChild(simulationElement);
 
-    Element typeElement = bearChild(document, simulationElement, "type");
-    typeElement.setAttribute("id", simulationType);
+      Element typeElement = bearChild(document, simulationElement, "type");
+      typeElement.setAttribute("id", simulationType);
 
-    Element parametersElement = bearChild(document, typeElement, "parameters");
+      Element parametersElement = bearChild(document, typeElement, "parameters");
 
-    for (String key : parameters.keySet()) {
-      bearTextChild(document, parametersElement, key, Double.toString(parameters.get(key)));
+      for (String key : parameters.keySet()) {
+        bearTextChild(document, parametersElement, key, Double.toString(parameters.get(key)));
+      }
+
+      bearTextChild(document, typeElement, "title", simulationTitle);
+
+      bearTextChild(document, typeElement, "author", authors);
+
+      bearTextChild(document, typeElement, "description", description);
+
+      Element gridDimensionsElement = bearChild(document, typeElement, "gridDimensions");
+
+      bearTextChild(document, gridDimensionsElement, "width",
+          Integer.toString(width));
+
+      bearTextChild(document, gridDimensionsElement, "height",
+          Integer.toString(height));
+
+
+      bearTextChild(document, typeElement, "fileName", textPath);
+
+
+
+      File xmlFile = new File(directoryPath, xmlPath);
+
+      // Write the content into XML file
+      FileOutputStream fos = new FileOutputStream(xmlFile);
+      write(document, fos);
+      fos.close();
+    } catch (ParserConfigurationException | IOException e) {
+      System.out.println("fix the error");
     }
 
-    bearTextChild(document, typeElement, "title", simulationTitle);
-
-    bearTextChild(document, typeElement, "author", authors);
-
-    bearTextChild(document, typeElement, "description", description);
-
-    Element gridDimensionsElement = bearChild(document, typeElement, "gridDimensions");
-
-    bearTextChild(document, gridDimensionsElement, "width",
-        Integer.toString(width));
-
-    bearTextChild(document, gridDimensionsElement, "height",
-        Integer.toString(height));
-
-    String textPath = xmlName + "GRID";
-    bearTextChild(document, typeElement, "fileName", textPath);
-
-    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    Transformer transformer = null;
-    try {
-      transformer = transformerFactory.newTransformer();
-    } catch (TransformerConfigurationException e) {
-      throw new RuntimeException(e);
-    }
-
-    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-    String path = xmlName + ".xml";
-    DOMSource source = new DOMSource(document);
-    StreamResult result = new StreamResult(new java.io.File(path)); // Specify the output file
-
-    try {
-      transformer.transform(source, result);
-    } catch (TransformerException e) {
-      throw new RuntimeException(e);
-    }
-
-    File file = new File(textPath);
+    File file = new File(directoryPath, textPath);
     try {
       file.createNewFile();
     } catch (IOException e) {
@@ -235,28 +231,45 @@ public class Config {
       throw new RuntimeException(e);
     }
 
+    try {
+      Files.writeString(Path.of(directoryPath + File.separator + textPath), "");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     for (int row = 0; row < height; row++) {
       System.out.printf("height: %d and width: %d\n", height, width);
       for (int col = 0; col < width; col++) {
-        System.out.printf("row: %d and col: %d\n", row, col);
         String writtenChar = stateToChar(cellGrid[row][col].getState()) + "";
+        System.out.printf("row: %d and col: %d and char: %s\n", row, col, writtenChar);
         try {
-          Files.writeString(Path.of(textPath), writtenChar, StandardOpenOption.APPEND);
+          Files.writeString(Path.of(directoryPath + File.separator + textPath), writtenChar, StandardOpenOption.APPEND);
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
       }
       try {
-        Files.writeString(Path.of(textPath), "\n", StandardOpenOption.APPEND);
+        Files.writeString(Path.of(directoryPath + File.separator + textPath), "\n", StandardOpenOption.APPEND);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  public void editParameter() {
-
+  public static void write(Document doc, FileOutputStream fos) throws IOException {
+    try {
+      // Use Transformer to write XML document to a file
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+      DOMSource source = new DOMSource(doc);
+      StreamResult result = new StreamResult(fos);
+      transformer.transform(source, result);
+    } catch (TransformerException e) {
+      throw new IOException("Error occurred while writing XML file", e);
+    }
   }
+
 
   public String getEdgePolicy() {
     return edgePolicy; // placeholder, but just return whatever edge policy it is as a string
@@ -398,6 +411,17 @@ public class Config {
       case "EMPTY" -> returnedCharacter = '0';
       case "ALIVE" -> returnedCharacter = '1';
       case "DEAD" -> returnedCharacter = '2';
+      case "TREE" -> returnedCharacter = 'T';
+      case "BURNING" -> returnedCharacter = 'B';
+      case "X" -> returnedCharacter = 'X';
+      case "O" -> returnedCharacter = 'O';
+      case "FISH" -> returnedCharacter = 'F';
+      case "SHARK" -> returnedCharacter = 'S';
+      case "PERCOLATED" -> returnedCharacter = 'P';
+      case "WALL" -> returnedCharacter = 'W';
+      case "SAND" -> returnedCharacter = 'D';
+      case "ANT" -> returnedCharacter = 'A';
+      case "VISITED" -> returnedCharacter = 'V';
       default -> returnedCharacter ='0';
     }
 
