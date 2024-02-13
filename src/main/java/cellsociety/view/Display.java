@@ -15,6 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -65,9 +67,9 @@ public class Display {
     this.simulationGrid = grid;
     this.myConfig = config;
     this.parameterValues = config.getParameters();
-    this.simType = config.getSimulationTextInfo()[0];
-    this.author = config.getSimulationTextInfo()[2];
-    this.description = config.getSimulationTextInfo()[3];
+    this.simType = config.getSimulationType();
+    this.author = config.getAuthors();
+    this.description = config.getDescription();
     this.myLanguage = config.getLanguage();
     this.gridOutline = true;
     this.stateColors = makeMapCopy(config.getStateColorsIterator());
@@ -375,5 +377,12 @@ public class Display {
     simulationGrid.computeNextGenerationGrid();
     simulationGrid.computePreviousGenerationGrid();
     updateGrid();
+  }
+
+  public static void showMessage(AlertType type, String message) {
+    Alert alert = new Alert(type, message);
+    alert.setTitle("Cell Society");
+    alert.setHeaderText("");
+    alert.showAndWait();
   }
 }
