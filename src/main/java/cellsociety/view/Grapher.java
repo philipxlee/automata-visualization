@@ -1,8 +1,6 @@
 package cellsociety.view;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
@@ -34,7 +32,6 @@ public class Grapher {
     // Creating the line chart
     this.myLineChart = new LineChart<>(chartAxisX, chartAxisY);
     this.seriesMap = new HashMap<>();
-//    this.myLineChart.setTitle("Cell Population Over Time");
     this.myLineChart.setLegendSide(Side.TOP);
     this.myScene = new Scene(myLineChart, GRAPHER_WIDTH, GRAPHER_HEIGHT);
     this.myScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
@@ -53,7 +50,9 @@ public class Grapher {
     }
     for (Map.Entry<String, Integer> entry : dataPoint.entrySet()) {
       String seriesName = entry.getKey();
-      if(seriesName.equals("EMPTY")) continue;
+      if (seriesName.equals("EMPTY")) {
+        continue;
+      }
       XYChart.Series<Number, Number> series = seriesMap.get(seriesName);
       if (series == null) {
         series = new XYChart.Series<>();
