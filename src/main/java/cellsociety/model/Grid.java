@@ -204,7 +204,7 @@ public class Grid<T extends Cell> {
         return state.name();
       }
     }
-    return CellStates.ERROR_DETECTED_IN_STATE_NAME.name();
+    throw new IllegalArgumentException("Invalid cell character: " + cell);
   }
 
   private Map<String, Integer> countCellAmount() {
