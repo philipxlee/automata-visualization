@@ -1,15 +1,16 @@
 package cellsociety.config;
 
 import cellsociety.model.Cell;
-import java.util.Iterator;
-import java.util.Map.Entry;
+import cellsociety.model.CellStates;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import javafx.scene.paint.Color;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,8 +27,38 @@ public class Saving {
 
   public static final String SAVED_FILE_FOLDER =
       System.getProperty("user.dir") + File.separator + "data" + File.separator + "SavedFile";
+  public static final char EMPTY_CELL_CHAR = '0';
+
   public Saving() {
 
+  }
+
+  public static void write(Document doc, FileOutputStream fos) throws IOException {
+    try {
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+      DOMSource source = new DOMSource(doc);
+      StreamResult result = new StreamResult(fos);
+      transformer.transform(source, result);
+    } catch (TransformerException e) {
+      throw new ConfigurationException("Error occurred while writing XML file", e);
+    }
+  }
+
+  private static void setXmlFile(File directoryPath, String xmlPath, Document document) {
+    File xmlFile = new File(directoryPath, xmlPath);
+
+    // Write the content into XML file
+    FileOutputStream fos = null;
+    try {
+      fos = new FileOutputStream(xmlFile);
+      write(document, fos);
+      fos.close();
+    } catch (IOException e) {
+      throw new ConfigurationException("IOException: Error with creating/writing to XML file", e);
+    }
   }
 
   private Element bearTextChild(Document document, Element parent, String childName,
@@ -48,42 +79,14 @@ public class Saving {
   }
 
   private char stateToChar(String state) {
-    char returnedCharacter;
-    switch (state) {
-      case "EMPTY" -> returnedCharacter = '0';
-      case "ALIVE" -> returnedCharacter = '1';
-      case "DEAD" -> returnedCharacter = '2';
-      case "TREE" -> returnedCharacter = 'T';
-      case "BURNING" -> returnedCharacter = 'B';
-      case "X" -> returnedCharacter = 'X';
-      case "O" -> returnedCharacter = 'O';
-      case "FISH" -> returnedCharacter = 'F';
-      case "SHARK" -> returnedCharacter = 'S';
-      case "PERCOLATED" -> returnedCharacter = 'P';
-      case "WALL" -> returnedCharacter = 'W';
-      case "SAND" -> returnedCharacter = 'D';
-      case "ANT" -> returnedCharacter = 'A';
-      case "VISITED" -> returnedCharacter = 'V';
-      default -> returnedCharacter = '0';
+    for (CellStates comparison : CellStates.values()) {
+      if (state.equals(comparison)) {
+        return comparison.getCellChar();
+      }
     }
 
-    return returnedCharacter;
+    return EMPTY_CELL_CHAR;
   }
-
-  public static void write(Document doc, FileOutputStream fos) throws IOException {
-    try {
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-      DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(fos);
-      transformer.transform(source, result);
-    } catch (TransformerException e) {
-      throw new ConfigurationException("Error occurred while writing XML file", e);
-    }
-  }
-
 
   /**
    * saves the state of the simulation into XML file
@@ -110,41 +113,27 @@ public class Saving {
     }
     Document document = documentBuilder.newDocument();
 
-      Element simulationElement = document.createElement("simulation");
-      document.appendChild(simulationElement);
+    Element simulationElement = document.createElement("simulation");
+    document.appendChild(simulationElement);
 
-      Element typeElement = bearChild(document, simulationElement, "type");
-      typeElement.setAttribute("id", config.getSimulationType());
+    Element typeElement = bearChild(document, simulationElement, "type");
+    typeElement.setAttribute("id", config.getSimulationType());
 
-      createParameters(config, document, typeElement);
+    createParameters(config, document, typeElement);
 
-      createTextInfo(config, document, typeElement, textPath);
+    createTextInfo(config, document, typeElement, textPath);
 
-      createStateColors(config, document, typeElement);
+    createStateColors(config, document, typeElement);
 
-      createDimensions(config, document, typeElement);
+    createDimensions(config, document, typeElement);
 
-      setXmlFile(directoryPath, xmlPath, document);
-
+    setXmlFile(directoryPath, xmlPath, document);
 
     setGridFile(cellGrid, config, directoryPath, textPath);
   }
 
-  private static void setXmlFile(File directoryPath, String xmlPath, Document document) {
-    File xmlFile = new File(directoryPath, xmlPath);
-
-    // Write the content into XML file
-    FileOutputStream fos = null;
-    try {
-      fos = new FileOutputStream(xmlFile);
-      write(document, fos);
-      fos.close();
-    } catch (IOException e) {
-      throw new ConfigurationException("IOException: Error with creating/writing to XML file", e);
-    }
-  }
-
-  private void createTextInfo(Config config, Document document, Element typeElement, String textPath) {
+  private void createTextInfo(Config config, Document document, Element typeElement,
+      String textPath) {
     bearTextChild(document, typeElement, "title", config.getSimulationTitle());
     bearTextChild(document, typeElement, "authors", config.getAuthors());
     bearTextChild(document, typeElement, "description", config.getDescription());
@@ -199,7 +188,8 @@ public class Saving {
             StandardOpenOption.APPEND);
       }
     } catch (IOException e) {
-      throw new ConfigurationException("IOException: Error in creating/writing to GRID text file", e);
+      throw new ConfigurationException("IOException: Error in creating/writing to GRID text file",
+          e);
     }
   }
 }
