@@ -59,6 +59,9 @@ public class Config {
   private Map<String, Double> parameters;
 
 
+  /**
+   * The constructor the config - initialize parameters, stateColors, and cellValues
+   */
   public Config() {
     parameters = new HashMap<>();
     stateColors = new HashMap<>(DEFAULT_STATE_COLORS);
@@ -66,9 +69,14 @@ public class Config {
   }
 
 
+  /**
+   * load the xml file and set the instance variables using the data
+   *
+   * @param xmlFile the xmlFile passed to be loaded
+   */
   public void loadXmlFile(File xmlFile) {
 
-    Document doc = null;
+    Document doc;
     try {
       doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
     } catch (SAXException e) {
@@ -165,6 +173,9 @@ public class Config {
   }
 
 
+  /**
+   * @return the edgePolicy gotten from the xml file
+   */
   public String getEdgePolicy() {
     return edgePolicy;
   }
@@ -202,14 +213,10 @@ public class Config {
     return parameters;
   }
 
-  /**
-   * @return an array of Strings which contain information about the simulation type, title,
-   * authors, and description
-   */
-  public String[] getSimulationTextInfo() {
-    return new String[]{simulationType, simulationTitle, authors, description};
-  }
 
+  /**
+   * @return simulation Type
+   */
   public String getSimulationType() {
     return simulationType;
   }
@@ -229,6 +236,9 @@ public class Config {
     return height;
   }
 
+  /**
+   * @return the language given in the xml file
+   */
   public String getLanguage() {
     return language;
   }
@@ -267,7 +277,9 @@ public class Config {
   }
 
 
-  // If the cellValues is empty, only return the value of empty cell
+  /**
+   * @return the next cell value based on the queue made up form the data in the txt file
+   */
   public char nextCellValue() {
     Character c = cellValues.poll();
     if (c != null) {
@@ -277,18 +289,30 @@ public class Config {
     }
   }
 
+  /**
+   * @return an iterator over the stateColors
+   */
   public Iterator<Entry<String, Color>> getStateColorsIterator() {
     return Collections.unmodifiableMap(stateColors).entrySet().iterator();
   }
 
+  /**
+   * @return simulation Title
+   */
   public String getSimulationTitle() {
     return simulationTitle;
   }
 
+  /**
+   * @return simulation authors
+   */
   public String getAuthors() {
     return authors;
   }
 
+  /**
+   * @return simulation description
+   */
   public String getDescription() {
     return description;
   }

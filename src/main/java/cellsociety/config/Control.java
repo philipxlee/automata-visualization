@@ -32,6 +32,9 @@ public class Control {
   private static final FileChooser FILE_CHOOSER = makeChooser(DATA_FILE_EXTENSION);
 
 
+  /**
+   * constructor for control object - useful for handling the initiation of simulation
+   */
   public Control() {
 
   }
@@ -46,6 +49,11 @@ public class Control {
     return result;
   }
 
+  /**
+   * arranges the simulation by using different objects
+   *
+   * @param primaryStage where the display is shown
+   */
   public void makeSimulation(Stage primaryStage) {
     Config config = new Config();
     Display.showMessage(AlertType.INFORMATION,
