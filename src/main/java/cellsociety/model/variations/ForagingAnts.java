@@ -38,9 +38,9 @@ public class ForagingAnts implements Simulation<AntsCell> {
     cell.evaporateHomePheromone(evaporationRate);
     cell.diffuseFoodPheromone(diffusionRate, neighbors);
     cell.diffuseHomePheromone(diffusionRate, neighbors);
+    cell.setState(cell.updateCellState());
     cell.antsForage(neighbors);
     cell.birthAnts();
-    cell.setNextState(cell.updateCellState());
   }
 
 }
