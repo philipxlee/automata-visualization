@@ -12,7 +12,6 @@ import cellsociety.model.variations.SpreadingOfFire;
 import cellsociety.model.variations.WaTor;
 import cellsociety.view.Display;
 import java.io.File;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,7 +48,8 @@ public class Control {
 
   public void makeSimulation(Stage primaryStage) {
     Config config = new Config();
-    Display.showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
+    Display.showMessage(AlertType.INFORMATION,
+        "Choose Simulation Configuration File");
     File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
     if (dataFile != null) {
       config.loadXmlFile(dataFile);
@@ -59,11 +59,10 @@ public class Control {
       Display newDisplay = new Display(primaryStage, grid, config);
       newDisplay.start();
 
-
       primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
         if (event.getCode() == KeyCode.N) {
-            Stage newStage = new Stage();
-            makeSimulation(newStage);
+          Stage newStage = new Stage();
+          makeSimulation(newStage);
         }
       });
     }

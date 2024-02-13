@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 public class Config {
 
   public static final int DEFAULT_DIMENSION = 0;
-    private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
+  private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
       entry("ALIVE", Color.BLACK),
       entry("EMPTY", Color.WHITE),
       entry("PERCOLATED", Color.BLUE),
@@ -45,6 +45,7 @@ public class Config {
       entry("LOWPHEROMONE", Color.LIGHTGREEN),
       entry("VISITED", Color.DARKBLUE)
   );
+  private final Queue<Character> cellValues;
   private String simulationType;
   private String simulationTitle;
   private String authors;
@@ -54,9 +55,8 @@ public class Config {
   private int width;
   private int height;
   private String language;
-  private final Queue<Character> cellValues;
   private Map<String, Double> parameters;
-  private Map<String, Color> stateColors;
+  private final Map<String, Color> stateColors;
 
 
   public Config() {
@@ -64,7 +64,6 @@ public class Config {
     stateColors = new HashMap<>(DEFAULT_STATE_COLORS);
     cellValues = new LinkedList<>();
   }
-
 
 
   public void loadXmlFile(File xmlFile) {
@@ -136,7 +135,6 @@ public class Config {
       return map;
     }
 
-
     for (int i = 0; i < nodeList.getLength(); i++) {
       Node currentNode = nodeList.item(i);
 
@@ -154,18 +152,17 @@ public class Config {
 
   private Map<String, Double> returnDoubleChildren(Map<String, String> oldMap) {
     Map<String, Double> newMap = new HashMap<>();
-    for (String key: oldMap.keySet()) {
+    for (String key : oldMap.keySet()) {
       newMap.put(key, Double.parseDouble(oldMap.get(key)));
     }
     return newMap;
   }
 
   private void returnColorChildren(Map<String, String> oldMap, Map<String, Color> colors) {
-    for (String key: oldMap.keySet()) {
+    for (String key : oldMap.keySet()) {
       colors.put(key, Color.web(oldMap.get(key)));
     }
   }
-
 
 
   public String getEdgePolicy() {
@@ -196,8 +193,6 @@ public class Config {
       return null;
     }
   }
-
-
 
 
   /**
