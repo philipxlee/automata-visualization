@@ -64,7 +64,7 @@ public class Config {
 
   public Config() {
     parameters = new HashMap<>();
-    stateColors = new HashMap<>();
+    stateColors = new HashMap<>(DEFAULT_STATE_COLORS);
     cellValues = new LinkedList<>();
   }
 
@@ -92,12 +92,7 @@ public class Config {
 
     setSimulationInfo(doc);
     setSimulationDimensions(doc);
-    stateColors = putColorChildren(doc, "stateColors");
-    if (stateColors.isEmpty()) {
-      stateColors = DEFAULT_STATE_COLORS;
-    } else {
-      stateColors.put("EMPTY", DEFAULT_STATE_COLORS.get("EMPTY"));
-    }
+    changeColorChildren(doc, "stateColors", stateColors);
 
     String fileName = getTagText(doc, "fileName", "");
     grid = fileToGrid(fileName);
@@ -156,11 +151,10 @@ public class Config {
     return map;
   }
 
-  private Map<String, Color> putColorChildren(Document document, String item) {
-    Map<String, Color> map = new HashMap<>();
+  private void changeColorChildren(Document document, String item, Map<String, Color> map) {
     NodeList nodeList = returnChildNodes(document, item);
     if (nodeList == null) {
-      return map;
+      return;
     }
 
 
@@ -179,8 +173,6 @@ public class Config {
         }
       }
     }
-
-    return map;
   }
 
 

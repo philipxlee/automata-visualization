@@ -1,0 +1,20 @@
+<simulation>
+  <type id = "ForagingAnts">
+    <parameters>
+      <diffusionRate>0.1</diffusionRate>
+      <evaporationRate>0.1</evaporationRate>
+    </parameters>
+    <title>Foraging Ants #2</title>
+    <authors>Liviu Panait and Sean Luke</authors>
+    <description>
+      A colony of ants behave according to simple rules. They forage for food and
+      bring it back to the nest. They lay down pheromones to mark their path. With just
+      these few rules, some intelligence and complex beaviors emerge.
+    </description>
+    <gridDimensions>
+      <width>20</width>
+      <height>20</height>
+    </gridDimensions>
+    <fileName>/ForagingAnts/ForagingAnts2GRID.txt</fileName>
+  </type>
+</simulation>

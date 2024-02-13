@@ -254,7 +254,7 @@ class Ant {
       moveAnt(antsCell, moveDirection, iterator);
       if (moveDirection.getState().equals(CellStates.FOOD.name())) {
         carryingFood = true;
-        antsCell.decrementFoodAmt();
+        moveDirection.decrementFoodAmt();
       }
     }
   }
