@@ -1,6 +1,5 @@
 package cellsociety.model.variations;
 
-
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
