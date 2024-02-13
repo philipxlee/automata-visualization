@@ -328,23 +328,14 @@ public class Display {
     HBox row6 = new HBox();
     row6.getStyleClass().add("button-row");
 
-    row1.getChildren().add(playButton);
-    row1.getChildren().add(pauseButton);
-    row2.getChildren().add(nextButton);
-    row2.getChildren().add(backButton);
+    row1.getChildren().addAll(playButton, pauseButton);
+    row2.getChildren().addAll(nextButton, backButton);
     row3.getChildren().add(sliderBox);
-    row4.getChildren().add(toggleGrapher);
-    row4.getChildren().add(toggleOutline);
-    row5.getChildren().add(comboEdgePolicy);
-    row5.getChildren().add(cellShapeDown);
+    row4.getChildren().addAll(toggleGrapher, toggleOutline);
+    row5.getChildren().addAll(comboEdgePolicy, cellShapeDown);
     row6.getChildren().add(saveButton);
+    controlPane.getChildren().addAll(row1, row2, row3, row4, row5, row6);
 
-    controlPane.getChildren().add(row1);
-    controlPane.getChildren().add(row2);
-    controlPane.getChildren().add(row3);
-    controlPane.getChildren().add(row4);
-    controlPane.getChildren().add(row5);
-    controlPane.getChildren().add(row6);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
