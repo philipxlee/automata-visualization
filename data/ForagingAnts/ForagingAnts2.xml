@@ -1,10 +1,10 @@
 <simulation>
   <type id = "ForagingAnts">
     <parameters>
-      <diffusionRate>0.1</diffusionRate>
-      <evaporationRate>0.1</evaporationRate>
+      <diffusionRate>0.5</diffusionRate>
+      <evaporationRate>0.5</evaporationRate>
     </parameters>
-    <title>Foraging Ants #1</title>
+    <title>Foraging Ants #2</title>
     <authors>Liviu Panait and Sean Luke</authors>
     <description>
       A colony of ants behave according to simple rules. They forage for food and
@@ -12,9 +12,9 @@
       these few rules, some intelligence and complex beaviors emerge.
     </description>
     <gridDimensions>
-      <width>20</width>
-      <height>20</height>
+      <width>30</width>
+      <height>30</height>
     </gridDimensions>
-    <fileName>/ForagingAnts/ForagingAnts1GRID.txt</fileName>
+    <fileName>/ForagingAnts/ForagingAnts2GRID.txt</fileName>
   </type>
 </simulation>

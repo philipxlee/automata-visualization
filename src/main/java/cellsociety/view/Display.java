@@ -1,6 +1,7 @@
 package cellsociety.view;
 
 import cellsociety.config.Config;
+import cellsociety.config.Saving;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import java.util.AbstractMap.SimpleEntry;
@@ -305,7 +306,7 @@ public class Display {
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
     Button saveButton = makeButton("SaveCommand", event -> {
-      myConfig.saveXmlFile("savedFile", getCellGrid());
+      new Saving().saveXmlFile("savedFile", getCellGrid(), myConfig);
     });
 
     CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));

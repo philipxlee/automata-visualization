@@ -27,8 +27,7 @@ public class Control {
   // default to start in the data folder to make it easy on the user to find
   public static final String DATA_FILE_FOLDER =
       System.getProperty("user.dir") + File.separator + "data";
-  // internal configuration file
-  public static final String INTERNAL_CONFIGURATION = "cellsociety.Version";
+
   // NOTE: make ONE chooser since generally accepted behavior
   // is that it remembers where user left it last
   private static final FileChooser FILE_CHOOSER = makeChooser(DATA_FILE_EXTENSION);
@@ -42,7 +41,6 @@ public class Control {
   private static FileChooser makeChooser(String extensionAccepted) {
     FileChooser result = new FileChooser();
     result.setTitle("Open Data File");
-    // pick a reasonable place to start searching for files
     result.setInitialDirectory(new File(DATA_FILE_FOLDER));
     result.getExtensionFilters()
         .setAll(new FileChooser.ExtensionFilter("Data Files", extensionAccepted));
@@ -50,28 +48,25 @@ public class Control {
   }
 
   public void makeSimulation(Stage primaryStage) {
-    try {
-      Config config = new Config();
-      showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
-      File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
-      if (dataFile != null) {
-        config.loadXmlFile(dataFile);
-        Simulation<Cell> simulation = returnSimulation(config.getSimulationType());
-        Grid<Cell> grid = new Grid<>(simulation, config);
+    Config config = new Config();
+    showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
+    File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
+    if (dataFile != null) {
+      config.loadXmlFile(dataFile);
+      Simulation<Cell> simulation = returnSimulation(config.getSimulationType());
+      Grid<Cell> grid = new Grid<>(simulation, config);
 
-        Display newDisplay = new Display(primaryStage, grid, config);
-        newDisplay.start();
+      Display newDisplay = new Display(primaryStage, grid, config);
+      newDisplay.start();
 
-        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-          if (event.getCode() == KeyCode.N) {
-              Stage newStage = new Stage();
-              makeSimulation(newStage);
-          }
-        });
-      }
-    } catch (Exception e) { // take care of exceptions in loadXml
-      showMessage(AlertType.ERROR, e.getMessage());
+      primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+        if (event.getCode() == KeyCode.N) {
+            Stage newStage = new Stage();
+            makeSimulation(newStage);
+        }
+      });
     }
+
   }
 
   private <T extends Cell> Simulation<T> returnSimulation(String simulationType) {

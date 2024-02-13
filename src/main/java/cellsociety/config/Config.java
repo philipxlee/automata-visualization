@@ -3,17 +3,10 @@ package cellsociety.config;
 
 import static java.util.Map.entry;
 
-import cellsociety.Main;
-import cellsociety.model.Cell;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,27 +15,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import javafx.scene.paint.Color;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class Config {
 
   public static final String DEFAULT_LANGUAGE = "English";
   public static final String DEFAULT_EDGE_POLICY = "Normal";
   public static final String DEFAULT_DIMENSION = "50";
-  private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
+    private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
       entry("ALIVE", Color.BLACK),
       entry("EMPTY", Color.WHITE),
       entry("PERCOLATED", Color.BLUE),
@@ -66,48 +52,47 @@ public class Config {
   private String authors;
   private String description;
   private String edgePolicy;
-
   // ideally combine them in a tuple
   private int width;
   private int height;
   private String language;
   private char[][] grid;
-  private Queue<Character> cellValues;
+  private final Queue<Character> cellValues;
   private Map<String, Double> parameters;
   private Map<String, Color> stateColors;
-  public static final String SAVED_FILE_FOLDER =
-      System.getProperty("user.dir") + File.separator + "data" + File.separator + "SavedFile";
 
 
   public Config() {
     parameters = new HashMap<>();
-    stateColors = new HashMap<>();
+    stateColors = new HashMap<>(DEFAULT_STATE_COLORS);
     cellValues = new LinkedList<>();
   }
 
-  public void loadXmlFile(File xmlFile) throws Exception {
 
-    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
+
+  public void loadXmlFile(File xmlFile) {
+
+    Document doc = null;
+    try {
+      doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
+    } catch (SAXException e) {
+      throw new ConfigurationException("SAXException: Invalid syntax or XML structure", e);
+    } catch (IOException e) {
+      throw new ConfigurationException("IOException: Cannot read from file", e);
+    } catch (ParserConfigurationException e) {
+      throw new ConfigurationException("ParserConfigurationException: incorrect parser settings or "
+          + "features not supported by the underlying XML parser", e);
+    }
 
     doc.getDocumentElement().normalize();
 
     simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id");
 
-    putChildren(parameters, doc, "parameters");
+    parameters = putParameterChildren(doc, "parameters");
 
-    simulationTitle = getTagText(doc, "title", "");
-    authors = getTagText(doc, "authors", "");
-    description = getTagText(doc, "description", "");
-    edgePolicy = getTagText(doc, "edgePolicy", DEFAULT_EDGE_POLICY);
-    language = getTagText(doc, "language", DEFAULT_LANGUAGE);
-
-    width = Integer.parseInt(getTagText(doc, "width", DEFAULT_DIMENSION));
-    height = Integer.parseInt(getTagText(doc, "height", DEFAULT_DIMENSION));
-
-    putColors(stateColors, doc, "stateColors");
-    if(stateColors.isEmpty()){
-      stateColors = DEFAULT_STATE_COLORS;
-    }
+    setSimulationInfo(doc);
+    setSimulationDimensions(doc);
+    changeColorChildren(doc, "stateColors", stateColors);
 
     String fileName = getTagText(doc, "fileName", "");
     grid = fileToGrid(fileName);
@@ -115,162 +100,78 @@ public class Config {
 
   }
 
-  private void putChildren(Map<String, Double> map, Document document, String item) {
+
+  private void setSimulationDimensions(Document doc) {
+    width = returnInteger(getTagText(doc, "width", DEFAULT_DIMENSION));
+    height = returnInteger(getTagText(doc, "height", DEFAULT_DIMENSION));
+  }
+
+  private void setSimulationInfo(Document doc) {
+    simulationTitle = getTagText(doc, "title", "");
+    authors = getTagText(doc, "authors", "");
+    description = getTagText(doc, "description", "");
+    edgePolicy = getTagText(doc, "edgePolicy", DEFAULT_EDGE_POLICY);
+    language = getTagText(doc, "language", DEFAULT_LANGUAGE);
+  }
+
+  private int returnInteger(String intString) {
+    int returnedInt;
+    try {
+      returnedInt = Integer.parseInt(intString);
+    } catch (NumberFormatException e) {
+      returnedInt = 50;
+    }
+    return returnedInt;
+  }
+
+  private Map<String, Double> putParameterChildren(Document document, String item) {
+    Map<String, Double> map = new HashMap<>();
     NodeList nodeList = returnChildNodes(document, item);
     if (nodeList == null) {
+      return map;
     }
+
 
     for (int i = 0; i < nodeList.getLength(); i++) {
       Node currentNode = nodeList.item(i);
 
       if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-        // Process the element node
         Element element = (Element) currentNode;
-        map.put(element.getTagName(), Double.parseDouble(element.getTextContent().trim()));
+        String tagName = element.getTagName();
 
-      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
-          !currentNode.getTextContent().trim().isEmpty()) {
-        System.out.println("Testing: " + currentNode.getTextContent().trim());
+          try {
+            map.put(tagName, Double.parseDouble(element.getTextContent().trim()));
+          } catch (NumberFormatException e) {
+            throw new ConfigurationException(String.format("Error parsing double value for tag: %s",
+                tagName), e);
+          }
       }
     }
+
+    return map;
   }
 
-  private void putColors(Map<String, Color> map, Document document, String item) {
+  private void changeColorChildren(Document document, String item, Map<String, Color> map) {
     NodeList nodeList = returnChildNodes(document, item);
     if (nodeList == null) {
       return;
     }
 
+
     for (int i = 0; i < nodeList.getLength(); i++) {
       Node currentNode = nodeList.item(i);
 
       if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-        // Process the element node
         Element element = (Element) currentNode;
-        map.put(element.getTagName(), Color.web(element.getTextContent().trim()));
-//        map.put(element.getTagName(), Color.decode(element.getTextContent().trim()));
+        String tagName = element.getTagName();
 
-      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
-          !currentNode.getTextContent().trim().isEmpty()) {
-        System.out.println("Testing: " + currentNode.getTextContent().trim());
-      }
-    }
-  }
-
-
-  /**
-   * saves the state of the simulation into XML file
-   *
-   * @param xmlName The String name of the xml file to be created and written to
-   * @param cellGrid    The grid state to be stored in the saved file
-   * @throws ParserConfigurationException
-   * @throws TransformerException
-   * @throws IOException
-   */
-  public void saveXmlFile(String xmlName, Cell[][] cellGrid) {
-
-    File directoryPath = new File(SAVED_FILE_FOLDER);
-    String xmlPath = xmlName + ".xml";
-    String textPath = xmlName + "GRID.txt";
-
-    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder documentBuilder = null;
-    try {
-      documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-    // Create a new Document
-      Document document = documentBuilder.newDocument();
-
-      // Create the root element
-      Element simulationElement = document.createElement("simulation");
-      document.appendChild(simulationElement);
-
-      Element typeElement = bearChild(document, simulationElement, "type");
-      typeElement.setAttribute("id", simulationType);
-
-      Element parametersElement = bearChild(document, typeElement, "parameters");
-
-      for (String key : parameters.keySet()) {
-        bearTextChild(document, parametersElement, key, Double.toString(parameters.get(key)));
-      }
-
-      bearTextChild(document, typeElement, "title", simulationTitle);
-
-      bearTextChild(document, typeElement, "author", authors);
-
-      bearTextChild(document, typeElement, "description", description);
-
-      Element gridDimensionsElement = bearChild(document, typeElement, "gridDimensions");
-
-      bearTextChild(document, gridDimensionsElement, "width",
-          Integer.toString(width));
-
-      bearTextChild(document, gridDimensionsElement, "height",
-          Integer.toString(height));
-
-
-      bearTextChild(document, typeElement, "fileName", textPath);
-
-
-
-      File xmlFile = new File(directoryPath, xmlPath);
-
-      // Write the content into XML file
-      FileOutputStream fos = new FileOutputStream(xmlFile);
-      write(document, fos);
-      fos.close();
-    } catch (ParserConfigurationException | IOException e) {
-      System.out.println("fix the error");
-    }
-
-    File file = new File(directoryPath, textPath);
-    try {
-      file.createNewFile();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    try {
-      Files.writeString(Path.of(textPath), "");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    try {
-      Files.writeString(Path.of(directoryPath + File.separator + textPath), "");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    for (int row = 0; row < height; row++) {
-      System.out.printf("height: %d and width: %d\n", height, width);
-      for (int col = 0; col < width; col++) {
-        String writtenChar = stateToChar(cellGrid[row][col].getState()) + "";
-        System.out.printf("row: %d and col: %d and char: %s\n", row, col, writtenChar);
         try {
-          Files.writeString(Path.of(directoryPath + File.separator + textPath), writtenChar, StandardOpenOption.APPEND);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
+          map.put(tagName, Color.web(element.getTextContent().trim()));
+        } catch (NumberFormatException e) {
+          throw new ConfigurationException(String.format("Error parsing double value for tag: %s",
+              tagName), e);
         }
       }
-      try {
-        Files.writeString(Path.of(directoryPath + File.separator + textPath), "\n", StandardOpenOption.APPEND);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  public static void write(Document doc, FileOutputStream fos) throws IOException {
-    try {
-      // Use Transformer to write XML document to a file
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-      DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(fos);
-      transformer.transform(source, result);
-    } catch (TransformerException e) {
-      throw new IOException("Error occurred while writing XML file", e);
     }
   }
 
@@ -351,22 +252,10 @@ public class Config {
     return language;
   }
 
-  private Element createElement(Document document, String childName) {
-    return document.createElement(childName);
-  }
-
-  private Element bearTextChild(Document document, Element parent, String childName,
-      String textContent) {
-    Element child = bearChild(document, parent, childName);
-    child.appendChild(document.createTextNode(textContent));
-    return child;
-  }
-
-
   private char[][] fileToGrid(String path) {
     char[][] fileGrid = new char[height][width];
     String fullPath = Control.DATA_FILE_FOLDER + File.separator + path;
-
+    System.out.println(fullPath);
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
       for (int i = 0; i < height; i++) {
         String line = reader.readLine();
@@ -380,19 +269,12 @@ public class Config {
         }
       }
     } catch (IOException e) {
-      // Handle exceptions, such as file not found or unable to read
-      e.printStackTrace();
+      throw new ConfigurationException("IOException: Make sure that the addressed file exists", e);
     }
 
     return fileGrid;
   }
 
-
-  private Element bearChild(Document document, Element parent, String childName) {
-    Element child = createElement(document, childName);
-    parent.appendChild(child);
-    return child;
-  }
 
   // If the cellValues is empty, only return the value of empty cell
   public char nextCellValue() {
@@ -408,33 +290,17 @@ public class Config {
     return Collections.unmodifiableMap(stateColors).entrySet().iterator();
   }
 
-  private char stateToChar(String state) {
-    char returnedCharacter;
-    switch (state) {
-      case "EMPTY" -> returnedCharacter = '0';
-      case "ALIVE" -> returnedCharacter = '1';
-      case "DEAD" -> returnedCharacter = '2';
-      case "TREE" -> returnedCharacter = 'T';
-      case "BURNING" -> returnedCharacter = 'B';
-      case "X" -> returnedCharacter = 'X';
-      case "O" -> returnedCharacter = 'O';
-      case "FISH" -> returnedCharacter = 'F';
-      case "SHARK" -> returnedCharacter = 'S';
-      case "PERCOLATED" -> returnedCharacter = 'P';
-      case "WALL" -> returnedCharacter = 'W';
-      case "SAND" -> returnedCharacter = 'D';
-      case "ANT" -> returnedCharacter = 'A';
-      case "VISITED" -> returnedCharacter = 'V';
-      default -> returnedCharacter ='0';
-    }
-
-    return returnedCharacter;
+  public String getSimulationTitle() {
+    return simulationTitle;
   }
 
-//  public static void main(String[] args) throws Exception {
-//    Config newConfig = new Config();
-//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire1.xml"));
-//    System.out.println(newConfig.getStateColors().get("ALIVE").toString());
-//  }
+  public String getAuthors() {
+    return authors;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
 
 }
