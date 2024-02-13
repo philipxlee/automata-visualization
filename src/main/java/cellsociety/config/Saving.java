@@ -29,11 +29,14 @@ public class Saving {
       System.getProperty("user.dir") + File.separator + "data" + File.separator + "SavedFile";
   public static final char EMPTY_CELL_CHAR = '0';
 
+  /**
+   * constructor to create a Saving object - useful for its saveXmlFile method
+   */
   public Saving() {
 
   }
 
-  public static void write(Document doc, FileOutputStream fos) throws IOException {
+  private static void write(Document doc, FileOutputStream fos) {
     try {
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
@@ -50,8 +53,7 @@ public class Saving {
   private static void setXmlFile(File directoryPath, String xmlPath, Document document) {
     File xmlFile = new File(directoryPath, xmlPath);
 
-    // Write the content into XML file
-    FileOutputStream fos = null;
+    FileOutputStream fos;
     try {
       fos = new FileOutputStream(xmlFile);
       write(document, fos);
@@ -61,11 +63,10 @@ public class Saving {
     }
   }
 
-  private Element bearTextChild(Document document, Element parent, String childName,
+  private void bearTextChild(Document document, Element parent, String childName,
       String textContent) {
     Element child = bearChild(document, parent, childName);
     child.appendChild(document.createTextNode(textContent));
-    return child;
   }
 
   private Element bearChild(Document document, Element parent, String childName) {
@@ -80,7 +81,7 @@ public class Saving {
 
   private char stateToChar(String state) {
     for (CellStates comparison : CellStates.values()) {
-      if (state.equals(comparison)) {
+      if (state.equals(comparison.name())) {
         return comparison.getCellChar();
       }
     }
@@ -89,13 +90,10 @@ public class Saving {
   }
 
   /**
-   * saves the state of the simulation into XML file
+   * saves the state of the simulation into an XML file
    *
    * @param xmlName  The String name of the xml file to be created and written to
    * @param cellGrid The grid state to be stored in the saved file
-   * @throws ParserConfigurationException
-   * @throws TransformerException
-   * @throws IOException
    */
   public void saveXmlFile(String xmlName, Cell[][] cellGrid, Config config) {
 
@@ -104,7 +102,7 @@ public class Saving {
     String textPath = xmlName + "GRID.txt";
 
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder documentBuilder = null;
+    DocumentBuilder documentBuilder;
     try {
       documentBuilder = documentBuilderFactory.newDocumentBuilder();
     } catch (ParserConfigurationException e) {
@@ -173,9 +171,7 @@ public class Saving {
   }
 
   private void setGridFile(Cell[][] cellGrid, Config config, File directoryPath, String textPath) {
-    File file = new File(directoryPath, textPath);
     try {
-      file.createNewFile();
       Files.writeString(Path.of(directoryPath + File.separator + textPath), "");
 
       for (int row = 0; row < config.getHeight(); row++) {
