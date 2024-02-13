@@ -1,6 +1,7 @@
 package cellsociety.view;
 
 import cellsociety.config.Config;
+import cellsociety.config.Saving;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import java.util.AbstractMap.SimpleEntry;
@@ -120,7 +121,6 @@ public class Display {
   }
 
   private void createGridUserInterface(Pane gridSection) {
-//    Cell[][] grid = simulationGrid.getCellGrid();
     Cell[][] grid = getCellGrid();
 
     double cellWidth = (double) (WINDOW_HEIGHT) / grid[0].length;
@@ -302,8 +302,8 @@ public class Display {
 
     Label comboBoxLabel = new Label(resources.getString("EdgePolicy"));
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll("Plane", "Toroidal"); // LANGUAGE CONSIDERATION
-    comboBox.setValue("Plane");
+    comboBox.getItems().addAll(myConfig.getEdgePolicy()); // LANGUAGE CONSIDERATION
+    comboBox.setValue(myConfig.getEdgePolicy());
     comboBox.setOnAction(event -> {});
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
     comboEdgePolicy.getStyleClass().add("dropdown");
@@ -322,7 +322,7 @@ public class Display {
     HBox row4 = new HBox();
     row4.getStyleClass().add("button-row");
     Button saveButton = makeButton("SaveCommand", event -> {
-      myConfig.saveXmlFile("savedFile", getCellGrid());
+      new Saving().saveXmlFile("savedFile", getCellGrid(), myConfig);
     });
 
     CheckBox toggleGrapher = new CheckBox(resources.getString("GraphCommand"));
@@ -345,23 +345,14 @@ public class Display {
     HBox row6 = new HBox();
     row6.getStyleClass().add("button-row");
 
-    row1.getChildren().add(playButton);
-    row1.getChildren().add(pauseButton);
-    row2.getChildren().add(nextButton);
-    row2.getChildren().add(backButton);
+    row1.getChildren().addAll(playButton, pauseButton);
+    row2.getChildren().addAll(nextButton, backButton);
     row3.getChildren().add(sliderBox);
-    row4.getChildren().add(toggleGrapher);
-    row4.getChildren().add(toggleOutline);
-    row5.getChildren().add(comboEdgePolicy);
-    row5.getChildren().add(cellShapeDown);
+    row4.getChildren().addAll(toggleGrapher, toggleOutline);
+    row5.getChildren().addAll(comboEdgePolicy, cellShapeDown);
     row6.getChildren().add(saveButton);
+    controlPane.getChildren().addAll(row1, row2, row3, row4, row5, row6);
 
-    controlPane.getChildren().add(row1);
-    controlPane.getChildren().add(row2);
-    controlPane.getChildren().add(row3);
-    controlPane.getChildren().add(row4);
-    controlPane.getChildren().add(row5);
-    controlPane.getChildren().add(row6);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }

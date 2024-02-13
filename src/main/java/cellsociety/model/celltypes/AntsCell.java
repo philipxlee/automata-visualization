@@ -153,7 +153,7 @@ public class AntsCell extends Cell {
   }
 
   public void decrementFoodAmt() {
-    foodAmt -= 1;
+    foodAmt -= 2;
   }
 
 
