@@ -285,8 +285,8 @@ public class Display {
 
     Label comboBoxLabel = new Label(resources.getString("EdgePolicy"));
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll("Plane", "CustomVerticalEdge"); // LANGUAGE CONSIDERATION
-    comboBox.setValue("Plane");
+    comboBox.getItems().addAll(myConfig.getEdgePolicy()); // LANGUAGE CONSIDERATION
+    comboBox.setValue(myConfig.getEdgePolicy());
     comboBox.setOnAction(event -> {});
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
     comboEdgePolicy.getStyleClass().add("dropdown");
