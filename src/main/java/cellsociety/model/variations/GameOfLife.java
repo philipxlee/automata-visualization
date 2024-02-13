@@ -9,6 +9,7 @@ public class GameOfLife implements Simulation<BasicCell> {
 
   private static final String ALIVE = CellStates.ALIVE.name();
   private static final String DEAD = CellStates.DEAD.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
 
   /**
    * Creates a new GameOfLifeCell with specified row, column, and state.
@@ -42,6 +43,7 @@ public class GameOfLife implements Simulation<BasicCell> {
     switch (cell.getState()) {
       case "ALIVE" -> nextState = (aliveNeighbors < 2 || aliveNeighbors > 3) ? DEAD : ALIVE;
       case "DEAD" -> nextState = (aliveNeighbors == 3) ? ALIVE : DEAD;
+      case "EMPTY" -> nextState = EMPTY;
       default -> throw new IllegalStateException("Unexpected cell state: " + cell.getState());
     }
     cell.setNextState(nextState); // Assuming BasicCell has a method setNextState

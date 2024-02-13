@@ -6,6 +6,7 @@
     <description>
       "Percolated cells spread to all empty cells unless all paths from percolated cells to an empty cell are blocked"
     </description>
+    <edgePolicy>Vertical</edgePolicy>
     <gridDimensions>
       <width>10</width>
       <height>10</height>
