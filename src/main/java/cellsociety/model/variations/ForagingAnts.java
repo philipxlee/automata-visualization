@@ -1,7 +1,7 @@
 package cellsociety.model.variations;
 
 import cellsociety.model.Simulation;
-import cellsociety.model.celltypes.AntsCell;
+import cellsociety.model.celltypes.Ants.AntsCell;
 import java.util.List;
 
 public class ForagingAnts implements Simulation<AntsCell> {
