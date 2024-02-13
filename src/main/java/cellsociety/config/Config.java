@@ -25,7 +25,6 @@ import org.xml.sax.SAXException;
 
 public class Config {
 
-  public static final String DEFAULT_LANGUAGE = "English";
   public static final int DEFAULT_DIMENSION = 0;
     private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
       entry("ALIVE", Color.BLACK),
@@ -55,7 +54,6 @@ public class Config {
   private int width;
   private int height;
   private String language;
-  private char[][] grid;
   private final Queue<Character> cellValues;
   private Map<String, Double> parameters;
   private Map<String, Color> stateColors;
@@ -89,11 +87,11 @@ public class Config {
       throw new ConfigurationException("Missing Simulation Type");
     }
 
-    parameters = putParameterChildren(doc, "parameters");
+    parameters = returnDoubleChildren(returnChildren(doc, "parameters"));
 
     setSimulationInfo(doc);
     setSimulationDimensions(doc);
-    changeColorChildren(doc, "stateColors", stateColors);
+    returnColorChildren(returnChildren(doc, "stateColors"), stateColors);
 
     String fileName = getTagText(doc, "fileName");
     fileToQueue(fileName);
@@ -131,8 +129,8 @@ public class Config {
   }
 
 
-  private Map<String, Double> putParameterChildren(Document document, String item) {
-    Map<String, Double> map = new HashMap<>();
+  private Map<String, String> returnChildren(Document document, String item) {
+    Map<String, String> map = new HashMap<>();
     NodeList nodeList = returnChildNodes(document, item);
     if (nodeList == null) {
       return map;
@@ -146,41 +144,28 @@ public class Config {
         Element element = (Element) currentNode;
         String tagName = element.getTagName();
 
-          try {
-            map.put(tagName, Double.parseDouble(element.getTextContent().trim()));
-          } catch (NumberFormatException e) {
-            throw new ConfigurationException(String.format("Error parsing double value for tag: %s",
-                tagName), e);
-          }
+        map.put(tagName, element.getTextContent().trim());
+
       }
     }
 
     return map;
   }
 
-  private void changeColorChildren(Document document, String item, Map<String, Color> map) {
-    NodeList nodeList = returnChildNodes(document, item);
-    if (nodeList == null) {
-      return;
+  private Map<String, Double> returnDoubleChildren(Map<String, String> oldMap) {
+    Map<String, Double> newMap = new HashMap<>();
+    for (String key: oldMap.keySet()) {
+      newMap.put(key, Double.parseDouble(oldMap.get(key)));
     }
+    return newMap;
+  }
 
-
-    for (int i = 0; i < nodeList.getLength(); i++) {
-      Node currentNode = nodeList.item(i);
-
-      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-        Element element = (Element) currentNode;
-        String tagName = element.getTagName();
-
-        try {
-          map.put(tagName, Color.web(element.getTextContent().trim()));
-        } catch (NumberFormatException e) {
-          throw new ConfigurationException(String.format("Error parsing double value for tag: %s",
-              tagName), e);
-        }
-      }
+  private void returnColorChildren(Map<String, String> oldMap, Map<String, Color> colors) {
+    for (String key: oldMap.keySet()) {
+      colors.put(key, Color.web(oldMap.get(key)));
     }
   }
+
 
 
   public String getEdgePolicy() {
@@ -213,13 +198,7 @@ public class Config {
   }
 
 
-  /**
-   * @return a grid of characters which represents the initial state of the cells at the start of
-   * the simulation
-   */
-  public char[][] getGrid() {
-    return grid;
-  }
+
 
   /**
    * @return a map of parameters and their values from the XML file
