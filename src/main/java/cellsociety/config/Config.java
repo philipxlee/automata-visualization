@@ -26,8 +26,7 @@ import org.xml.sax.SAXException;
 public class Config {
 
   public static final String DEFAULT_LANGUAGE = "English";
-  public static final String DEFAULT_EDGE_POLICY = "Normal";
-  public static final String DEFAULT_DIMENSION = "50";
+  public static final int DEFAULT_DIMENSION = 0;
     private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
       entry("ALIVE", Color.BLACK),
       entry("EMPTY", Color.WHITE),
@@ -86,7 +85,9 @@ public class Config {
 
     doc.getDocumentElement().normalize();
 
-    simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id");
+    if ((simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id")) == null) {
+      throw new ConfigurationException("Missing Simulation Type");
+    }
 
     parameters = putParameterChildren(doc, "parameters");
 
@@ -94,35 +95,41 @@ public class Config {
     setSimulationDimensions(doc);
     changeColorChildren(doc, "stateColors", stateColors);
 
-    String fileName = getTagText(doc, "fileName", "");
-    grid = fileToGrid(fileName);
+    String fileName = getTagText(doc, "fileName");
+    fileToQueue(fileName);
 
 
   }
 
 
   private void setSimulationDimensions(Document doc) {
-    width = returnInteger(getTagText(doc, "width", DEFAULT_DIMENSION));
-    height = returnInteger(getTagText(doc, "height", DEFAULT_DIMENSION));
+    width = getTagInt(doc, "width");
+    height = getTagInt(doc, "height");
+    if (width < 0 || height < 0) {
+      throw new ConfigurationException("Invalid width or height");
+    }
+  }
+
+  private int getTagInt(Document doc, String tag) {
+    Element element = (Element) tagToNode(doc, tag);
+    if (element != null) {
+      return Integer.parseInt(element.getTextContent().trim());
+    } else {
+      return DEFAULT_DIMENSION;
+    }
   }
 
   private void setSimulationInfo(Document doc) {
-    simulationTitle = getTagText(doc, "title", "");
-    authors = getTagText(doc, "authors", "");
-    description = getTagText(doc, "description", "");
-    edgePolicy = getTagText(doc, "edgePolicy", DEFAULT_EDGE_POLICY);
-    language = getTagText(doc, "language", DEFAULT_LANGUAGE);
+    simulationTitle = getTagText(doc, "title");
+    authors = getTagText(doc, "authors");
+    description = getTagText(doc, "description");
+    edgePolicy = getTagText(doc, "edgePolicy");
+//    if (!edgePolicy.equals("Normal") && !edgePolicy.equals("Vertical")) {
+//      throw new ConfigurationException("Bad Edge Policy");
+//    }
+    language = getTagText(doc, "language");
   }
 
-  private int returnInteger(String intString) {
-    int returnedInt;
-    try {
-      returnedInt = Integer.parseInt(intString);
-    } catch (NumberFormatException e) {
-      returnedInt = 50;
-    }
-    return returnedInt;
-  }
 
   private Map<String, Double> putParameterChildren(Document document, String item) {
     Map<String, Double> map = new HashMap<>();
@@ -186,12 +193,12 @@ public class Config {
     return nodeList.item(0);
   }
 
-  private String getTagText(Document document, String tag, String defaultReturn) {
+  private String getTagText(Document document, String tag) {
     Element element = (Element) tagToNode(document, tag);
     if (element != null) {
       return element.getTextContent().trim();
     } else {
-      return defaultReturn;
+      throw new ConfigurationException(String.format("%s is missing", tag));
     }
   }
 
@@ -252,27 +259,37 @@ public class Config {
     return language;
   }
 
-  private char[][] fileToGrid(String path) {
-    char[][] fileGrid = new char[height][width];
+  private void fileToQueue(String path) {
     String fullPath = Control.DATA_FILE_FOLDER + File.separator + path;
-    System.out.println(fullPath);
+    int rows = 0;
+
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
-      for (int i = 0; i < height; i++) {
-        String line = reader.readLine();
-        for (int j = 0; j < width; j++) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        rows += 1;
+        if (width == DEFAULT_DIMENSION) {
+          width = line.length();
+        } else if (width < line.length()) {
+          throw new ConfigurationException("Outside grid columns' bounds");
+        }
+        for (int j = 0; j < line.length(); j++) {
           try {
-            fileGrid[i][j] = line.charAt(j);
+            cellValues.offer(line.charAt(j));
           } catch (IndexOutOfBoundsException | NullPointerException e) {
-            fileGrid[i][j] = '0';
+            cellValues.offer('0');
           }
-          cellValues.offer(fileGrid[i][j]);
         }
       }
     } catch (IOException e) {
       throw new ConfigurationException("IOException: Make sure that the addressed file exists", e);
     }
 
-    return fileGrid;
+    if (height == DEFAULT_DIMENSION) {
+      height = rows;
+    } else if (height < rows) {
+      throw new ConfigurationException("Outside grid rows' bounds");
+    }
+
   }
 
 
