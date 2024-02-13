@@ -16,8 +16,8 @@ public class ForagingAnts implements Simulation<AntsCell> {
   private static final String EMPTY = CellStates.EMPTY.name();
   private static final String HIGHPHEROMONE = CellStates.HIGHPHEROMONE.name();
   private static final String LOWPHEROMONE = CellStates.LOWPHEROMONE.name();
-  private double diffusionRate = 0.001;
-  private double evaporationRate = 0.001;
+  private double diffusionRate = 0.0005;
+  private double evaporationRate = 0.02;
 
   /**
    * Creates a new AntsCell with specified row, column, and state.

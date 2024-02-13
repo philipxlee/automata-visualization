@@ -13,10 +13,6 @@ import java.util.Random;
 import java.util.Vector;
 
 public class AntsCell extends Cell {
-
-  public static final int SHARK_BREED_TIME = 7;
-  public static final int FISH_BREED_TIME = 5;
-  public static final int SHARK_STARTING_ENERGY = 10;
   private static final String HOME = CellStates.HOME.name();
   private static final String FOOD = CellStates.FOOD.name();
   private static final String ANT = CellStates.ANT.name();
@@ -25,8 +21,7 @@ public class AntsCell extends Cell {
   private static final String LOWPHEROMONE = CellStates.LOWPHEROMONE.name();
   public static final double MAX_PHEROMONE = 1000.0;
   private static final int INITIAL_ANTS = 2;
-  private static final int FOOD_AMT = 10;
-  private int breedTime = 0;
+  private static final int FOOD_AMT = 50;
   private List<Ant> curAnts = new ArrayList<>();
   private double homePheromone = 0;
   private double foodPheromone = 0;
@@ -106,6 +101,7 @@ public class AntsCell extends Cell {
   public void birthAnts() {
     if(this.getState().equals(HOME)) {
       curAnts.add(new Ant());
+      curAnts.add(new Ant());
     }
   }
 
@@ -137,23 +133,23 @@ public class AntsCell extends Cell {
   }
 
   public void diffuseFoodPheromone(double rate, List<AntsCell> neighbors) {
-    double totalDiffused = 0;
+    if(this.getFoodPheromone() < 0.1 * MAX_PHEROMONE) {
+      return;
+    }
     for(AntsCell neighbor : neighbors) {
       double foodDiffuse = rate * this.getFoodPheromone();
       neighbor.setFoodPheromone(neighbor.getFoodPheromone() + foodDiffuse);
-      totalDiffused += foodDiffuse;
     }
-    this.setFoodPheromone(this.getFoodPheromone() - totalDiffused);
   }
 
   public void diffuseHomePheromone(double rate, List<AntsCell> neighbors) {
-    double totalDiffused = 0;
+    if(this.getHomePheromone() < 0.1 * MAX_PHEROMONE) {
+      return;
+    }
     for(AntsCell neighbor : neighbors) {
       double homeDiffuse = rate * this.getHomePheromone();
       neighbor.setHomePheromone(neighbor.getHomePheromone() + homeDiffuse);
-      totalDiffused += homeDiffuse;
     }
-    this.setHomePheromone(this.getHomePheromone() - totalDiffused);
   }
 
   public void decrementFoodAmt() {
@@ -254,7 +250,7 @@ class Ant {
       moveAnt(antsCell, moveDirection, iterator);
       if (moveDirection.getState().equals(CellStates.FOOD.name())) {
         carryingFood = true;
-        antsCell.decrementFoodAmt();
+        moveDirection.decrementFoodAmt();
       }
     }
   }
@@ -335,7 +331,7 @@ class Ant {
     ticksAlive++;
   }
   public boolean isAlive() {
-    return ticksAlive < 500;
+    return ticksAlive < 200;
   }
 
 

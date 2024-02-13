@@ -214,6 +214,7 @@ public class Display {
     infoPane.getChildren().add(descriptionLabel);
 
     for (Map.Entry<String, Color> entry : stateColors.entrySet()) {
+      if(!stateInUse(entry.getKey())) continue;
       Label stateColorLabel = new Label(resources.getString("state") + ": " + entry.getKey());
       stateColorLabel.getStyleClass().add("states");
       stateColorLabel.setTextFill(entry.getValue());
@@ -229,10 +230,25 @@ public class Display {
     infoPane.setAlignment(Pos.BASELINE_CENTER);
   }
 
+  private boolean stateInUse(String state){
+    Cell[][] grid = getCellGrid();
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
+        if(grid[i][j].getState().equals(state)){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   private void nextTick() {
     simulationGrid.computeNextGenerationGrid();
     updateGrid();
     myGrapher.addData(simulationGrid.getCellCounts(), myGrapher.getTick() + 1);
+    if(myGrapher.getTick() % 10 == 0){
+      VBox mainUserInterface = createMainUserInterface();
+      root.setRight(mainUserInterface);
+    }
   }
 
   private void lastTick() {
