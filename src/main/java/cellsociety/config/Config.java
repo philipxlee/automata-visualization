@@ -3,15 +3,10 @@ package cellsociety.config;
 
 import static java.util.Map.entry;
 
-import cellsociety.model.Cell;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,16 +14,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,14 +28,7 @@ public class Config {
   public static final String DEFAULT_LANGUAGE = "English";
   public static final String DEFAULT_EDGE_POLICY = "Normal";
   public static final String DEFAULT_DIMENSION = "50";
-  public static final String SAXEXCEPTION_MESSAGE = "SAXException:  invalid XML syntax, "
-      + "unexpected XML structure, or errors during the parsing process";
-
-  public static final String IOEXCEPTION_MESSAGE = "IOException: cannot read from file";
-
-  public static final String PARSER_CONFIG_EXCEPTION_MESSAGE = "ParserConfigurationException: "
-      + "incorrect parser settings or features not supported by the underlying XML parser";
-  private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
+    private static final Map<String, Color> DEFAULT_STATE_COLORS = Map.ofEntries(
       entry("ALIVE", Color.BLACK),
       entry("EMPTY", Color.WHITE),
       entry("PERCOLATED", Color.BLUE),
@@ -91,36 +72,35 @@ public class Config {
     try {
       doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
     } catch (SAXException e) {
-      new Control().showMessage(AlertType.ERROR, String.format(SAXEXCEPTION_MESSAGE));
+      throw new ConfigurationException("SAXException: Invalid syntax or XML structure", e);
     } catch (IOException e) {
-      new Control().showMessage(AlertType.ERROR, String.format(IOEXCEPTION_MESSAGE));
+      throw new ConfigurationException("IOException: Cannot read from file", e);
     } catch (ParserConfigurationException e) {
-      new Control().showMessage(AlertType.ERROR, String.format(PARSER_CONFIG_EXCEPTION_MESSAGE));
+      throw new ConfigurationException("ParserConfigurationException: incorrect parser settings or "
+          + "features not supported by the underlying XML parser", e);
     }
 
     doc.getDocumentElement().normalize();
 
     simulationType = ((Element) tagToNode(doc, "type")).getAttribute("id");
 
-    parameters = (Map<String, Double>) putChildren("double", doc, "parameters");
+    parameters = putParameterChildren(doc, "parameters");
 
     setSimulationInfo(doc);
     setSimulationDimensions(doc);
-    //adjustColors(stateColors, doc, "stateColors");
+    stateColors = putColorChildren(doc, "stateColors");
+    if (stateColors.isEmpty()) {
+      stateColors = DEFAULT_STATE_COLORS;
+    } else {
+      stateColors.put("EMPTY", DEFAULT_STATE_COLORS.get("EMPTY"));
+    }
 
     String fileName = getTagText(doc, "fileName", "");
-    System.out.println(fileName);
     grid = fileToGrid(fileName);
 
 
   }
 
-  private void adjustColors(Map<String, Color> colors, Document doc, String item) {
-    colors = (Map<String, Color>) putChildren("color", doc, item);
-    if (colors.isEmpty()) {
-      colors = DEFAULT_STATE_COLORS;
-    }
-  }
 
   private void setSimulationDimensions(Document doc) {
     width = returnInteger(getTagText(doc, "width", DEFAULT_DIMENSION));
@@ -145,8 +125,8 @@ public class Config {
     return returnedInt;
   }
 
-  private Map<String, ?> putChildren(String valueType, Document document, String item) {
-    Map<String, ?> map = new HashMap<>();
+  private Map<String, Double> putParameterChildren(Document document, String item) {
+    Map<String, Double> map = new HashMap<>();
     NodeList nodeList = returnChildNodes(document, item);
     if (nodeList == null) {
       return map;
@@ -159,27 +139,40 @@ public class Config {
       if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
         Element element = (Element) currentNode;
         String tagName = element.getTagName();
-        String textContent = element.getTextContent().trim();
 
-        if (valueType.equals("double")) {
           try {
-            double value = Double.parseDouble(textContent);
-            ((Map<String, Double>) map).put(tagName, value);
+            map.put(tagName, Double.parseDouble(element.getTextContent().trim()));
           } catch (NumberFormatException e) {
-            // Handle parsing error
-            new Control().showMessage(AlertType.ERROR,
-                String.format("Error parsing double value for tag: %s", tagName));
+            throw new ConfigurationException(String.format("Error parsing double value for tag: %s",
+                tagName), e);
           }
-        } else if (valueType.equals("color")) {
-          Color color = Color.web(textContent);
-          ((Map<String, Color>) map).put(tagName, color);
-        } else {
-          ((Map<String, String>) map).put(tagName, textContent);
-        }
+      }
+    }
 
-      } else if (currentNode.getNodeType() == Node.TEXT_NODE &&
-          !currentNode.getTextContent().trim().isEmpty()) {
-        System.out.println("Testing: " + currentNode.getTextContent().trim());
+    return map;
+  }
+
+  private Map<String, Color> putColorChildren(Document document, String item) {
+    Map<String, Color> map = new HashMap<>();
+    NodeList nodeList = returnChildNodes(document, item);
+    if (nodeList == null) {
+      return map;
+    }
+
+
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      Node currentNode = nodeList.item(i);
+
+      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+        Element element = (Element) currentNode;
+        String tagName = element.getTagName();
+
+        try {
+          map.put(tagName, Color.web(element.getTextContent().trim()));
+        } catch (NumberFormatException e) {
+          throw new ConfigurationException(String.format("Error parsing double value for tag: %s",
+              tagName), e);
+        }
       }
     }
 
@@ -265,17 +258,15 @@ public class Config {
   }
 
   private char[][] fileToGrid(String path) {
-    System.out.println("check");
     char[][] fileGrid = new char[height][width];
     String fullPath = Control.DATA_FILE_FOLDER + File.separator + path;
-
+    System.out.println(fullPath);
     try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
       for (int i = 0; i < height; i++) {
         String line = reader.readLine();
         for (int j = 0; j < width; j++) {
           try {
             fileGrid[i][j] = line.charAt(j);
-            System.out.println(fileGrid[i][j]);
           } catch (IndexOutOfBoundsException | NullPointerException e) {
             fileGrid[i][j] = '0';
           }
@@ -283,8 +274,7 @@ public class Config {
         }
       }
     } catch (IOException e) {
-      // Handle exceptions, such as file not found or unable to read
-      e.printStackTrace();
+      throw new ConfigurationException("IOException: Make sure that the addressed file exists", e);
     }
 
     return fileGrid;
@@ -294,7 +284,6 @@ public class Config {
   // If the cellValues is empty, only return the value of empty cell
   public char nextCellValue() {
     Character c = cellValues.poll();
-    System.out.println(c);
     if (c != null) {
       return c;
     } else {
@@ -318,10 +307,5 @@ public class Config {
     return description;
   }
 
-//  public static void main(String[] args) throws Exception {
-//    Config newConfig = new Config();
-//    newConfig.loadXmlFile(new File("C:\\Users\\Ashitaka\\CS308\\cellsociety_team03\\data\\SpreadingOfFire\\SpreadingOfFire1.xml"));
-//    System.out.println(newConfig.getStateColors().get("ALIVE").toString());
-//  }
 
 }
