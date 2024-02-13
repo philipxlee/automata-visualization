@@ -16,6 +16,8 @@ public class ForagingAnts implements Simulation<AntsCell> {
   private static final String EMPTY = CellStates.EMPTY.name();
   private static final String HIGHPHEROMONE = CellStates.HIGHPHEROMONE.name();
   private static final String LOWPHEROMONE = CellStates.LOWPHEROMONE.name();
+  private double diffusionRate = 0.001;
+  private double evaporationRate = 0.001;
 
   /**
    * Creates a new AntsCell with specified row, column, and state.
@@ -32,11 +34,13 @@ public class ForagingAnts implements Simulation<AntsCell> {
 
   @Override
   public void prepareCellNextState(AntsCell cell, List<AntsCell> neighbors) {
+    cell.evaporateFoodPheromone(evaporationRate);
+    cell.evaporateHomePheromone(evaporationRate);
+    cell.diffuseFoodPheromone(diffusionRate, neighbors);
+    cell.diffuseHomePheromone(diffusionRate, neighbors);
+    cell.setState(cell.updateCellState());
     cell.antsForage(neighbors);
-    //TODO: update cell state, i.e. if any ant moved to this cell or left or pheromone increased or decreased,
-    //TODO: change how the cell is classified
-    cell.setNextState(cell.updateCellState());
-    //TODO: make this cell diffuse HOME or FOOD pheromone to its neighbors if it is one of those cells
+    cell.birthAnts();
   }
 
 }
