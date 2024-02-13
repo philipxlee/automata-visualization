@@ -128,9 +128,12 @@ public class Grid<T extends Cell> {
       for (int j = 0; j < col; j++) {
         String state = getStateFromChar(gridFromConfig[i][j]);
         T currentCell = simulation.createVariationCell(i, j, state);
-        cellGrid[i][j] = currentCell;
-      }
+        cellGrid[i][j] = currentCell;      }
     }
+  }
+
+  public void addCellToGrid(String state, int i, int j) {
+    cellGrid[i][j].setState(state);
   }
 
   private void storeConfigGrid(Config config, char[][] gridFromConfig) {

@@ -146,6 +146,14 @@ public class Display {
         gridSection.getChildren().add(cell);
       }
     }
+    gridSection.setOnMouseClicked(event -> {
+      int j = (int) (event.getX() / cellWidth);
+      int i = (int) (event.getY() / cellHeight);
+      this.simulationGrid.addCellToGrid("EMPTY", i, j);
+      simulationGrid.computeNextGenerationGrid();
+      simulationGrid.computePreviousGenerationGrid();
+      updateGrid();
+    });
   }
 
   private Map<String, Color> makeMapCopy(Iterator<Entry<String, Color>> colorIterator){
