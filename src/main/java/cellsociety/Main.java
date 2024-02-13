@@ -29,7 +29,6 @@ public class Main extends Application {
   public void start(Stage primaryStage) {
     Control control = new Control();
     control.makeSimulation(primaryStage);
-    control.showMessage(AlertType.INFORMATION, "Press N to start another simulation");
   }
 
 }

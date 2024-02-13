@@ -49,7 +49,7 @@ public class Control {
 
   public void makeSimulation(Stage primaryStage) {
     Config config = new Config();
-    showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
+    Display.showMessage(AlertType.INFORMATION, String.format("Choose Simulation Configuration File"));
     File dataFile = FILE_CHOOSER.showOpenDialog(primaryStage);
     if (dataFile != null) {
       config.loadXmlFile(dataFile);
@@ -59,6 +59,7 @@ public class Control {
       Display newDisplay = new Display(primaryStage, grid, config);
       newDisplay.start();
 
+
       primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
         if (event.getCode() == KeyCode.N) {
             Stage newStage = new Stage();
@@ -66,7 +67,7 @@ public class Control {
         }
       });
     }
-
+    Display.showMessage(AlertType.INFORMATION, "Press N to start another simulation");
   }
 
   private <T extends Cell> Simulation<T> returnSimulation(String simulationType) {
@@ -79,17 +80,11 @@ public class Control {
       case "FallingSand" -> simulation = (Simulation<T>) new FallingSand();
       case "WaTor" -> simulation = (Simulation<T>) new WaTor();
       case "ForagingAnts" -> simulation = (Simulation<T>) new ForagingAnts();
-      default -> simulation = (Simulation<T>) new Schelling();
+      default -> throw new ConfigurationException("Invalid Simulation Type");
     }
 
     return simulation;
   }
 
   // display given message to user using the given type of Alert dialog box
-  public void showMessage(AlertType type, String message) {
-    Alert alert = new Alert(type, message);
-    alert.setTitle("Cell Society");
-    alert.setHeaderText("");
-    alert.showAndWait();
-  }
 }

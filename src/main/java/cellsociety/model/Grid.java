@@ -1,6 +1,7 @@
 package cellsociety.model;
 
 import cellsociety.config.Config;
+import cellsociety.config.ConfigurationException;
 import cellsociety.model.edgepolicy.EdgePolicy;
 import cellsociety.model.edgepolicy.NormalEdgePolicy;
 import cellsociety.model.edgepolicy.VerticalEdgePolicy;
@@ -149,7 +150,8 @@ public class Grid<T extends Cell> {
     switch (config.getEdgePolicy()) {
       case "Normal" -> this.edgePolicy = new NormalEdgePolicy<>();
       case "Vertical" -> this.edgePolicy = new VerticalEdgePolicy<>();
-      default -> throw new IllegalArgumentException("Bad edge policy: " + config.getEdgePolicy());
+      default -> throw new ConfigurationException(String.format("Bad edge policy: %s",
+          config.getEdgePolicy()));
     }
   }
 
@@ -205,7 +207,7 @@ public class Grid<T extends Cell> {
         return state.name();
       }
     }
-    throw new IllegalArgumentException("Invalid cell character: " + cell);
+    throw new ConfigurationException(String.format("Invalid cell state character: %c", cell));
   }
 
   private Map<String, Integer> countCellAmount() {
