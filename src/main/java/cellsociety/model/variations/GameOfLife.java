@@ -1,7 +1,5 @@
 package cellsociety.model.variations;
 
-import static jdk.internal.joptsimple.internal.Strings.EMPTY;
-
 import cellsociety.model.CellStates;
 import cellsociety.model.Simulation;
 import cellsociety.model.celltypes.BasicCell;
@@ -11,6 +9,7 @@ public class GameOfLife implements Simulation<BasicCell> {
 
   private static final String ALIVE = CellStates.ALIVE.name();
   private static final String DEAD = CellStates.DEAD.name();
+  private static final String EMPTY = CellStates.EMPTY.name();
 
   /**
    * Creates a new GameOfLifeCell with specified row, column, and state.
