@@ -14,7 +14,11 @@
   -fx-stroke: gray;
 }
 
-.cell:hover {
+.cell-outlined:hover {
+  -fx-fill: #b2a446;
+}
+
+.cell-no-outline:hover {
   -fx-fill: #b2a446;
 }
 
