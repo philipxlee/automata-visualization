@@ -1,8 +1,8 @@
 <simulation>
   <type id = "ForagingAnts">
     <parameters>
-      <diffusionRate>0.001</diffusionRate>
-      <evaporationRate>0.001</evaporationRate>
+      <diffusionRate>0.1</diffusionRate>
+      <evaporationRate>0.1</evaporationRate>
     </parameters>
     <title>Foraging Ants #1</title>
     <authors>Liviu Panait and Sean Luke</authors>
@@ -12,8 +12,8 @@
       these few rules, some intelligence and complex beaviors emerge.
     </description>
     <gridDimensions>
-      <width>100</width>
-      <height>100</height>
+      <width>20</width>
+      <height>20</height>
     </gridDimensions>
     <fileName>/ForagingAnts/ForagingAnts1GRID.txt</fileName>
   </type>
