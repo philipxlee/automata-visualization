@@ -5,6 +5,7 @@ import cellsociety.config.Saving;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -200,7 +201,7 @@ public class Display {
     newUserInterface.getChildren().add(separator);
 
     VBox controlPane = new VBox();
-    controlPane.getStyleClass().add("Control-pane");
+    controlPane.getStyleClass().add("control-pane");
     controlPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     controlPane.setPrefHeight(WINDOW_HEIGHT / 2);
     createControlUserInterface(controlPane);
@@ -283,19 +284,23 @@ public class Display {
     return grid;
   }
 
+  private HBox[] makeControlRows(VBox controlPane, int num) {
+    HBox[] rows = new HBox[num];
+    for (int i = 0; i < num; i++) {
+      HBox row = new HBox();
+      row.getStyleClass().add("button-row");
+      controlPane.getChildren().add(row);
+      rows[i] = row;
+    }
+    return rows;
+  }
+
   private void createControlUserInterface(VBox controlPane) {
-    HBox row1 = new HBox();
-    row1.getStyleClass().add("button-row");
+    HBox[] controlRows = makeControlRows(controlPane, 6);
     Button playButton = makeButton("PlayCommand", event -> myTimeline.play());
     Button pauseButton = makeButton("PauseCommand", event -> myTimeline.pause());
-
-    HBox row2 = new HBox();
-    row2.getStyleClass().add("button-row");
     Button nextButton = makeButton("NextCommand", event -> nextTick());
     Button backButton = makeButton("BackCommand", event -> lastTick());
-
-    HBox row3 = new HBox();
-    row3.getStyleClass().add("button-row");
 
     Label sliderLabel = new Label(resources.getString("SpeedSlider"));
     Slider speedSlider = new Slider();
@@ -327,8 +332,6 @@ public class Display {
     VBox cellShapeDown = new VBox(cellShapeLabel, cellShapeBox);
     cellShapeDown.getStyleClass().add("dropdown");
 
-    HBox row4 = new HBox();
-    row4.getStyleClass().add("button-row");
     Button saveButton = makeButton("SaveCommand", event -> {
       new Saving().saveXmlFile("savedFile", getCellGrid(), myConfig);
     });
@@ -347,20 +350,12 @@ public class Display {
       }
     });
 
-    HBox row5 = new HBox();
-    row5.getStyleClass().add("button-row");
-
-    HBox row6 = new HBox();
-    row6.getStyleClass().add("button-row");
-
-    row1.getChildren().addAll(playButton, pauseButton);
-    row2.getChildren().addAll(nextButton, backButton);
-    row3.getChildren().add(sliderBox);
-    row4.getChildren().addAll(toggleGrapher, toggleOutline);
-    row5.getChildren().addAll(comboEdgePolicy, cellShapeDown);
-    row6.getChildren().add(saveButton);
-    controlPane.getChildren().addAll(row1, row2, row3, row4, row5, row6);
-
+    controlRows[0].getChildren().addAll(playButton, pauseButton);
+    controlRows[1].getChildren().addAll(nextButton, backButton);
+    controlRows[2].getChildren().add(sliderBox);
+    controlRows[3].getChildren().addAll(toggleGrapher, toggleOutline);
+    controlRows[4].getChildren().addAll(comboEdgePolicy, cellShapeDown);
+    controlRows[5].getChildren().add(saveButton);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }

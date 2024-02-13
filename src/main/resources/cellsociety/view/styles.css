@@ -94,7 +94,7 @@
 
 .control-pane {
   -fx-padding: 20;
-  -fx-spacing: 10;
+  -fx-spacing: 20;
   -fx-background-color: rgba(203, 239, 186, 0.24);
 }
 
