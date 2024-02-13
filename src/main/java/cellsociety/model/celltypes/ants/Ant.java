@@ -1,7 +1,6 @@
-package cellsociety.model.celltypes.Ants;
+package cellsociety.model.celltypes.ants;
 
 import cellsociety.model.CellStates;
-import cellsociety.model.celltypes.Ants.AntsCell;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

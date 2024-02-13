@@ -8,8 +8,8 @@ import java.util.Queue;
 
 public class Schelling implements Simulation<BasicCell> {
 
-  private static final String EMPTY = "EMPTY";
   public static final double DEFAULT_THRESHOLD = 0.3;
+  private static final String EMPTY = "EMPTY";
   private final Queue<BasicCell> emptyCells = new LinkedList<>();
 
   /**

@@ -1,7 +1,7 @@
 package cellsociety.model.variations;
 
 import cellsociety.model.Simulation;
-import cellsociety.model.celltypes.Ants.AntsCell;
+import cellsociety.model.celltypes.ants.AntsCell;
 import java.util.List;
 
 public class ForagingAnts implements Simulation<AntsCell> {
@@ -28,7 +28,7 @@ public class ForagingAnts implements Simulation<AntsCell> {
    * pheromone and diffuses home pheromone. - A "HOME" cell evaporates home pheromone and diffuses
    * home pheromone. - A "FOOD" cell evaporates food pheromone and diffuses food pheromone.
    *
-   * @param cell The cell whose next state is to be determined.
+   * @param cell      The cell whose next state is to be determined.
    * @param neighbors A list of the cell's neighbors, used to count how many are "ALIVE"
    */
   @Override
