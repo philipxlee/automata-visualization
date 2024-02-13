@@ -53,13 +53,14 @@ public class AntsCell extends Cell {
   public void setFoodPheromone(double pheromoneLevel) { foodPheromone = pheromoneLevel; }
 
   public  List<Ant> getCurAnts() { return curAnts; }
+  public void addAnt(Ant ant) { curAnts.add(ant); }
 
   public String updateCellState() {
     if(this.getState().equals(HOME)) {
       return HOME;
     } else if(this.foodAmt > 0) {
       return FOOD;
-    } else if(this.curAnts.size() > 0) {
+    } else if(this.curAnts.size() > 5) {
       return ANT;
     }
     return calculatePheromoneLevel();
@@ -105,7 +106,6 @@ public class AntsCell extends Cell {
   public void birthAnts() {
     if(this.getState().equals(HOME)) {
       curAnts.add(new Ant());
-      curAnts.add(new Ant());
     }
   }
 
@@ -128,12 +128,12 @@ public class AntsCell extends Cell {
 
   public void evaporateFoodPheromone(double rate) {
     double foodEvaporate = rate * this.getFoodPheromone();
-    setFoodPheromone(foodEvaporate);
+    setFoodPheromone(this.getFoodPheromone() - foodEvaporate);
   }
 
   public void evaporateHomePheromone(double rate) {
     double homeEvaporate = rate * this.getHomePheromone();
-    setHomePheromone(homeEvaporate);
+    setHomePheromone(this.getHomePheromone() - homeEvaporate);
   }
 
   public void diffuseFoodPheromone(double rate, List<AntsCell> neighbors) {
@@ -218,7 +218,7 @@ class Ant {
   }
 
   private void moveAnt(AntsCell antsCell, AntsCell moveCell, Iterator<Ant> iterator) {
-    moveCell.getCurAnts().add(this);
+    moveCell.addAnt(this);
     iterator.remove();
   }
 
@@ -319,10 +319,14 @@ class Ant {
     double max = 0;
     for (AntsCell neighbor: neighbors) {
       double neighborPheromone = type.equals(CellStates.HOME.name()) ? neighbor.getHomePheromone() : neighbor.getFoodPheromone();
-      if (neighborPheromone >= max) {
+      if (neighborPheromone > max) {
         max = neighborPheromone;
         maxCell = neighbor;
       }
+    }
+    if(maxCell == null) {
+      Random random = new Random();
+      return neighbors.get(random.nextInt(neighbors.size()));
     }
     return maxCell;
   }
