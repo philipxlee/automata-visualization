@@ -25,7 +25,7 @@ public class AntsCell extends Cell {
   private static final String LOWPHEROMONE = CellStates.LOWPHEROMONE.name();
   public static final double MAX_PHEROMONE = 1000.0;
   private static final int INITIAL_ANTS = 2;
-  private static final int FOOD_AMT = 10;
+  private static final int FOOD_AMT = 9;
   private int breedTime = 0;
   private List<Ant> curAnts = new ArrayList<>();
   private double homePheromone = 0;
@@ -157,7 +157,7 @@ public class AntsCell extends Cell {
   }
 
   public void decrementFoodAmt() {
-    foodAmt -= 1;
+    foodAmt -= 2;
   }
 
 
