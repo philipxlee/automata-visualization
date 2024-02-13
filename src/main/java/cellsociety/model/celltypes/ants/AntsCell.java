@@ -1,14 +1,10 @@
-package cellsociety.model.celltypes.Ants;
+package cellsociety.model.celltypes.ants;
 
 import cellsociety.model.Cell;
 import cellsociety.model.CellStates;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class AntsCell extends Cell {
 

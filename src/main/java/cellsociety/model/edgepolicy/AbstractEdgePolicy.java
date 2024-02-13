@@ -9,8 +9,8 @@ public abstract class AbstractEdgePolicy<T extends Cell> implements EdgePolicy<T
   /**
    * Get the neighbors of a cell at the given row and column in the given grid
    *
-   * @param row The row of the cell
-   * @param col The column of the cell
+   * @param row  The row of the cell
+   * @param col  The column of the cell
    * @param grid The grid
    * @return the neighbors of the cell at the given row and column in the given grid
    */
@@ -32,7 +32,7 @@ public abstract class AbstractEdgePolicy<T extends Cell> implements EdgePolicy<T
    *
    * @param newRow The new row
    * @param newCol The new column
-   * @param grid The grid
+   * @param grid   The grid
    * @return true if the new row and column are in bounds of the grid, false otherwise
    */
   public boolean isInBounds(int newRow, int newCol, T[][] grid) {
@@ -42,11 +42,11 @@ public abstract class AbstractEdgePolicy<T extends Cell> implements EdgePolicy<T
   /**
    * Check if the new row and column are valid neighbors
    *
-   * @param row The row
-   * @param col The column
+   * @param row    The row
+   * @param col    The column
    * @param newRow The new row
    * @param newCol The new column
-   * @param grid The grid
+   * @param grid   The grid
    * @return true if the new row and column are valid neighbors, false otherwise
    */
   public abstract boolean isValidNeighbor(int row, int col, int newRow, int newCol, T[][] grid);

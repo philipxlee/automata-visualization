@@ -19,8 +19,8 @@ public class WaTorCell extends Cell {
   /**
    * Create a new cell with the given state at the given row and column
    *
-   * @param row The row position of the cell in the grid.
-   * @param col The column position of the cell in the grid.
+   * @param row   The row position of the cell in the grid.
+   * @param col   The column position of the cell in the grid.
    * @param state The initial state of the cell, usually "FISH", "SHARK", or "EMPTY".
    */
   public WaTorCell(int row, int col, String state) {
