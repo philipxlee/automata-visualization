@@ -65,6 +65,8 @@ This project implements a cellular automata simulator.
    * For the `xml` files, instead of having the initial grid and its states be inside the file,
    the program simplifies the process by having a field that points to a text file that the program
    loads the grid from.
+   * Changing the states dynamically by clicking on a cell within the grid will automatically set it
+   as "empty", instead of allowing users to customize which state to change the cell to.
 
  * Known Bugs:
    * N/A 
