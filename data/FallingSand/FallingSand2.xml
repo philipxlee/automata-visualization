@@ -7,6 +7,8 @@
     <description>
       The Falling Sand assignment lets users paint with particles--stationary metal particles, falling sand, flowing water, and whatever students can think up! Students have introduced acid, clouds, fire, gas, lightning, plants, seeds, and much more! Students are essentially inventing their own interactive 2-D cellular automata.
     </description>
+    <edgePolicy>Vertical</edgePolicy>
+    <language>English</language>
     <gridDimensions>
       <width>10</width>
       <height>10</height>

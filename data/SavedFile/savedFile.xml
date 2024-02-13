@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<simulation>
+    <type id="WaTor">
+        <parameters/>
+        <title>WaTor Simulation #5</title>
+        <authors>A. K. Dewdney</authors>
+        <description>"A predator-prey ecosystem simulation. It models fish and sharks, with the dynamics of birth, death, and movement, providing insights into population dynamics and ecological systems"</description>
+        <fileName>/SavedFile/savedFileGRID.txt</fileName>
+        <edgePolicy>Normal</edgePolicy>
+        <language>Spanish</language>
+        <stateColors>
+            <WALL>0x000000ff</WALL>
+            <SAND>0xffdab9ff</SAND>
+            <HIGHPHEROMONE>0x006400ff</HIGHPHEROMONE>
+            <ANT>0xcd5c5cff</ANT>
+            <O>0x0000ffff</O>
+            <SHARK>0xa9a9a9ff</SHARK>
+            <PERCOLATED>0x0000ffff</PERCOLATED>
+            <VISITED>0x00008bff</VISITED>
+            <X>0xff0000ff</X>
+            <FISH>0xffa500ff</FISH>
+            <TREE>0x008000ff</TREE>
+            <LOWPHEROMONE>0x90ee90ff</LOWPHEROMONE>
+            <ALIVE>0x000000ff</ALIVE>
+            <BURNING>0xff0000ff</BURNING>
+            <HOME>0x0000ffff</HOME>
+            <FOOD>0xffa500ff</FOOD>
+        </stateColors>
+        <gridDimensions>
+            <width>10</width>
+            <height>10</height>
+        </gridDimensions>
+    </type>
+</simulation>
