@@ -4,7 +4,6 @@ import cellsociety.config.Config;
 import cellsociety.config.Saving;
 import cellsociety.model.Cell;
 import cellsociety.model.Grid;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,8 +21,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -34,7 +31,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javax.imageio.ImageIO;
 
 
 public class Display {
@@ -146,32 +142,39 @@ public class Display {
         gridSection.getChildren().add(cell);
       }
     }
+    gridSection.setOnMouseClicked(event -> {
+      int j = (int) (event.getX() / cellWidth);
+      int i = (int) (event.getY() / cellHeight);
+      this.simulationGrid.addCellToGrid("EMPTY", i, j);
+      simulationGrid.computeNextGenerationGrid();
+      simulationGrid.computePreviousGenerationGrid();
+      updateGrid();
+    });
   }
 
-  private Map<String, Color> makeMapCopy(Iterator<Entry<String, Color>> colorIterator){
+  private Map<String, Color> makeMapCopy(Iterator<Entry<String, Color>> colorIterator) {
     Map<String, Color> copy = new HashMap<>();
-    while(colorIterator.hasNext()){
+    while (colorIterator.hasNext()) {
       Entry<String, Color> entry = colorIterator.next();
       copy.put(entry.getKey(), entry.getValue());
     }
     return copy;
   }
 
-  private double[] getPoints(int i, int j, double cellWidth, double cellHeight){
-    int triangleX = (int) Math.ceil((double) j/2);
+  private double[] getPoints(int i, int j, double cellWidth, double cellHeight) {
+    int triangleX = (int) Math.ceil((double) j / 2);
     double shiftFactor = 1;
-    if(j % 2 == 0){
+    if (j % 2 == 0) {
       return new double[]{
           j * cellWidth, i * cellHeight,
-          j * cellWidth, (i+1) * cellHeight,
-          (triangleX+1) * 2 * cellWidth, (i + 1) * cellHeight
+          j * cellWidth, (i + 1) * cellHeight,
+          (triangleX + 1) * 2 * cellWidth, (i + 1) * cellHeight
       };
-    }
-    else{
+    } else {
       return new double[]{
           (triangleX) * 2 * cellWidth + shiftFactor, i * cellHeight,
-          (triangleX-1) * 2*cellWidth - shiftFactor, i * cellHeight,
-          (triangleX) * 2*cellWidth + shiftFactor, (i + 1) * cellHeight + shiftFactor
+          (triangleX - 1) * 2 * cellWidth - shiftFactor, i * cellHeight,
+          (triangleX) * 2 * cellWidth + shiftFactor, (i + 1) * cellHeight + shiftFactor
       };
     }
   }
@@ -192,7 +195,7 @@ public class Display {
     newUserInterface.getChildren().add(separator);
 
     VBox controlPane = new VBox();
-    controlPane.getStyleClass().add("Control-pane");
+    controlPane.getStyleClass().add("control-pane");
     controlPane.setPrefWidth(WINDOW_WIDTH - WINDOW_HEIGHT);
     controlPane.setPrefHeight(WINDOW_HEIGHT / 2);
     createControlUserInterface(controlPane);
@@ -214,6 +217,9 @@ public class Display {
     infoPane.getChildren().add(descriptionLabel);
 
     for (Map.Entry<String, Color> entry : stateColors.entrySet()) {
+      if (!stateInUse(entry.getKey())) {
+        continue;
+      }
       Label stateColorLabel = new Label(resources.getString("state") + ": " + entry.getKey());
       stateColorLabel.getStyleClass().add("states");
       stateColorLabel.setTextFill(entry.getValue());
@@ -229,10 +235,26 @@ public class Display {
     infoPane.setAlignment(Pos.BASELINE_CENTER);
   }
 
+  private boolean stateInUse(String state) {
+    Cell[][] grid = getCellGrid();
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
+        if (grid[i][j].getState().equals(state)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private void nextTick() {
     simulationGrid.computeNextGenerationGrid();
     updateGrid();
     myGrapher.addData(simulationGrid.getCellCounts(), myGrapher.getTick() + 1);
+    if (myGrapher.getTick() % 10 == 0) {
+      VBox mainUserInterface = createMainUserInterface();
+      root.setRight(mainUserInterface);
+    }
   }
 
   private void lastTick() {
@@ -259,20 +281,25 @@ public class Display {
     return grid;
   }
 
+  private HBox[] makeControlRows(VBox controlPane, int num) {
+    HBox[] rows = new HBox[num];
+    for (int i = 0; i < num; i++) {
+      HBox row = new HBox();
+      row.getStyleClass().add("button-row");
+      controlPane.getChildren().add(row);
+      rows[i] = row;
+    }
+    return rows;
+  }
+
   private void createControlUserInterface(VBox controlPane) {
-    HBox row1 = new HBox();
-    row1.getStyleClass().add("button-row");
+    HBox[] controlRows = makeControlRows(controlPane, 6);
     Button playButton = makeButton("PlayCommand", event -> myTimeline.play());
     Button pauseButton = makeButton("PauseCommand", event -> myTimeline.pause());
-
-    HBox row2 = new HBox();
-    row2.getStyleClass().add("button-row");
     Button nextButton = makeButton("NextCommand", event -> nextTick());
     Button backButton = makeButton("BackCommand", event -> lastTick());
 
-    HBox row3 = new HBox();
-    row3.getStyleClass().add("button-row");
-
+    String cssDropdown = "dropdown";
     Label sliderLabel = new Label(resources.getString("SpeedSlider"));
     Slider speedSlider = new Slider();
     speedSlider.setMin(0);
@@ -282,29 +309,28 @@ public class Display {
       myTimeline.setRate(newValue.doubleValue() / 10);
     });
     VBox sliderBox = new VBox(sliderLabel, speedSlider);
-    sliderBox.getStyleClass().add("dropdown");
+    sliderBox.getStyleClass().add(cssDropdown);
 
     Label comboBoxLabel = new Label(resources.getString("EdgePolicy"));
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll(myConfig.getEdgePolicy()); // LANGUAGE CONSIDERATION
+    comboBox.getItems().addAll(myConfig.getEdgePolicy());
     comboBox.setValue(myConfig.getEdgePolicy());
-    comboBox.setOnAction(event -> {});
+    comboBox.setOnAction(event -> {
+    });
     VBox comboEdgePolicy = new VBox(comboBoxLabel, comboBox);
-    comboEdgePolicy.getStyleClass().add("dropdown");
+    comboEdgePolicy.getStyleClass().add(cssDropdown);
 
     Label cellShapeLabel = new Label(resources.getString("CellShape"));
     ComboBox<String> cellShapeBox = new ComboBox<>();
-    cellShapeBox.getItems().addAll("Square", "Triangle"); // LANGUAGE CONSIDERATION
+    cellShapeBox.getItems().addAll(resources.getObject("CellShapes").toString().split(","));
     cellShapeBox.setValue(cellShape);
     cellShapeBox.setOnAction(event -> {
       cellShape = cellShapeBox.getValue();
       updateCurrentGrid();
     });
     VBox cellShapeDown = new VBox(cellShapeLabel, cellShapeBox);
-    cellShapeDown.getStyleClass().add("dropdown");
+    cellShapeDown.getStyleClass().add(cssDropdown);
 
-    HBox row4 = new HBox();
-    row4.getStyleClass().add("button-row");
     Button saveButton = makeButton("SaveCommand", event -> {
       new Saving().saveXmlFile("savedFile", getCellGrid(), myConfig);
     });
@@ -323,35 +349,20 @@ public class Display {
       }
     });
 
-    HBox row5 = new HBox();
-    row5.getStyleClass().add("button-row");
-
-    HBox row6 = new HBox();
-    row6.getStyleClass().add("button-row");
-
-    row1.getChildren().addAll(playButton, pauseButton);
-    row2.getChildren().addAll(nextButton, backButton);
-    row3.getChildren().add(sliderBox);
-    row4.getChildren().addAll(toggleGrapher, toggleOutline);
-    row5.getChildren().addAll(comboEdgePolicy, cellShapeDown);
-    row6.getChildren().add(saveButton);
-    controlPane.getChildren().addAll(row1, row2, row3, row4, row5, row6);
-
+    controlRows[0].getChildren().addAll(playButton, pauseButton);
+    controlRows[1].getChildren().addAll(nextButton, backButton);
+    controlRows[2].getChildren().add(sliderBox);
+    controlRows[3].getChildren().addAll(toggleGrapher, toggleOutline);
+    controlRows[4].getChildren().addAll(comboEdgePolicy, cellShapeDown);
+    controlRows[5].getChildren().add(saveButton);
 
     controlPane.setAlignment(Pos.BASELINE_CENTER);
   }
 
   private Button makeButton(String property, EventHandler<ActionEvent> handler) {
-    final String IMAGE_FILE_SUFFIXES = String.format(".*\\.(%s)",
-        String.join("|", ImageIO.getReaderFileSuffixes()));
     Button result = new Button();
     String label = resources.getString(property);
-    if (label.matches(IMAGE_FILE_SUFFIXES)) {
-      result.setGraphic(new ImageView(
-          new Image(getClass().getResourceAsStream(DEFAULT_RESOURCE_FOLDER + label))));
-    } else {
-      result.setText(label);
-    }
+    result.setText(label);
     result.setOnAction(handler);
     return result;
   }
