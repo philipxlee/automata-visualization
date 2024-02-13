@@ -3,9 +3,12 @@
     <parameters>
     </parameters>
     <title>Percolation Simulation #5</title>
+    <authors>No One Found</authors>
     <description>
       "Percolated cells spread to all empty cells unless all paths from percolated cells to an empty cell are blocked"
     </description>
+    <edgePolicy>Normal</edgePolicy>
+    <language>Spanish</language>
     <gridDimensions>
       <width>10</width>
       <height>10</height>

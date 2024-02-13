@@ -137,6 +137,7 @@ public class Saving {
     bearTextChild(document, typeElement, "description", config.getDescription());
     bearTextChild(document, typeElement, "fileName", "/SavedFile/" + textPath);
     bearTextChild(document, typeElement, "edgePolicy", config.getEdgePolicy());
+    bearTextChild(document, typeElement, "language", config.getLanguage());
   }
 
   private void createParameters(Config config, Document document, Element typeElement) {

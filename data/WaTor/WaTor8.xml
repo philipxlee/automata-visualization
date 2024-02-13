@@ -5,6 +5,8 @@
     <title>WaTor Simulation #8</title>
     <authors>A. K. Dewdney</authors>
     <description>"A predator-prey ecosystem simulation. It models fish and sharks, with the dynamics of birth, death, and movement, providing insights into population dynamics and ecological systems"</description>
+    <edgePolicy>Vertical</edgePolicy>
+    <language>English</language>
     <gridDimensions>
       <width>10</width>
       <height>10</height>

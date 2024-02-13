@@ -14,6 +14,8 @@
       An empty space fills with a tree with probability p
                                                         - Wikipedia
     </description>
+    <edgePolicy>Normal</edgePolicy>
+    <language>English</language>
     <gridDimensions>
       <width>10</width>
       <height>10</height>
