@@ -46,6 +46,7 @@ public class Config {
       entry("VISITED", Color.DARKBLUE)
   );
   private final Queue<Character> cellValues;
+  private final Map<String, Color> stateColors;
   private String simulationType;
   private String simulationTitle;
   private String authors;
@@ -56,7 +57,6 @@ public class Config {
   private int height;
   private String language;
   private Map<String, Double> parameters;
-  private final Map<String, Color> stateColors;
 
 
   public Config() {
