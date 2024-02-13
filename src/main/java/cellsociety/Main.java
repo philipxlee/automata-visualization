@@ -2,7 +2,6 @@ package cellsociety;
 
 import cellsociety.config.Control;
 import javafx.application.Application;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 
