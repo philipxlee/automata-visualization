@@ -54,7 +54,11 @@ public class Config {
       entry("X", Color.RED),
       entry("O", Color.BLUE),
       entry("SAND", Color.PEACHPUFF),
-      entry("ANT", Color.SADDLEBROWN),
+      entry("ANT", Color.INDIANRED),
+      entry("HOME", Color.BLUE),
+      entry("FOOD", Color.ORANGE),
+      entry("HIGHPHEROMONE", Color.DARKGREEN),
+      entry("LOWPHEROMONE", Color.LIGHTGREEN),
       entry("VISITED", Color.DARKBLUE)
   );
   private String simulationType;
