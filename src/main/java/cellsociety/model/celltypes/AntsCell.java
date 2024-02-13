@@ -26,7 +26,6 @@ public class AntsCell extends Cell {
   private double homePheromone = 0;
   private double foodPheromone = 0;
   private int foodAmt = 0;
-  private int[] direction = new int[]{0, 0};
 
   /**
    * Creates a new AntsCell with specified row, column, and state.
@@ -285,7 +284,7 @@ class Ant {
     }
     if (canMoveTo(moveDirection)) {
       dropFoodPheromone(antsCell, neighbors);
-      moveAnt(antsCell, moveDirection, iterator);
+      moveAnt(moveDirection, iterator);
       if (moveDirection.getState().equals(CellStates.HOME.name())) {
         carryingFood = false;
       }
@@ -308,7 +307,7 @@ class Ant {
     }
     if (moveDirection != null && canMoveTo(moveDirection)) {
       dropHomePheromone(antsCell, neighbors);
-      moveAnt(antsCell, moveDirection, iterator);
+      moveAnt(moveDirection, iterator);
       if (moveDirection.getState().equals(CellStates.FOOD.name())) {
         carryingFood = true;
         moveDirection.decrementFoodAmt();
@@ -456,7 +455,7 @@ class Ant {
     return moveCell.getCurAnts().size() < 10;
   }
 
-  private void moveAnt(AntsCell antsCell, AntsCell moveCell, Iterator<Ant> iterator) {
+  private void moveAnt(AntsCell moveCell, Iterator<Ant> iterator) {
     moveCell.addAnt(this);
     iterator.remove();
   }
