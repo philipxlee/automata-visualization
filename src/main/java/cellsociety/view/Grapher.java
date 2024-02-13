@@ -38,11 +38,19 @@ public class Grapher {
     this.myStage.setScene(myScene);
   }
 
+  /**
+   * Shows the grapher
+   */
   public void show() {
     myStage.show();
   }
 
-
+  /**
+   * Adds a data point to the grapher
+   *
+   * @param dataPoint the data point to add
+   * @param tick      the tick at which the data point was recorded
+   */
   public void addData(Map<String, Integer> dataPoint, int tick) {
     if (tick <= maxTick) {
       currentTick = tick;
@@ -66,18 +74,30 @@ public class Grapher {
     maxTick = currentTick;
   }
 
+  /**
+   * Closes the grapher
+   */
   public void close() {
     myStage.close();
   }
 
+  /**
+   * @return true if the grapher is showing
+   */
   public boolean isShowing() {
     return myStage.isShowing();
   }
 
+  /**
+   * @return the current tick
+   */
   public int getTick() {
     return currentTick;
   }
 
+  /**
+   * @param tick the tick to set
+   */
   public void setTick(int tick) {
     currentTick = tick;
   }

@@ -77,6 +77,9 @@ public class Display {
     this.cellShape = "Square";
   }
 
+  /**
+   *  Start the display
+   */
   public void start() {
     resources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + myLanguage);
     //make simulation class with the info passed from config
@@ -379,6 +382,12 @@ public class Display {
     updateGrid();
   }
 
+  /**
+   * Shows a message
+   *
+   * @param type    the type of message
+   * @param message the message to show
+   */
   public static void showMessage(AlertType type, String message) {
     Alert alert = new Alert(type, message);
     alert.setTitle("Cell Society");
