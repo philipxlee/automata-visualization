@@ -62,14 +62,58 @@ extended and employed in other parts of the program outside Model.
 * TODO
 
 #### Config High Level Design
-* TODO
+* Class Config loads an xml file and reads each node into its appropriate
+instance variable, which it can give to other classes using the getter
+methods.
+  * The grid to be implemented is saved in a txt file, whose name is given
+  in the xml file. So, class Config follows the path of the txt file and 
+  reads the grid, storing it in a queue, which pops off the values of the cells
+  in the grid upon request using a getter method.
+* Class Control handles setting up the simulation by working as a liaison between
+different classes in config, view, and model. 
+  * It calls the objects of the relevant classes necessary for
+  setting the simulation and passes the information between
+  them.
+  * It also checks the type of simulation that it should call
+  from model.
+* Class Saving handles saving the state of the simulation into an
+xml file and the grid state into a txt file with its path given
+in the xml file.
+* Class ConfigurationException handles the exceptions caused by
+bad xml, data, or txt files. It calls the Display static method 
+showMessage to display the message thrown by the exception and additionally
+can output the call stack leading to the exception depending upon the way
+ConfigurationException is thrown.
 
 ## Assumptions that Affect the Design
 
 #### Features Affected by Assumptions
+* Given that it is assumed in Config that the grid state is stored into
+a txt file with the path given in the relevant node of the loaded
+xml file, when creating a simulation test file, one has to create
+both an xml file and its pair txt file.
+* Given the implementation of saveXmlFile method in Saving class,
+all saved files are stored in 'SavedFile' directory under 'data' directory.
+* Given the implementation of config, whenever one wants to add a new kind of
+simulation, they must add the new simulation to Control class's returnSimulation
+method as one of the cases.
 * TODO
 
 ## Significant differences from Original Plan
+* In the original plan, the cell states were to be stored in the
+loaded xml file. However, now the cell states are stored in a txt
+file with its path given in the loaded xml file.
+* In the original plan, Config is an abstract class having subclasses
+for each type of the simulations. However, in the implementation of the project,
+the implementation of different simulations are handled in Model, and the
+Control class switches between different simulations based on the data loaded
+by loadXmlFile method of Config class.
+* In the original plan, Control is part of the View package. However,
+in the implementation, Control is in config package.
+* In the original plan, saveXmlFile and loadXmlFile are both methods
+in the config class. However, in the implementation, saveXmlFile is moved
+to Saving class.
+* editParameter() class noted in the original plan is not implemented.
 * TODO
 
 ## New Features HowTo
