@@ -59,7 +59,24 @@ pass in a type of cell and have the software run smoothly. The usage of generics
 extended and employed in other parts of the program outside Model.
 
 #### Display High Level Design
-* TODO
+* The Display class handles the rendering of the grid and the control overlay.
+* It takes in as a constructor parameter the grid and config instances for the specific simulation,
+this enables the Display to communicate with the grid and config classes to get and send the necessary data
+* The rendering is done by partitioning the scene into first two parts, the grid on the left and the UI on the right.
+* The grid is rendered by using the Grid class's iterator and drawing them appropriately based on what the cell shape is
+as well as the state of the cell. The color is derived from what Config passed to the Display class as the default or XML configured color.
+* The UI is a VBox which the top half is the simulation info and the bottom half is the control overlay with buttons and sliders. 
+Both of those are also VBox.
+* The creating of these VBox and everything is within their respective methods like a createGrid or a createControl.
+* Create control makes multiple buttons and toggles and so on that are all tied to event handlers.
+* There is a Grapher class that makes a line graph and stores the data of the graph in a list of data points and has
+methods to show or add data points to the graph.
+* To update the grid and run the simulation, all you need to do is tell the Grid instance to computeNextGeneration and then
+call the createGrid method again to update the visuals. This is encapsulated in a method called nextTick. It also adds the 
+new tick's data to the graph.
+* By seperating the parts of the display into their own methods, it makes it easier to add new features where you want them
+and also make it a bit more efficient because the UI only needs to be rendered once and is only created once at the start.
+
 
 #### Config High Level Design
 * Class Config loads an xml file and reads each node into its appropriate
