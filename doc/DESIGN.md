@@ -114,7 +114,9 @@ all saved files are stored in 'SavedFile' directory under 'data' directory.
 * Given the implementation of config, whenever one wants to add a new kind of
 simulation, they must add the new simulation to Control class's returnSimulation
 method as one of the cases.
-* TODO
+* We wanted to encapsulate what a cell knows about the grid, so we made the cell have a neighbor
+map that only the cell has access to, mapping the cell to other cells within its immediate
+neighbors instead of just having a grid and looping through the grid each time.
 
 ## Significant differences from Original Plan
 * In the original plan, the cell states were to be stored in the
@@ -131,7 +133,10 @@ in the implementation, Control is in config package.
 in the config class. However, in the implementation, saveXmlFile is moved
 to Saving class.
 * editParameter() class noted in the original plan is not implemented.
-* TODO
+* For Grid, instead of copying an updated grid to our cell grid, we created a boolean
+that would indicate a cell is ready for the next state, setting that cell's next state in 
+a variable called nextState. Then, in a second pass, we simply just update the grid this way.
+
 
 ## New Features HowTo
 
