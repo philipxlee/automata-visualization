@@ -1,16 +1,6 @@
-# Cell Society - Team 3
-## Philip Lee (kl445), Saad Hakim (sh604), Abhishek Chataut (ac802)
+# Cellular Automata Visualization
 
 This project implements a cellular automata simulator.
-
-### Timeline
-
- * Start Date: January 29th, 2024
-
- * Finish Date: February 12, 2024
-
- * Hours Spent: 80 hours
-
 
 
 ### Attributions
@@ -20,7 +10,6 @@ This project implements a cellular automata simulator.
 * OpenAI ChatGPT -- https://chat.openai.com
 
 * GeeksForGeeks JavaFX Tutorial -- https://www.geeksforgeeks.org/javafx-tutorial/
-
 
 
 ### Running the Program
@@ -72,40 +61,26 @@ This project implements a cellular automata simulator.
    * N/A 
 
  * Features implemented:
-   * [CELL-01]: Conway's Game of Life
-   * [CELL-02]: Spreading of Fire
-   * [CELL-03]: WaTor World
-   * [CELL-04]: Schelling's Model of Segregation
-   * [CELL-05]: Water Percolation 
-   * [CELL-06]: 3 simulation configurations showing patterns for Conway's Game of Life
-   * [CELL-16]: XML-Based Simulation Configuration
-   * [CELL-17]: Cell Grid View
-   * [CELL-18]: Display Simulation Information
-   * [CELL-19]: Load New Configuration File
-   * [CELL-20]: Start Simulation
-   * [CELL-21]: Pause Simulation
-   * [CELL-22]: Simulation Speed Adjustment
-   * [CELL-23]: Save Simulation State as XML
-   * [CELL-24]: Edit Simulation Save
+   * Conway's Game of Life
+   * Spreading of Fire
+   * WaTor World
+   * Schelling's Model of Segregation
+   * Water Percolation 
+   * XML-Based Simulation Configuration
+   * Display Simulation Information
+   * Load New Configuration File
+   * Start/Pause Simulation
+   * Simulation Speed Adjustment
+   * Save Simulation State as XML
+   * Edit Simulation Save
    * [CELL-25]: Reset and Clear Grid Functionality
-   * [CELL-26A]: Falling Sand
-   * [CELL-26B]: Foraging Ants
-   * [CELL-27]: Input Missing Parameters
-   * [CELL-28]: Invalid Value Check
-   * [CELL-29]: Invalid Cell State Check
-   * [CELL-30]: Grid Bounds Check
-   * [CELL-31]: File Format Validation
-   * [CELL-33X]: Grid Edge Type - Custom (Vertical Split)
-   * [CELL-35B]: Cell Shape - Triangle
-   * [CELL-36]: Multiple Simultaneous Simulations
-   * [CELL-37]: Simulation Language Customization
-   * [CELL-38]: Cell State Colors Customization
-   * [CELL-40B]: Graph of Cell Population Changes
-   * [CELL-41A]: Dynamic Updates: Simulation Parameters
-   * [CELL-41B] Dynamic Updates: Grid States
-   * [CELL-41C]: Dynamic Updates: Grid Outline
-   * [CELL-41E]: Dynamic Updates: Cell Shape
-   
+   * Falling Sand
+   * Foraging Ants
+   * Exception Handling
+   * Dynamic updates
+   * Graphing of cellular statistics during game state
+   * XML Error handling
+  
 
  * Features unimplemented:
    * Although the changing of cell shapes is implemented, the logic of the interactions between the 
@@ -122,19 +97,6 @@ This project implements a cellular automata simulator.
    * Moving the cursor on the cells will create a `hover` effect, displaying a opaque color to show 
    users the location of their cursor.
 
-
-### Assignment Impressions
-   * Working on Cell Society was both challenging and incredibly interesting. The complexity of the 
-   cellular automaton required us to carefully design and implement the rules governing cell 
-   behavior, ensuring that they accurately represented the real-world phenomena we wanted to 
-   simulate. We felt that Cell Society was difficult, but working together step by step made the 
-   challenge less daunting. It was also a great exercise in practicing communication with our
-   groups, setting deadlines, meetings, and targets, etc.
-   * Collaborating with our team and utilizing version control with Git added a rewarding 
-    dimension to the project. The ability to work together, track changes, and merge 
-    contributions allowed us to effectively manage the development process. Connecting all the 
-    simulations and integrating everyone's work into a cohesive whole was also really cool, as
-    it showed us that we had overcome a lot of challenges, such as the occasional merge conflicts.
     
 
 
